@@ -30,8 +30,8 @@ const getTrade = async (req, res) => {
 
 // open a new trade
 const newTrade = async (req, res) => {
-  const { ticker, shares, open, orientation } = req.body;
-  const cost = shares * open;
+  const { ticker, shares, open, orientation, cost } = req.body;
+
   const trade = tradeSchema({
     ticker,
     shares,

@@ -43,7 +43,7 @@ const Dashboard = () => {
           })
           .catch((error) => console.log(error));
       }
-    }, 600000);
+    }, 60000);
     return () => clearInterval(interval);
   }, [positions]);
 

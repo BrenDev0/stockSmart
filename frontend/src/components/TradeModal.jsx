@@ -5,7 +5,12 @@ import { detailKey, quoteKey } from "../keys";
 import { money } from "../utils/money.format";
 
 const TradeModal = () => {
-  const { setTradeModal } = useGlobalContext();
+  //button values
+  const long = "LONG";
+  const short = "SHORT";
+
+  //states
+  const { setTradeModal, newPosition } = useGlobalContext();
 
   const [fullDisplay, setFullDisplay] = useState(false);
 
@@ -22,6 +27,7 @@ const TradeModal = () => {
   const [quote, setQuote] = useState({});
   const [icon, setIcon] = useState("");
 
+  //functions
   const comapnySearch = async (ticker) => {
     try {
       const [res1, res2] = await Promise.all([
@@ -31,21 +37,48 @@ const TradeModal = () => {
         fetch(
           `https://api.polygon.io/v3/reference/tickers/${ticker}?apiKey=${detailKey}`
         ),
+        ,
       ]);
 
       const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
-      const icon = await fetch(
-        `${data2.results.branding.icon_url}?apiKey=${detailKey}`
-      );
 
       setQuote(data1);
+
       setDetails(data2.results);
-      setIcon(icon);
-      setSearch("");
+
+      setIcon(`${data2.results.branding.icon_url}?apiKey=${detailKey}`);
     } catch (error) {
       console.log(error);
     }
   };
+
+  //open a new trade
+  const trade = (direction) => {
+    const { shares, open, cost } = form;
+    const position =
+      direction === "LONG"
+        ? {
+            ticker: details.ticker,
+            shares: shares,
+            open: open,
+            mark: quote.c,
+            orientation: direction,
+            cost: cost,
+          }
+        : {
+            ticker: details.ticker,
+            shares: Math.round(0 - shares),
+            open: open,
+            mark: quote.c,
+            orientation: direction,
+            cost: cost,
+          };
+    newPosition(position);
+    setTradeModal(false);
+    setSearch("");
+  };
+
+  //effects
   useEffect(() => {
     setForm({ ...form, cost: form.shares * form.open });
   }, [form.shares, form.open]);
@@ -53,7 +86,7 @@ const TradeModal = () => {
   return (
     <TradeModalStyled>
       {fullDisplay ? (
-        <form className="trade-form">
+        <div className="trade-form">
           <i className="fa-solid fa-x" onClick={() => setTradeModal(false)}></i>
 
           <div className="form-con">
@@ -79,14 +112,26 @@ const TradeModal = () => {
                 />
               </div>
               <div className="btn-con">
-                <button id="buy">Buy</button>
-                <button id="sell">Sell</button>
+                <button
+                  id="buy"
+                  value={long}
+                  onClick={(e) => trade(e.target.value)}
+                >
+                  Buy
+                </button>
+                <button
+                  id="sell"
+                  value={short}
+                  onClick={(e) => trade(e.target.value)}
+                >
+                  Sell
+                </button>
               </div>
             </div>
             <div className="details-con">
               <div className="logo-con">
                 <p>{details.ticker}</p>
-                <img src={icon.url} alt="" />
+                <img src={icon} alt="" />
               </div>
               <div className="info-con">
                 <p>{details.name}</p>
@@ -104,9 +149,9 @@ const TradeModal = () => {
               </div>
             </div>
           </div>
-        </form>
+        </div>
       ) : (
-        <form action="" className="trade-form">
+        <div action="" className="trade-form">
           <i className="fa-solid fa-x" onClick={() => setTradeModal(false)}></i>
           <div className="con">
             <div className="form-inputs">
@@ -127,7 +172,7 @@ const TradeModal = () => {
               </div>
             </div>
           </div>
-        </form>
+        </div>
       )}
     </TradeModalStyled>
   );

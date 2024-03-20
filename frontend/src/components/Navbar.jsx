@@ -12,7 +12,7 @@ const NavBar = ({ setDisplay }) => {
           <p>Account: $ 0</p>
         </div>
         <div className="adjust-balance">
-          <i class="fa-solid fa-money-bill-transfer"></i>
+          <i className="fa-solid fa-money-bill-transfer"></i>
         </div>
       </div>
       <div className="nav-links" id="dashboard" onClick={() => setDisplay(1)}>

@@ -19,9 +19,21 @@ export const GlobalProvider = ({ children }) => {
   //errors
   const [error, setError] = useState(null);
   //modal displays
-  const [tradeModal, setTradeModal] = useState(true);
+  const [tradeModal, setTradeModal] = useState(false);
 
   //-------TRADE---------------
+
+  // open a new position
+
+  const newPosition = async (position) => {
+    try {
+      await axios.post(`${TRADE_URL}new-trade`, position);
+      getPositions();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //get trade history
   const tradeHistory = async () => {
     const response = await axios.get(`${TRADE_URL}get-trades`);
@@ -36,14 +48,14 @@ export const GlobalProvider = ({ children }) => {
 
   //update an open position
   const updatePosition = async (id, data) => {
-    const response = await axios.put(`${TRADE_URL}update-trade/${id}`, data);
+    await axios.put(`${TRADE_URL}update-trade/${id}`, data);
     getPositions();
   };
 
   //delete a trade
 
   const deleteTrade = async (id) => {
-    const response = await axios.delete(`${TRADE_URL}delete-trade/${id}`);
+    await axios.delete(`${TRADE_URL}delete-trade/${id}`);
     getPositions();
   };
 
@@ -78,10 +90,7 @@ export const GlobalProvider = ({ children }) => {
 
   const deleteFromWatchlist = async (id, data) => {
     try {
-      const response = await axios.put(
-        `${WATCHLIST_URL}remove-from-watchlist/${id}`,
-        data
-      );
+      await axios.put(`${WATCHLIST_URL}remove-from-watchlist/${id}`, data);
       const select = await axios.get(`${WATCHLIST_URL}find-watchlist/${id}`);
 
       setSelectedWl(select.data);
@@ -111,6 +120,7 @@ export const GlobalProvider = ({ children }) => {
         deleteFromWatchlist,
         setSelectedWl,
         setTradeModal,
+        newPosition,
       }}
     >
       {children}
