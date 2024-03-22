@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useGlobalContext } from "../context/GlobalContext";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { detailKey, quoteKey } from "../keys";
 import { money } from "../utils/money.format";
 
@@ -10,47 +10,25 @@ const TradeModal = () => {
   const short = "SHORT";
 
   //states
-  const { setTradeModal, newPosition } = useGlobalContext();
-
-  const [fullDisplay, setFullDisplay] = useState(false);
-
-  const [form, setForm] = useState({
-    ticker: "",
-    shares: "",
-    open: "",
-    cost: "",
-    mark: "",
-  });
-
-  const [search, setSearch] = useState("");
-  const [details, setDetails] = useState({});
-  const [quote, setQuote] = useState({});
-  const [icon, setIcon] = useState("");
+  const {
+    setTradeModal,
+    newPosition,
+    setFullDisplay,
+    setDetails,
+    setIcon,
+    setQuote,
+    form,
+    details,
+    icon,
+    quote,
+    search,
+    setSearch,
+    fullDisplay,
+    setForm,
+    comapnySearch,
+  } = useGlobalContext();
 
   //functions
-  const comapnySearch = async (ticker) => {
-    try {
-      const [res1, res2] = await Promise.all([
-        fetch(
-          `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${quoteKey}`
-        ),
-        fetch(
-          `https://api.polygon.io/v3/reference/tickers/${ticker}?apiKey=${detailKey}`
-        ),
-        ,
-      ]);
-
-      const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
-
-      setQuote(data1);
-
-      setDetails(data2.results);
-
-      setIcon(`${data2.results.branding.icon_url}?apiKey=${detailKey}`);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   //open a new trade
   const trade = (direction) => {
@@ -75,11 +53,18 @@ const TradeModal = () => {
           };
     newPosition(position);
     setTradeModal(false);
+    setFullDisplay(false);
     setSearch("");
+    setForm({
+      ...form,
+      shares: "",
+      open: "",
+    });
   };
 
   //effects
   useEffect(() => {
+    console.log("trade modal use effect");
     setForm({ ...form, cost: form.shares * form.open });
   }, [form.shares, form.open]);
 
@@ -87,7 +72,15 @@ const TradeModal = () => {
     <TradeModalStyled>
       {fullDisplay ? (
         <div className="trade-form">
-          <i className="fa-solid fa-x" onClick={() => setTradeModal(false)}></i>
+          <i
+            className="fa-solid fa-x"
+            onClick={() => {
+              setTradeModal(false);
+              setFullDisplay(false);
+              setSearch("");
+              setForm({ ...form, shares: "", open: "" });
+            }}
+          ></i>
 
           <div className="form-con">
             <div className="inputs-con">

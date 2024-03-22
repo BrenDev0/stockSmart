@@ -1,6 +1,6 @@
 import { useContext, createContext, useState } from "react";
 import axios from "axios";
-import { quoteKey } from "../keys";
+import { quoteKey, detailKey } from "../keys";
 
 const TRADE_URL = "http://localhost:5000/api/trade/";
 const WATCHLIST_URL = "http://localhost:5000/api/watchlists/";
@@ -9,19 +9,59 @@ const GlobalContext = createContext();
 export const GlobalProvider = ({ children }) => {
   //balances state
   const [cashBalance, setCashBalance] = useState(0);
-  //positions state
+  //positions state--------------------------------------------------
   const [positions, setPositions] = useState([]);
   const [history, setHistory] = useState([]);
-  //watchlist state
+  //watchlist state -----------------------------------------
   const [watchlist, setwatchlist] = useState([]);
   const [editWatchlist, setEditWatchlist] = useState(false);
   const [selectedWl, setSelectedWl] = useState("Watchlists");
-  //errors
+  //errors------------------------------------------------------------------
   const [error, setError] = useState(null);
-  //modal displays
+  //modal displays and forms-----------------------------------------------------------
   const [tradeModal, setTradeModal] = useState(false);
+  const [fullDisplay, setFullDisplay] = useState(false);
 
-  //-------TRADE---------------
+  const [form, setForm] = useState({
+    ticker: "",
+    shares: "",
+    open: "",
+    cost: "",
+    mark: "",
+  });
+
+  const [search, setSearch] = useState("");
+  const [details, setDetails] = useState({});
+  const [quote, setQuote] = useState({});
+  const [icon, setIcon] = useState("");
+
+  //---------------functions---------
+
+  const comapnySearch = async (ticker) => {
+    try {
+      const [res1, res2] = await Promise.all([
+        fetch(
+          `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${quoteKey}`
+        ),
+        fetch(
+          `https://api.polygon.io/v3/reference/tickers/${ticker}?apiKey=${detailKey}`
+        ),
+        ,
+      ]);
+
+      const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+
+      setQuote(data1);
+
+      setDetails(data2.results);
+
+      setIcon(`${data2.results.branding.icon_url}?apiKey=${detailKey}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //-------TRADE---------------------------------------
 
   // open a new position
 
@@ -110,6 +150,18 @@ export const GlobalProvider = ({ children }) => {
         selectedWl,
         error,
         tradeModal,
+        fullDisplay,
+        form,
+        search,
+        details,
+        quote,
+        icon,
+        setDetails,
+        setQuote,
+        setIcon,
+        setSearch,
+        setFullDisplay,
+        setForm,
         tradeHistory,
         getPositions,
         updatePosition,
@@ -121,6 +173,7 @@ export const GlobalProvider = ({ children }) => {
         setSelectedWl,
         setTradeModal,
         newPosition,
+        comapnySearch,
       }}
     >
       {children}
