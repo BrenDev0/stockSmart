@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useEffect } from "react";
-import { detailKey, quoteKey } from "../keys";
 import { money } from "../utils/money.format";
 
 const TradeModal = () => {
