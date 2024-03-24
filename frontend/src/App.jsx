@@ -1,10 +1,11 @@
 import NavBar from "./components/Navbar";
-import GlobalStyle from "./styles/globalStyle";
+
 import Dashboard from "./components/Dashboard";
 import styled from "styled-components";
 import { useState } from "react";
 import TradeModal from "./components/TradeModal";
 import { useGlobalContext } from "./context/GlobalContext";
+import History from "./components/History";
 
 function App() {
   const { tradeModal } = useGlobalContext();
@@ -14,6 +15,8 @@ function App() {
     switch (display) {
       case 1:
         return <Dashboard />;
+      case 5:
+        return <History />;
       default:
         return <Dashboard />;
     }
@@ -21,7 +24,6 @@ function App() {
 
   return (
     <>
-      <GlobalStyle />
       {tradeModal && <TradeModal />}
       <NavBar display={display} setDisplay={setDisplay} />
 
@@ -32,7 +34,7 @@ function App() {
 
 const MainStyled = styled.main`
   width: 100%;
-  height: 100%;
+  height: 86vh;
 `;
 
 export default App;

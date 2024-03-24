@@ -8,6 +8,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: "Nunito", sans-serif;
     color: #F4F3EE;
     font-size: 100%;
+    
    
 
 }
@@ -15,6 +16,8 @@ const GlobalStyle = createGlobalStyle`
 body{
    // background: rgba(237, 242, 244, .9);
    background: #F4F3EE;
+   width: 100vw;
+   height: 100vh;
    
 }
 

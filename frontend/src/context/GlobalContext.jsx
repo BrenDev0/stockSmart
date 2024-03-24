@@ -82,6 +82,7 @@ export const GlobalProvider = ({ children }) => {
     try {
       await axios.post(`${TRADE_URL}new-trade`, position);
       getPositions();
+      tradeHistory();
     } catch (error) {
       console.log(error);
       setError(error.response.data.message);
@@ -104,6 +105,7 @@ export const GlobalProvider = ({ children }) => {
   const updatePosition = async (id, data) => {
     await axios.put(`${TRADE_URL}update-trade/${id}`, data);
     getPositions();
+    tradeHistory();
   };
 
   //delete a trade
@@ -111,6 +113,7 @@ export const GlobalProvider = ({ children }) => {
   const deleteTrade = async (id) => {
     await axios.delete(`${TRADE_URL}delete-trade/${id}`);
     getPositions();
+    tradeHistory();
   };
 
   //-------------------WATCHLIST--------------
