@@ -13,9 +13,7 @@ const TradeModal = () => {
     setTradeModal,
     newPosition,
     setFullDisplay,
-    setDetails,
-    setIcon,
-    setQuote,
+    updatePosition,
     form,
     details,
     icon,
@@ -24,7 +22,9 @@ const TradeModal = () => {
     setSearch,
     fullDisplay,
     setForm,
-    comapnySearch,
+    companySearch,
+
+    positions,
   } = useGlobalContext();
 
   //functions
@@ -32,6 +32,9 @@ const TradeModal = () => {
   //open a new trade
   const trade = (direction) => {
     const { shares, open, cost } = form;
+    const currentPosition = positions.find(
+      (pos) => pos.ticker === details.ticker
+    );
     const position =
       direction === "LONG"
         ? {
@@ -41,6 +44,7 @@ const TradeModal = () => {
             mark: quote.c,
             orientation: direction,
             cost: cost,
+            icon: icon,
           }
         : {
             ticker: details.ticker,
@@ -49,8 +53,72 @@ const TradeModal = () => {
             mark: quote.c,
             orientation: direction,
             cost: cost,
+            icon: icon,
           };
-    newPosition(position);
+    if (currentPosition) {
+      if (currentPosition.orientation === long) {
+        if (direction === short) {
+          if (currentPosition.shares > shares) {
+            updatePosition(currentPosition._id, {
+              shares: parseInt(currentPosition.shares) - parseInt(shares),
+              cost: currentPosition.cost - cost,
+              profit:
+                currentPosition.profit +
+                (currentPosition.cost / currentPosition.shares -
+                  (cost / shares) * shares),
+            });
+            //closed long position
+          } else {
+            updatePosition(currentPosition._id, {
+              shares: 0,
+              status: "closed",
+              profit:
+                currentPosition.profit +
+                (currentPosition.cost / currentPosition.shares -
+                  (cost / shares) * shares),
+            });
+          }
+          //if current position && orientation === long && direction === long
+        } else {
+          updatePosition(currentPosition._id, {
+            shares: parseInt(currentPosition.shares) + parseInt(shares),
+            cost: currentPosition.cost + cost,
+          });
+        }
+      }
+      //if current position && orientaion === short
+      else {
+        if (direction === long) {
+          if (currentPosition.shares < 0 - shares) {
+            updatePosition(currentPosition._id, {
+              shares: parseInt(currentPosition.shares) + parseInt(shares),
+              cost: currentPosition.cost - cost,
+              profit:
+                currentPosition.profit +
+                (currentPosition.cost / currentPosition.shares -
+                  (cost / shares) * shares),
+            });
+          }
+          // closed short  position
+          else {
+            updatePosition(currentPosition._id, {
+              shares: 0,
+              status: "closed",
+            });
+          }
+        }
+        //current position && orirentaion === short && direction short
+        else {
+          updatePosition(currentPosition._id, {
+            shares: parseInt(currentPosition.shares) - parseInt(shares),
+            cost: currentPosition.cost + cost,
+          });
+        }
+      }
+    } else {
+      newPosition(position);
+    }
+
     setTradeModal(false);
     setFullDisplay(false);
     setSearch("");
@@ -63,7 +131,6 @@ const TradeModal = () => {
 
   //effects
   useEffect(() => {
-    console.log("trade modal use effect");
     setForm({ ...form, cost: form.shares * form.open });
   }, [form.shares, form.open]);
 
@@ -123,7 +190,7 @@ const TradeModal = () => {
             <div className="details-con">
               <div className="logo-con">
                 <p>{details.ticker}</p>
-                <img src={icon} alt="" />
+                <img src={icon} alt="icon/logo" />
               </div>
               <div className="info-con">
                 <p>{details.name}</p>
@@ -158,7 +225,7 @@ const TradeModal = () => {
                 <i
                   className="fa-solid fa-magnifying-glass"
                   onClick={() => {
-                    comapnySearch(search.toUpperCase()), setFullDisplay(true);
+                    companySearch(search.toUpperCase()), setFullDisplay(true);
                   }}
                 ></i>
               </div>

@@ -22,6 +22,15 @@ const tradeSchema = new mongoose.Schema({
     default: 0,
   },
 
+  icon: {
+    type: String,
+    default: "",
+  },
+  logo: {
+    type: String,
+    default: "",
+  },
+
   status: {
     type: String,
     default: "open",

@@ -7,6 +7,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-family: "Nunito", sans-serif;
     color: #F4F3EE;
+    font-size: 100%;
    
 
 }
@@ -14,6 +15,7 @@ const GlobalStyle = createGlobalStyle`
 body{
    // background: rgba(237, 242, 244, .9);
    background: #F4F3EE;
+   
 }
 
 
@@ -24,6 +26,8 @@ input {
     text-align: center;
     
   }
+
+
 `;
 
 export default GlobalStyle;

@@ -18,6 +18,7 @@ const Dashboard = () => {
     deleteFromWatchlist,
     selectedWl,
     setSelectedWl,
+    editTrade,
   } = useGlobalContext();
 
   //state
@@ -183,6 +184,7 @@ const Dashboard = () => {
               value={pos.ticker}
             >
               <div className="position-data" id="ticker">
+                <img src={pos.icon} alt="icon/logo" />
                 <p>{pos.ticker.toUpperCase()}</p>
               </div>
               <div className="position-data">
@@ -222,7 +224,12 @@ const Dashboard = () => {
               </div>
               <div className="position-data">
                 <div className="icons">
-                  <i className="fa-solid fa-money-bill-trend-up"></i>
+                  <i
+                    className="fa-solid fa-money-bill-trend-up"
+                    onClick={() => {
+                      editTrade(pos.ticker);
+                    }}
+                  ></i>
                   <i className="fa-solid fa-chart-simple"></i>
                   <i
                     className="fa-regular fa-trash-can"
@@ -333,9 +340,6 @@ const DashboardStyled = styled.div`
       .head-data p {
         color: rgb(237, 242, 244);
       }
-      #ticker {
-        border: none;
-      }
     }
     .position-con {
       display: flex;
@@ -360,10 +364,20 @@ const DashboardStyled = styled.div`
           transform: scale(1.2);
           transition: 0.5s;
         }
+        .icons i {
+          font-size: 1.2rem;
+        }
       }
     }
     #ticker {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
       border: none;
+    }
+    #ticker img {
+      width: 45%;
+      border-radius: 15px;
     }
   }
   .positions p {

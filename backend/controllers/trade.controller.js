@@ -30,7 +30,8 @@ const getTrade = async (req, res) => {
 
 // open a new trade
 const newTrade = async (req, res) => {
-  const { ticker, shares, open, orientation, cost } = req.body;
+  const { ticker, shares, open, orientation, cost, mark, icon, logo } =
+    req.body;
 
   const trade = tradeSchema({
     ticker,
@@ -38,6 +39,9 @@ const newTrade = async (req, res) => {
     open,
     orientation,
     cost,
+    mark,
+    icon,
+    logo,
   });
   try {
     if (!ticker || !shares || !open || !orientation) {

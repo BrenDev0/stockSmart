@@ -28,16 +28,19 @@ export const GlobalProvider = ({ children }) => {
     open: "",
     cost: "",
     mark: "",
+    icon: "",
+    logo: "",
   });
 
   const [search, setSearch] = useState("");
   const [details, setDetails] = useState({});
   const [quote, setQuote] = useState({});
   const [icon, setIcon] = useState("");
+  const [logo, setLogo] = useState("");
 
   //---------------functions---------
 
-  const comapnySearch = async (ticker) => {
+  const companySearch = async (ticker) => {
     try {
       const [res1, res2] = await Promise.all([
         fetch(
@@ -54,11 +57,20 @@ export const GlobalProvider = ({ children }) => {
       setQuote(data1);
 
       setDetails(data2.results);
+      setLogo(`${data2.results.branding.logo_url}?apiKey=${detailKey}`);
 
       setIcon(`${data2.results.branding.icon_url}?apiKey=${detailKey}`);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  // update or close trade modal
+
+  const editTrade = async (ticker) => {
+    await companySearch(ticker);
+    setFullDisplay(true);
+    setTradeModal(true);
   };
 
   //-------TRADE---------------------------------------
@@ -156,6 +168,7 @@ export const GlobalProvider = ({ children }) => {
         details,
         quote,
         icon,
+        logo,
         setDetails,
         setQuote,
         setIcon,
@@ -173,7 +186,8 @@ export const GlobalProvider = ({ children }) => {
         setSelectedWl,
         setTradeModal,
         newPosition,
-        comapnySearch,
+        companySearch,
+        editTrade,
       }}
     >
       {children}
