@@ -23,7 +23,8 @@ const TradeModal = () => {
     fullDisplay,
     setForm,
     companySearch,
-
+    setError,
+    error,
     positions,
   } = useGlobalContext();
 
@@ -35,6 +36,7 @@ const TradeModal = () => {
     const currentPosition = positions.find(
       (pos) => pos.ticker === details.ticker
     );
+
     const position =
       direction === "LONG"
         ? {
@@ -55,68 +57,97 @@ const TradeModal = () => {
             cost: cost,
             icon: icon,
           };
-    if (currentPosition) {
-      if (currentPosition.orientation === long) {
-        if (direction === short) {
-          if (currentPosition.shares > shares) {
-            updatePosition(currentPosition._id, {
-              shares: parseInt(currentPosition.shares) - parseInt(shares),
-              cost: currentPosition.cost - cost,
-              profit:
-                currentPosition.profit +
-                (currentPosition.cost / currentPosition.shares -
-                  (cost / shares) * shares),
-            });
-            //closed long position
+    if (shares && cost) {
+      if (currentPosition) {
+        if (currentPosition.orientation === long) {
+          if (direction === short) {
+            if (currentPosition.shares > shares) {
+              updatePosition(currentPosition._id, {
+                shares: parseInt(currentPosition.shares) - parseInt(shares),
+                cost: currentPosition.cost - cost,
+                profit:
+                  (currentPosition.shares - shares) * currentPosition.open -
+                  (currentPosition.cost - cost),
+              });
+
+              //closed long position
+            } else {
+              if (currentPosition.shares < shares) {
+                setError(
+                  `Your Current Position only has ${currentPosition.shares} shares`
+                );
+                return error;
+              } else {
+                updatePosition(currentPosition._id, {
+                  shares: 0,
+                  status: "closed",
+                  profit:
+                    (currentPosition.shares - shares) * currentPosition.open -
+                    (currentPosition.cost - cost),
+                });
+              }
+            }
+            //if current position && orientation === long && direction === long
           } else {
             updatePosition(currentPosition._id, {
-              shares: 0,
-              status: "closed",
-              profit:
-                currentPosition.profit +
-                (currentPosition.cost / currentPosition.shares -
-                  (cost / shares) * shares),
-            });
-          }
-          //if current position && orientation === long && direction === long
-        } else {
-          updatePosition(currentPosition._id, {
-            shares: parseInt(currentPosition.shares) + parseInt(shares),
-            cost: currentPosition.cost + cost,
-          });
-        }
-      }
-      //if current position && orientaion === short
-      else {
-        if (direction === long) {
-          if (currentPosition.shares < 0 - shares) {
-            updatePosition(currentPosition._id, {
               shares: parseInt(currentPosition.shares) + parseInt(shares),
-              cost: currentPosition.cost - cost,
-              profit:
-                currentPosition.profit +
-                (currentPosition.cost / currentPosition.shares -
-                  (cost / shares) * shares),
+              cost: currentPosition.cost + cost,
+              open:
+                (currentPosition.cost + cost) /
+                (currentPosition.shares + shares),
             });
           }
-          // closed short  position
+        }
+        //if current position && orientaion === short
+        else {
+          if (direction === long) {
+            if (currentPosition.shares < 0 - shares) {
+              updatePosition(currentPosition._id, {
+                shares: parseInt(currentPosition.shares) + parseInt(shares),
+                cost: currentPosition.cost - cost,
+                profit:
+                  currentPosition.cost -
+                  cost -
+                  (currentPosition.shares * -1 - shares) * currentPosition.open,
+              });
+            }
+            // closed short  position
+            else {
+              if (currentPosition.shares > 0 - shares) {
+                setError(
+                  `Your Current Position only has ${currentPosition.shares} shares`
+                );
+                return error;
+              } else {
+                updatePosition(currentPosition._id, {
+                  shares: 0,
+                  status: "closed",
+                  profit:
+                    currentPosition.cost -
+                    cost -
+                    (currentPosition.shares * -1 - shares) *
+                      currentPosition.open,
+                });
+              }
+            }
+          }
+          //current position && orirentaion === short && direction short
           else {
             updatePosition(currentPosition._id, {
-              shares: 0,
-              status: "closed",
+              shares: parseInt(currentPosition.shares) - parseInt(shares),
+              cost: currentPosition.cost + cost,
+              open:
+                (currentPosition.cost + cost) /
+                (currentPosition.shares - shares),
             });
           }
         }
-        //current position && orirentaion === short && direction short
-        else {
-          updatePosition(currentPosition._id, {
-            shares: parseInt(currentPosition.shares) - parseInt(shares),
-            cost: currentPosition.cost + cost,
-          });
-        }
+      } else {
+        newPosition(position);
       }
     } else {
-      newPosition(position);
+      setError("ALL FIEDS REQUIRED");
+      return error;
     }
 
     setTradeModal(false);
@@ -138,6 +169,7 @@ const TradeModal = () => {
     <TradeModalStyled>
       {fullDisplay ? (
         <div className="trade-form">
+          {error ? <p id="error">{error}</p> : null}
           <i
             className="fa-solid fa-x"
             onClick={() => {
@@ -145,6 +177,7 @@ const TradeModal = () => {
               setFullDisplay(false);
               setSearch("");
               setForm({ ...form, shares: "", open: "" });
+              setError("");
             }}
           ></i>
 
@@ -157,7 +190,10 @@ const TradeModal = () => {
                   required
                   id="shares"
                   value={form.shares}
-                  onChange={(e) => setForm({ ...form, shares: e.target.value })}
+                  onChange={(e) => {
+                    setForm({ ...form, shares: e.target.value });
+                    setError("");
+                  }}
                 />
               </div>
               <div className="form-inputs">
@@ -174,14 +210,18 @@ const TradeModal = () => {
                 <button
                   id="buy"
                   value={long}
-                  onClick={(e) => trade(e.target.value)}
+                  onClick={(e) => {
+                    trade(e.target.value);
+                  }}
                 >
                   Buy
                 </button>
                 <button
                   id="sell"
                   value={short}
-                  onClick={(e) => trade(e.target.value)}
+                  onClick={(e) => {
+                    trade(e.target.value);
+                  }}
                 >
                   Sell
                 </button>
@@ -225,7 +265,12 @@ const TradeModal = () => {
                 <i
                   className="fa-solid fa-magnifying-glass"
                   onClick={() => {
-                    companySearch(search.toUpperCase()), setFullDisplay(true);
+                    if (search) {
+                      companySearch(search.toUpperCase());
+                      setFullDisplay(true);
+                    } else {
+                      null;
+                    }
                   }}
                 ></i>
               </div>
@@ -242,6 +287,12 @@ const TradeModalStyled = styled.div`
   height: 100vh;
   background: rgba(43, 45, 66, 0.9);
   position: absolute;
+  #error {
+    position: absolute;
+    left: 25%;
+    top: 3%;
+    color: red;
+  }
   .inputs-con {
     display: flex;
     justify-content: space-between;

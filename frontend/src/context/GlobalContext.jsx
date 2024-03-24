@@ -17,7 +17,7 @@ export const GlobalProvider = ({ children }) => {
   const [editWatchlist, setEditWatchlist] = useState(false);
   const [selectedWl, setSelectedWl] = useState("Watchlists");
   //errors------------------------------------------------------------------
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   //modal displays and forms-----------------------------------------------------------
   const [tradeModal, setTradeModal] = useState(false);
   const [fullDisplay, setFullDisplay] = useState(false);
@@ -62,6 +62,7 @@ export const GlobalProvider = ({ children }) => {
       setIcon(`${data2.results.branding.icon_url}?apiKey=${detailKey}`);
     } catch (error) {
       console.log(error);
+      setError(error.response.data.message);
     }
   };
 
@@ -83,6 +84,7 @@ export const GlobalProvider = ({ children }) => {
       getPositions();
     } catch (error) {
       console.log(error);
+      setError(error.response.data.message);
     }
   };
 
@@ -134,7 +136,8 @@ export const GlobalProvider = ({ children }) => {
       const select = await axios.get(`${WATCHLIST_URL}find-watchlist/${id}`);
       setSelectedWl(select.data);
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
+      setError(error.response.data.message);
     }
   };
 
@@ -147,7 +150,8 @@ export const GlobalProvider = ({ children }) => {
 
       setSelectedWl(select.data);
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
+      setError(error.response.data.message);
     }
   };
 
@@ -169,6 +173,7 @@ export const GlobalProvider = ({ children }) => {
         quote,
         icon,
         logo,
+        setError,
         setDetails,
         setQuote,
         setIcon,

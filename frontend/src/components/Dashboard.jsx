@@ -191,11 +191,7 @@ const Dashboard = () => {
                 <p>{pos.shares}</p>
               </div>
               <div className="position-data">
-                <p>
-                  {pos.cost / pos.shares < 0
-                    ? money.format((pos.cost / pos.shares) * -1)
-                    : money.format(pos.cost / pos.shares)}
-                </p>
+                <p>{money.format(pos.open)}</p>
               </div>
               <div className="position-data">
                 <p>{money.format(pos.cost)}</p>
@@ -206,19 +202,27 @@ const Dashboard = () => {
               <div className="position-data">
                 {pos.orientation === "LONG" && pos.mark - pos.open > 0 ? (
                   <p style={{ color: "green" }}>
-                    {money.format((pos.mark - pos.open) * pos.shares)}
+                    {money.format(
+                      pos.profit + (pos.mark - pos.open) * pos.shares
+                    )}
                   </p>
                 ) : pos.orientation === "LONG" && pos.mark - pos.open < 0 ? (
                   <p style={{ color: "red" }}>
-                    {money.format((pos.mark - pos.open) * pos.shares)}
+                    {money.format(
+                      pos.profit + (pos.mark - pos.open) * pos.shares
+                    )}
                   </p>
                 ) : pos.orientation === "SHORT" && pos.mark - pos.open < 0 ? (
                   <p style={{ color: "green" }}>
-                    {money.format((pos.open - pos.mark) * pos.shares * -1)}
+                    {money.format(
+                      pos.profit + (pos.open - pos.mark) * pos.shares * -1
+                    )}
                   </p>
                 ) : (
                   <p style={{ color: "red" }}>
-                    {money.format((pos.mark - pos.open) * pos.shares)}
+                    {money.format(
+                      pos.profit + (pos.mark - pos.open) * pos.shares
+                    )}
                   </p>
                 )}
               </div>
