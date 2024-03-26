@@ -8,6 +8,7 @@ const app = express();
 const tradeRouter = require("./routes/trades");
 const balanceRouter = require("./routes/balances");
 const watchlistRouter = require("./routes/watchlists");
+const userRouter = require("./routes/user");
 const bodyParser = require("body-parser");
 
 //middleware
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use("/api/trade", tradeRouter);
 app.use("/api/balances", balanceRouter);
 app.use("/api/watchlists", watchlistRouter);
+app.use("/api/user", userRouter);
 
 const server = () => {
   db();
