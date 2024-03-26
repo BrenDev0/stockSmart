@@ -94,7 +94,7 @@ const TradeModal = () => {
               cost: currentPosition.cost + cost,
               open:
                 (currentPosition.cost + cost) /
-                (currentPosition.shares + shares),
+                (parseInt(currentPosition.shares) + parseInt(shares)),
             });
           }
         }
