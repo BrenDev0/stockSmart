@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useGlobalContext } from "../context/GlobalContext";
 
-const NavBar = ({ setDisplay }) => {
+const ToolBar = ({ setDisplay }) => {
   const { setTradeModal } = useGlobalContext();
 
   return (
@@ -94,4 +94,4 @@ const NavBarStyled = styled.nav`
   }
 `;
 
-export default NavBar;
+export default ToolBar;
