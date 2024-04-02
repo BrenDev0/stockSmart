@@ -6,7 +6,7 @@ const validator = require("validator");
 //create token
 
 const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "1h" });
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "2h" });
 };
 
 //login
@@ -33,8 +33,10 @@ const userLogin = async (req, res) => {
     const token = createToken(user._id);
     res
       .cookie("token", token, {
-        httpOnly: false,
-        withCredentials: true,
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 2 * 60 * 60 * 1000,
       })
       .send();
   } catch (error) {
@@ -74,10 +76,13 @@ const userSignup = async (req, res) => {
 
     res
       .cookie("token", token, {
-        httpOnly: false,
-        withCredentials: true,
+        httpOnly: true,
+        secrue: true,
+        sameSite: "None",
+        maxAge: 2 * 60 * 60 * 1000,
       })
-      .send();
+      .status(201)
+      .json({ message: "User sign up successful" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -85,13 +90,16 @@ const userSignup = async (req, res) => {
 
 // log out
 
-const logout = (req, res) => {
-  res
-    .cookie("token", "", {
-      httpOnly: false,
-      expiresIn: new Date(0),
-    })
-    .send();
+const logOut = (req, res) => {
+  const cookies = req.cookies;
+
+  if (!cookies?.token) {
+    return res.sendStatus(204);
+  }
+
+  res.clearCookie("token", { httpOnly: true, sameSite: "None", secure: true });
+
+  res.json({ message: "Cookie cleared" });
 };
 
 //allow access
@@ -101,14 +109,24 @@ const allowAccess = async (req, res) => {
     const token = req.cookies.token;
 
     if (!token) {
-      res.json(false);
+      res.json({ status: false, message: "Unauthorized" });
     }
 
-    jwt.verify(token, process.env.SECRET);
-    res.send(true);
+    jwt.verify(token, process.env.SECRET, async (err, data) => {
+      if (err) {
+        return res.json({ status: false, message: "Unauthorized" });
+      } else {
+        const user = await User.findById(data._id);
+        if (user) {
+          return res.json({ status: true, user: user._id });
+        } else {
+          return res.json({ status: false, message: "Unauthorized" });
+        }
+      }
+    });
   } catch (error) {
     res.json(false);
   }
 };
 
-module.exports = { userLogin, userSignup, logout, allowAccess };
+module.exports = { userLogin, userSignup, logOut, allowAccess };

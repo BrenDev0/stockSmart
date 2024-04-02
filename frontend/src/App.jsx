@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TradeModal from "./components/TradeModal";
 import Home from "./pages/Home";
 import Login from "./pages/login";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 function App() {
   const { tradeModal } = useGlobalContext();

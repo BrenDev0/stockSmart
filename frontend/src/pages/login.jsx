@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import Form from "../components/Form";
+import LoginForm from "../components/LoginForm";
 import img from "../images/stockmarket.jpeg";
 
 const Login = () => {
   return (
     <LoginStyled>
-      <Form />
+      <LoginForm />
     </LoginStyled>
   );
 };

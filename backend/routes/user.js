@@ -2,7 +2,7 @@ const router = require("express").Router();
 const {
   userLogin,
   userSignup,
-  logout,
+  logOut,
   allowAccess,
 } = require("../controllers/userController");
 
@@ -13,7 +13,7 @@ router.post("/login", userLogin);
 router.post("/signup", userSignup);
 
 //log out
-router.get("/logout", logout);
+router.get("/logout", logOut);
 
 //access
 router.get("/", allowAccess);
