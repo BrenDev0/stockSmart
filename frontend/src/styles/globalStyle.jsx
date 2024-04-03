@@ -7,19 +7,27 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-family: "Nunito", sans-serif;
     color: #F4F3EE;
-    font-size: 100%;
+    font-size: 1.2vw;
+    text-decoration: none;
+    list-style: none;
     
    
 
 }
 
-body{
+body, html {
    // background: rgba(237, 242, 244, .9);
    background: #F4F3EE;
-   width: 100vw;
-   height: 100vh;
+   width: 100%;
+   height: 100%;
+
    
 }
+
+#root {
+  height: 100%;
+}
+
 
 
 input {

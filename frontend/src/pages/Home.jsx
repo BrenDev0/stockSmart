@@ -5,32 +5,20 @@ import React from "react";
 import History from "../components/History";
 import Dashboard from "../components/Dashboard";
 import { useState } from "react";
+import NavBar from "../components/NavBar";
 
 const Home = () => {
-  const [display, setDisplay] = useState(1);
-
-  function displayData() {
-    switch (display) {
-      case 1:
-        return <Dashboard />;
-      case 5:
-        return <History />;
-      default:
-        return <Dashboard />;
-    }
-  }
-
   return (
-    <div>
-      <ToolBar display={display} setDisplay={setDisplay} />
-      <MainStyled>{displayData()}</MainStyled>
-    </div>
+    <MainStyled>
+      <NavBar />
+      <Dashboard />
+    </MainStyled>
   );
 };
 
 const MainStyled = styled.main`
-  width: 100%;
-  height: 86vh;
+  width: 100vw;
+  height: 100%;
 `;
 
 export default Home;
