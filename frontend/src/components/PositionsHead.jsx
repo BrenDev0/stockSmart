@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 styled;
 
-const PositionsHead = (labels) => {
+const PositionsHead = () => {
   return (
     <HeadStyled>
       <span id="no-border">Ticker</span>
@@ -23,13 +23,13 @@ const HeadStyled = styled.div`
   width: 100%;
   height: 60px;
   border-radius: 10px;
-  background: rgba(43, 45, 66, 0.8);
+  background: var(--dark);
 
   span {
     font-size: 1.1vw;
     width: 100%;
     text-align: center;
-    border-left: 2px solid rgba(141, 153, 174, 0.8);
+    border-left: 2px solid var(--light);
   }
 
   #no-border {

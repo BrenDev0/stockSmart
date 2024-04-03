@@ -28,6 +28,13 @@ body, html {
   height: 100%;
 }
 
+:root {
+  --red: rgba(239, 35, 60, 0.75);
+  --light: rgba(141, 153, 174, 0.8);
+  --dark: rgba(43, 45, 66, 0.8);
+  --white:  #F4F3EE;
+}
+
 
 
 input {

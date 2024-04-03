@@ -5,6 +5,8 @@ import { money } from "../utils/money.format";
 import { quoteKey } from "../keys";
 import PositionsHead from "./PositionsHead";
 import PositionRow from "./PositionRow";
+import Balances from "./Balances";
+import WatchlistHead from "./WatchlistHead";
 
 const Dashboard = () => {
   const {
@@ -52,7 +54,14 @@ const Dashboard = () => {
 
   return (
     <DashboardStyled>
-      <div className="watchlist"></div>
+      <div className="watchlist">
+        <WatchlistHead />
+      </div>
+      <div className="control-panel">
+        <div className="balances">
+          <Balances />
+        </div>
+      </div>
       <div className="positions">
         <PositionsHead />
         {positions.map((pos) => {
@@ -76,7 +85,7 @@ const Dashboard = () => {
                     )
               }
               style={
-                pos.orrientation === "LONG" && pos.mark - pos.open > 0
+                pos.orientation === "LONG" && pos.mark - pos.open > 0
                   ? { color: "green" }
                   : pos.orientaion === "LONG" && pos.mark - pos.open < 0
                   ? { color: "red" }
@@ -99,13 +108,22 @@ const DashboardStyled = styled.div`
   width: 100%;
 
   .watchlist {
-    width: 50%;
+    width: 25%;
     height: 100%;
+    padding: 25px 15px 25px 15px;
+  }
+  .control-panel {
+    width: 25%;
+    height: 100%;
+    padding: 25px 15px 25px 15px;
+  }
+
+  .balances {
+    height: 30%;
   }
   .positions {
     width: 50%;
     height: 100%;
-
     padding: 25px 15px 25px 15px;
   }
 `;

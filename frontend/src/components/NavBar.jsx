@@ -57,7 +57,7 @@ const NavBar = () => {
 };
 
 const NavBarStyled = styled.nav`
-  background: rgba(239, 35, 60, 0.75);
+  background: var(--red);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -85,7 +85,7 @@ const NavBarStyled = styled.nav`
 
   #actions-list {
     display: block;
-    background: white;
+    background: var(--white);
     position: absolute;
     z-index: 1;
     border-radius: 10px;
@@ -96,11 +96,12 @@ const NavBarStyled = styled.nav`
     text-align: left;
     padding: 7px;
     width: 100%;
-    color: rgba(43, 45, 66, 0.8);
+    color: var(--dark);
   }
 
   .list-data:hover {
-    background: rgba(239, 35, 60, 0.75);
+    background: var(--red);
+    color: var(--white);
     cursor: pointer;
   }
 `;
