@@ -2,42 +2,51 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../context/GlobalContext";
 
 const Form = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { getUser } = useGlobalContext();
 
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       const form = { email, password };
-      const success = await axios.post("");
+      const success = await axios.post(
+        "http://localhost:5000/api/user/login",
+        form
+      );
       if (success) {
-        const verified = await axios.get(
-          "http://localhost:5000/api/user",
-          form
-        );
-
-        verified.data.status ? navigate("/") : navigate("/login"),
-          setError(verified.data.message);
+        await getUser();
       }
     } catch (error) {
       setError(error.response.data.message);
     }
   };
   return (
-    <FormStyled>
+    <FormStyled onSubmit={handleSubmit}>
       <div className="form-inputs">
         <label htmlFor="">Email:</label>
-        <input type="email" placeholder="Email" />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </div>
       <div className="form-inputs">
         <label htmlFor="">Password:</label>
-        <input type="Password" placeholder="Password" />
+        <input
+          type="Password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </div>
-      <button>Login</button>
+      <button type="submit">Login</button>
       {error && <span style={{ color: "red" }}>{error}</span>}
     </FormStyled>
   );

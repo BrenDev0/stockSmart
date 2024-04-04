@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const verifyUser = require("../middleware/authMiddleware");
 const {
   getWatchlists,
   newWatchlist,
@@ -6,6 +7,8 @@ const {
   addToWatchlist,
   removeFromWatchlist,
 } = require("../controllers/watchlist.controller");
+
+//middleware
 
 router
   .get("/get-watchlists", getWatchlists)

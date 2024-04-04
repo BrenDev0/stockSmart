@@ -9,7 +9,7 @@ import Balances from "./components/Balances";
 axios.defaults.withCredentials = true;
 
 function App() {
-  const { tradeModal } = useGlobalContext();
+  const { tradeModal, user } = useGlobalContext();
 
   return (
     <BrowserRouter>

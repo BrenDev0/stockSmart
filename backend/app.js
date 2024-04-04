@@ -9,7 +9,7 @@ const tradeRouter = require("./routes/trades");
 const balanceRouter = require("./routes/balances");
 const watchlistRouter = require("./routes/watchlists");
 const userRouter = require("./routes/user");
-const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 //middleware
 app.use(
@@ -19,7 +19,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(bodyParser.json());
+app.use(cookieParser());
 
 //routes
 app.use("/api/trade", tradeRouter);

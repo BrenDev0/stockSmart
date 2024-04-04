@@ -1,12 +1,17 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { quoteKey, detailKey } from "../keys";
 
 const TRADE_URL = "http://localhost:5000/api/trade/";
 const WATCHLIST_URL = "http://localhost:5000/api/watchlists/";
+const USER_URL = "http://localhost:5000/api/user";
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
+  const [user, setUser] = useState({
+    user: "logged off",
+    status: false,
+  });
   //balances state
   const [cashBalance, setCashBalance] = useState(0);
   //positions state--------------------------------------------------
@@ -38,7 +43,22 @@ export const GlobalProvider = ({ children }) => {
   const [icon, setIcon] = useState("");
   const [logo, setLogo] = useState("");
 
+  useEffect(() => {
+    getUser();
+  }, []);
+
   //---------------functions---------
+
+  //get user/ auth
+
+  const getUser = async () => {
+    try {
+      const user = await axios.get(USER_URL);
+      user.data.status === true ? setUser(user.data) : setUser(user.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const companySearch = async (ticker) => {
     try {
@@ -176,6 +196,8 @@ export const GlobalProvider = ({ children }) => {
         quote,
         icon,
         logo,
+        user,
+        setUser,
         setError,
         setDetails,
         setQuote,
@@ -196,6 +218,7 @@ export const GlobalProvider = ({ children }) => {
         newPosition,
         companySearch,
         editTrade,
+        getUser,
       }}
     >
       {children}

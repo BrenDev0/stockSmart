@@ -18,7 +18,7 @@ const userLogin = async (req, res) => {
       res.status(400).json({ message: "All fields required" });
     }
 
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       res.status(400).json({ message: "Incorrect email or password" });
@@ -38,7 +38,8 @@ const userLogin = async (req, res) => {
         sameSite: "None",
         maxAge: 2 * 60 * 60 * 1000,
       })
-      .send();
+      .status(201)
+      .json({ message: "Log in successful" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -51,21 +52,21 @@ const userSignup = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      res.status(400).json({ message: "All fields required" });
+      return res.status(400).json({ message: "All fields required" });
     }
 
     if (!validator.isEmail(email)) {
-      res.status(400).json({ message: "Please enter a valid email" });
+      return res.status(400).json({ message: "Please enter a valid email" });
     }
 
     if (!validator.isStrongPassword(password)) {
-      res.status(400).json({ message: "Password not strong enough" });
+      return res.status(400).json({ message: "Password not strong enough" });
     }
 
-    const exists = User.findOne({ email });
+    const exists = await User.findOne({ email });
 
     if (exists) {
-      res.status(400).json({ message: "Email already in use" });
+      return res.status(400).json({ message: "Email already in use" });
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -84,16 +85,16 @@ const userSignup = async (req, res) => {
       .status(201)
       .json({ message: "User sign up successful" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // log out
 
 const logOut = (req, res) => {
-  const cookies = req.cookies;
+  const token = req.cookies.token;
 
-  if (!cookies?.token) {
+  if (!token) {
     return res.sendStatus(204);
   }
 
@@ -102,31 +103,32 @@ const logOut = (req, res) => {
   res.json({ message: "Cookie cleared" });
 };
 
-//allow access
-
-const allowAccess = async (req, res) => {
+const verifyAuth = async (req, res) => {
   try {
     const token = req.cookies.token;
 
     if (!token) {
-      res.json({ status: false, message: "Unauthorized" });
+      return res.json({
+        status: false,
+        message: "Unauthorized no token",
+      });
     }
 
     jwt.verify(token, process.env.SECRET, async (err, data) => {
       if (err) {
-        return res.json({ status: false, message: "Unauthorized" });
+        return res.json({ status: false, message: "Unauthorized err" });
       } else {
         const user = await User.findById(data._id);
         if (user) {
           return res.json({ status: true, user: user._id });
         } else {
-          return res.json({ status: false, message: "Unauthorized" });
+          return res.json({ status: false, message: "Unauthorized no user" });
         }
       }
     });
   } catch (error) {
-    res.json(false);
+    console.error(error);
   }
 };
 
-module.exports = { userLogin, userSignup, logOut, allowAccess };
+module.exports = { userLogin, userSignup, logOut, verifyAuth };

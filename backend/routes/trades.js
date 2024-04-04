@@ -7,6 +7,9 @@ const {
   deleteTrade,
   positions,
 } = require("../controllers/trade.controller");
+const verifyUser = require("../middleware/authMiddleware");
+
+//middleware
 
 router
   .get("/get-positions", positions)

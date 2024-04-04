@@ -1,9 +1,10 @@
 const router = require("express").Router();
+
 const {
   userLogin,
   userSignup,
   logOut,
-  allowAccess,
+  verifyAuth,
 } = require("../controllers/userController");
 
 //log in
@@ -16,5 +17,5 @@ router.post("/signup", userSignup);
 router.get("/logout", logOut);
 
 //access
-router.get("/", allowAccess);
+router.get("/", verifyAuth);
 module.exports = router;
