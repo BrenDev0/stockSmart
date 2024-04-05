@@ -18,6 +18,9 @@ const Watchlist = () => {
             className="fa-solid fa-chevron-down"
             onClick={() => (dropdown ? setDropdown(false) : setDropdown(true))}
           ></i>
+          {selectedWl.tickers ? (
+            <i className="fa-solid fa-pen-to-square"></i>
+          ) : null}
         </div>
         <div>
           {dropdown && (
@@ -41,14 +44,16 @@ const Watchlist = () => {
           )}
         </div>
       </HeadStyled>
-      {selectedWl !== "Watchlists"
+      {selectedWl.tickers
         ? selectedWl.tickers
             .sort((a, b) => a.ticker.localeCompare(b.ticker))
             .map((wli) => {
               return (
                 <WliStyled>
-                  <span>{wli.ticker}</span>
-                  <span>{wli.mark}</span>
+                  <span>{wli.ticker.toUpperCase()}</span>
+                  <span>
+                    <i className="fa-solid fa-dollar-sign"></i> {wli.mark}
+                  </span>
                 </WliStyled>
               );
             })
@@ -67,6 +72,7 @@ const HeadStyled = styled.div`
   border-radius: 10px;
   background: var(--dark);
   padding: 15px;
+  box-shadow: 2px 3px 5px var(--light);
 `;
 
 const WliStyled = styled.div`
@@ -85,6 +91,9 @@ const WlStyled = styled.div`
   height: 100%;
   border-radius: 10px;
 
+  i {
+    cursor: pointer;
+  }
   .selected {
     display: flex;
     justify-content: space-evenly;

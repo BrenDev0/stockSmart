@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { quoteKey } from "../keys";
+import { useGlobalContext } from "../context/GlobalContext";
 
 const News = () => {
   const [news, setNews] = useState();
   const [error, setError] = useState();
+  const { isLoading, setIsLoading } = useGlobalContext();
   useEffect(() => {
     try {
       fetch("https://finnhub.io/api/v1/news?category=general&token=" + quoteKey)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           const newsData = [];
-          for (let i = 0; i < 10; i++) {
+          for (let i = 0; i < 25; i++) {
             newsData.push(data[i]);
           }
           setNews(newsData);
@@ -53,10 +54,11 @@ const NewsStyled = styled.div`
     justify-content: left;
     align-items: center;
     background: var(--red);
-    margin: 10px 0 10px 0;
+    margin: 7px 0 7px 0;
     border-radius: 10px;
     padding: 5px;
     width: 100%;
+    box-shadow: 2px 3px 5px var(--light);
   }
 
   a {

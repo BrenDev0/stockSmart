@@ -116,11 +116,21 @@ const DashboardStyled = styled.div`
     flex-basis: 25%;
     height: 100%;
     padding: 15px;
+    overflow: scroll;
+  }
+
+  .watchlist::-webkit-scrollbar {
+    display: none;
   }
   .control-panel {
     flex-basis: 25%;
     height: 100%;
     padding: 15px;
+    overflow: scroll;
+  }
+
+  .control-panel::-webkit-scrollbar {
+    display: none;
   }
 
   .balances {
@@ -130,6 +140,11 @@ const DashboardStyled = styled.div`
     flex-basis: 50%;
     height: 100%;
     padding: 15px;
+    overflow: scroll;
+  }
+
+  .positions::-webkit-scrollbar {
+    display: none;
   }
 `;
 

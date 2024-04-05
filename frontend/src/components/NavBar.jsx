@@ -74,6 +74,7 @@ const NavBarStyled = styled.nav`
   align-items: center;
   padding: 10px;
   max-width: 100%;
+  box-shadow: 0 5px 5px var(--light);
 
   h1 {
     font-family: "Dancing Script", cursive;

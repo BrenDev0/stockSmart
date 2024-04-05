@@ -1,6 +1,7 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { quoteKey, detailKey } from "../keys";
+import noLogo from "../images/arrow.jpg";
 
 const TRADE_URL = "http://localhost:5000/api/trade/";
 const WATCHLIST_URL = "http://localhost:5000/api/watchlists/";
@@ -77,9 +78,13 @@ export const GlobalProvider = ({ children }) => {
       setQuote(data1);
 
       setDetails(data2.results);
-      setLogo(`${data2.results.branding.logo_url}?apiKey=${detailKey}`);
+      data2.results.branding
+        ? setLogo(`${data2.results.branding.logo_url}?apiKey=${detailKey}`)
+        : setLogo(noLogo);
 
-      setIcon(`${data2.results.branding.icon_url}?apiKey=${detailKey}`);
+      data2.results.branding
+        ? setIcon(`${data2.results.branding.icon_url}?apiKey=${detailKey}`)
+        : setIcon(noLogo);
     } catch (error) {
       console.log(error);
       setError(error.response.data.message);

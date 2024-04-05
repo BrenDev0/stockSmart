@@ -1,22 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useGlobalContext } from "../context/GlobalContext";
+import { money } from "../utils/money.format";
 
-const Balances = ({ account, cash }) => {
+const Balances = ({ cash }) => {
+  const { positions } = useGlobalContext();
+  const [account, setAccount] = useState();
+
+  useEffect(() => {
+    let total = 0;
+    for (let pos of positions) {
+      console.log(pos);
+      total += pos.profit + pos.cost;
+    }
+    setAccount(money.format(total));
+  }, [positions]);
   return (
     <BalancesStyled>
       <div className="account">
         <span>Account</span>
-        <div>
-          <i className="fa-solid fa-dollar-sign"></i>
+
+        {account ? (
           <span>{account}</span>
-        </div>
+        ) : (
+          <i className="fa-solid fa-dollar-sign"></i>
+        )}
       </div>
       <div className="cash">
         <span>Cash</span>
-        <div>
-          <i className="fa-solid fa-dollar-sign"></i>
-          <span>{cash}</span>
-        </div>
+
+        <span></span>
       </div>
     </BalancesStyled>
   );
@@ -35,10 +48,11 @@ const BalancesStyled = styled.div`
     justify-content: space-evenly;
     align-items: center;
     background: var(--light);
-    border: 2px solid var(--dark);
+    border: 1px solid var(--dark);
     width: 45%;
     height: 100%;
     border-radius: 10px;
+    box-shadow: 2px 3px 10px var(--dark);
   }
   .account {
     display: flex;
@@ -46,10 +60,11 @@ const BalancesStyled = styled.div`
     justify-content: space-evenly;
     align-items: center;
     background: var(--light);
-    border: 2px solid var(--dark);
+    border: 1px solid var(--dark);
     width: 45%;
     height: 100%;
     border-radius: 10px;
+    box-shadow: 2px 3px 10px var(--dark);
   }
 `;
 
