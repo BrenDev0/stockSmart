@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useGlobalContext } from "../context/GlobalContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const [actions, setActions] = useState(false);
-  const { setTradeModal } = useGlobalContext();
+  const { setTradeModal, getUser } = useGlobalContext();
+  const navigate = useNavigate();
+
+  const logout = async () => {
+    await axios.get("http://localhost:5000/api/user/logout");
+    getUser();
+    navigate("/login");
+  };
 
   return (
     <NavBarStyled>
@@ -35,7 +44,9 @@ const NavBar = () => {
               </li>
               <li className="list-data">Deposit</li>
               <li className="list-data">Withdrawl</li>
-              <li className="list-data">Log out</li>
+              <li className="list-data" onClick={() => logout()}>
+                Log out
+              </li>
             </ul>
           )}
         </li>
@@ -62,6 +73,7 @@ const NavBarStyled = styled.nav`
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  max-width: 100%;
 
   h1 {
     font-family: "Dancing Script", cursive;

@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import styled from "styled-components";
 import LoginForm from "../components/LoginForm";
 import img from "../images/stockmarket.jpeg";
+import { useGlobalContext } from "../context/GlobalContext";
+import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 
 const Login = () => {
-  return (
+  const { user, getUser, isLoading } = useGlobalContext();
+  const navigate = useNavigate();
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  useLayoutEffect(() => {
+    user.status ? navigate("/") : null;
+  }, [user]);
+  return isLoading ? (
+    <Loading />
+  ) : (
     <LoginStyled>
       <LoginForm />
     </LoginStyled>

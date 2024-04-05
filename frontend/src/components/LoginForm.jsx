@@ -9,7 +9,6 @@ const Form = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { getUser } = useGlobalContext();
 
   const handleSubmit = async (e) => {
     try {
@@ -20,7 +19,7 @@ const Form = () => {
         form
       );
       if (success) {
-        await getUser();
+        navigate("/");
       }
     } catch (error) {
       setError(error.response.data.message);

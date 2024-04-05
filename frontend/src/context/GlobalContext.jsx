@@ -12,6 +12,8 @@ export const GlobalProvider = ({ children }) => {
     user: "logged off",
     status: false,
   });
+
+  const [isLoading, setIsLoading] = useState(false);
   //balances state
   const [cashBalance, setCashBalance] = useState(0);
   //positions state--------------------------------------------------
@@ -43,18 +45,16 @@ export const GlobalProvider = ({ children }) => {
   const [icon, setIcon] = useState("");
   const [logo, setLogo] = useState("");
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
   //---------------functions---------
 
   //get user/ auth
 
   const getUser = async () => {
     try {
+      setIsLoading(true);
       const user = await axios.get(USER_URL);
-      user.data.status === true ? setUser(user.data) : setUser(user.data);
+      setUser(user.data);
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -197,6 +197,8 @@ export const GlobalProvider = ({ children }) => {
         icon,
         logo,
         user,
+        isLoading,
+        setIsLoading,
         setUser,
         setError,
         setDetails,

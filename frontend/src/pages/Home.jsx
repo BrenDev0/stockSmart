@@ -1,14 +1,24 @@
 import { useGlobalContext } from "../context/GlobalContext";
-import ToolBar from "../components/Toolbar";
 import styled from "styled-components";
-import React from "react";
-import History from "../components/History";
+import React, { useEffect, useLayoutEffect } from "react";
 import Dashboard from "../components/Dashboard";
-import { useState } from "react";
 import NavBar from "../components/NavBar";
+import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 
 const Home = () => {
-  return (
+  const { user, getUser, isLoading, setIsLoading } = useGlobalContext();
+  const navigate = useNavigate();
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  useLayoutEffect(() => {
+    user.status ? null : navigate("/login");
+  }, [user]);
+  return isLoading ? (
+    <Loading />
+  ) : (
     <MainStyled>
       <NavBar />
       <Dashboard />
@@ -17,7 +27,7 @@ const Home = () => {
 };
 
 const MainStyled = styled.main`
-  width: 100vw;
+  width: 100%;
   height: 100%;
 `;
 

@@ -6,7 +6,8 @@ import { quoteKey } from "../keys";
 import PositionsHead from "./PositionsHead";
 import PositionRow from "./PositionRow";
 import Balances from "./Balances";
-import WatchlistHead from "./WatchlistHead";
+import Watchlist from "./Watchlist";
+import News from "./News";
 
 const Dashboard = () => {
   const {
@@ -55,11 +56,14 @@ const Dashboard = () => {
   return (
     <DashboardStyled>
       <div className="watchlist">
-        <WatchlistHead />
+        <Watchlist />
       </div>
       <div className="control-panel">
         <div className="balances">
           <Balances />
+        </div>
+        <div className="news">
+          <News />
         </div>
       </div>
       <div className="positions">
@@ -103,28 +107,29 @@ const Dashboard = () => {
 
 const DashboardStyled = styled.div`
   display: flex;
+  justify-content: space-evenly;
   align-items: center;
   height: 90%;
-  width: 100%;
+  max-width: 100%;
 
   .watchlist {
-    width: 25%;
+    flex-basis: 25%;
     height: 100%;
-    padding: 25px 15px 25px 15px;
+    padding: 15px;
   }
   .control-panel {
-    width: 25%;
+    flex-basis: 25%;
     height: 100%;
-    padding: 25px 15px 25px 15px;
+    padding: 15px;
   }
 
   .balances {
     height: 30%;
   }
   .positions {
-    width: 50%;
+    flex-basis: 50%;
     height: 100%;
-    padding: 25px 15px 25px 15px;
+    padding: 15px;
   }
 `;
 
