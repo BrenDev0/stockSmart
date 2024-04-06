@@ -19,6 +19,7 @@ export const GlobalProvider = ({ children }) => {
   //modal displays and forms-----------------------------------------------------------
   const [tradeModal, setTradeModal] = useState(false);
   const [fullDisplay, setFullDisplay] = useState(false);
+  const [dividendDisplay, setDividendDisplay] = useState(false);
 
   const [form, setForm] = useState({
     ticker: "",
@@ -100,6 +101,8 @@ export const GlobalProvider = ({ children }) => {
         logo,
         user,
         isLoading,
+        dividendDisplay,
+        setDividendDisplay,
         editTrade,
         setIsLoading,
         setUser,

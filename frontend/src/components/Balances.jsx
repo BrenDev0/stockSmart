@@ -15,15 +15,11 @@ const Balances = ({ cash }) => {
     for (let pos of positions) {
       total += pos.profit + pos.cost;
       pos.orientation === "LONG"
-        ? money.format(
-            (profit += pos.profit + (pos.mark - pos.open) * pos.shares)
-          )
-        : money.format(
-            (profit += pos.profit + (pos.open - pos.mark) * pos.shares * -1)
-          );
+        ? (profit += pos.profit + (pos.mark - pos.open) * pos.shares)
+        : (profit += pos.profit + (pos.open - pos.mark) * pos.shares * -1);
     }
-    setAccount(money.format(total));
-    setPl(money.format(profit));
+    setAccount(total);
+    setPl(profit);
   }, [positions]);
   return (
     <BalancesStyled>
@@ -31,14 +27,14 @@ const Balances = ({ cash }) => {
         <span>Account</span>
 
         {account ? (
-          <span>{account}</span>
+          <span>{money.format(account)}</span>
         ) : (
           <i className="fa-solid fa-dollar-sign"></i>
         )}
         <span>P/L</span>
         {pl ? (
           <span style={pl > 0 ? { color: "green" } : { color: "red" }}>
-            {pl}
+            {money.format(pl)}
           </span>
         ) : (
           <i className="fa-solid fa-dollar-sign"></i>

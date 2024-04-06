@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { useTradeContext } from "../context/TradeContext";
@@ -16,7 +16,8 @@ const PositionRow = ({
   _id,
 }) => {
   const { deleteTrade } = useTradeContext();
-  const { editTrade } = useGlobalContext();
+  const { editTrade, setDividendDisplay } = useGlobalContext();
+  const [positionDropDown, setPositionDropDown] = useState(false);
 
   return (
     <RowStyled>
@@ -41,10 +42,36 @@ const PositionRow = ({
       </div>
       <div className="data">
         <div className="icons">
-          <i
-            className="fa-solid fa-money-bill-trend-up"
-            onClick={() => editTrade(ticker)}
-          ></i>
+          <div id="options">
+            <i
+              className="fa-solid fa-money-bill-trend-up"
+              onMouseEnter={(e) => setPositionDropDown(true)}
+              onMouseLeave={(e) => setPositionDropDown(false)}
+            ></i>
+            {positionDropDown && (
+              <ul className="drop-down">
+                <li
+                  className="list-data"
+                  onMouseEnter={(e) => setPositionDropDown(true)}
+                  onMouseLeave={(e) => setPositionDropDown(false)}
+                  onClick={() => editTrade(ticker)}
+                >
+                  Adjust position
+                </li>
+                <li
+                  onMouseEnter={(e) => setPositionDropDown(true)}
+                  onMouseLeave={(e) => setPositionDropDown(false)}
+                  onClick={() => {
+                    editTrade(ticker);
+                    setDividendDisplay(true);
+                  }}
+                  className="list-data"
+                >
+                  Dividend
+                </li>
+              </ul>
+            )}
+          </div>
           <i className="fa-solid fa-chart-simple"></i>
           <i
             className="fa-regular fa-trash-can"
@@ -67,6 +94,7 @@ const RowStyled = styled.div`
   background: rgba(141, 153, 174, 0.8);
   height: 60px;
   margin: 10px 0 10px 0;
+  position: relative;
 
   img {
     width: 45%;
@@ -86,6 +114,34 @@ const RowStyled = styled.div`
     transition: 0.5s;
   }
 
+  .drop-down {
+    display: block;
+    background: var(--white);
+    position: absolute;
+    z-index: 1;
+    border-radius: 10px;
+  }
+
+  .list-data {
+    display: block;
+    text-align: left;
+    padding: 7px;
+    width: 100%;
+    color: var(--dark);
+  }
+  .list-data a {
+    color: var(--dark);
+  }
+
+  .list-data:hover {
+    background: var(--red);
+    color: var(--white);
+    cursor: pointer;
+  }
+
+  .list-data {
+    font-size: 1vw;
+  }
   .data {
     width: 100%;
     text-align: center;

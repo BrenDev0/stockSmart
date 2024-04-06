@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useGlobalContext } from "../context/GlobalContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { money } from "../utils/money.format";
 import { useTradeContext } from "../context/TradeContext";
 
@@ -24,10 +24,33 @@ const TradeModal = () => {
     companySearch,
     setError,
     error,
+    dividendDisplay,
+    setDividendDisplay,
   } = useGlobalContext();
   const { newPosition, updatePosition, positions } = useTradeContext();
 
+  const [dividendAmount, setDividendAmount] = useState("");
+
   //functions
+
+  //add a dividend to position
+
+  const addDividend = () => {
+    const position = positions.find((pos) => pos.ticker === details.ticker);
+    position.orientation === "LONG"
+      ? updatePosition(position._id, {
+          profit: position.profit + parseInt(dividendAmount),
+        })
+      : updatePosition(position._id, {
+          profit: position.profit - parseInt(dividendAmount),
+        });
+
+    setTradeModal(false);
+    setFullDisplay(false);
+    setSearch("");
+    setDividendAmount("");
+    setDividendDisplay(false);
+  };
 
   //open a new trade
   const trade = (direction) => {
@@ -184,51 +207,81 @@ const TradeModal = () => {
           ></i>
 
           <div className="form-con">
-            <div className="inputs-con">
-              <div className="form-inputs">
-                <p>Shares:</p>
-                <input
-                  type="number"
-                  required
-                  id="shares"
-                  value={form.shares}
-                  onChange={(e) => {
-                    setForm({ ...form, shares: e.target.value });
-                    setError("");
-                  }}
-                />
+            {dividendDisplay ? (
+              <div className="inputs-con">
+                <div className="form-inputs">
+                  <p>Dividend Amount:</p>
+                  <input
+                    type="number"
+                    required
+                    id="shares"
+                    value={dividendAmount}
+                    onChange={(e) => {
+                      setDividendAmount(e.target.value);
+                      setError("");
+                    }}
+                  />
+                </div>
+
+                <div className="btn-con">
+                  <button
+                    id="sell"
+                    value={short}
+                    onClick={(e) => {
+                      addDividend();
+                    }}
+                  >
+                    Submit
+                  </button>
+                </div>
               </div>
-              <div className="form-inputs">
-                <p>Price:</p>
-                <input
-                  type="number"
-                  required
-                  id="price"
-                  value={form.open}
-                  onChange={(e) => setForm({ ...form, open: e.target.value })}
-                />
+            ) : (
+              <div className="inputs-con">
+                <div className="form-inputs">
+                  <p>Shares:</p>
+                  <input
+                    type="number"
+                    required
+                    id="shares"
+                    value={form.shares}
+                    onChange={(e) => {
+                      setForm({ ...form, shares: e.target.value });
+                      setError("");
+                    }}
+                  />
+                </div>
+                <div className="form-inputs">
+                  <p>Price:</p>
+                  <input
+                    type="number"
+                    required
+                    id="price"
+                    value={form.open}
+                    onChange={(e) => setForm({ ...form, open: e.target.value })}
+                  />
+                </div>
+                <div className="btn-con">
+                  <button
+                    id="buy"
+                    value={long}
+                    onClick={(e) => {
+                      trade(e.target.value);
+                    }}
+                  >
+                    Buy
+                  </button>
+                  <button
+                    id="sell"
+                    value={short}
+                    onClick={(e) => {
+                      trade(e.target.value);
+                    }}
+                  >
+                    Sell
+                  </button>
+                </div>
               </div>
-              <div className="btn-con">
-                <button
-                  id="buy"
-                  value={long}
-                  onClick={(e) => {
-                    trade(e.target.value);
-                  }}
-                >
-                  Buy
-                </button>
-                <button
-                  id="sell"
-                  value={short}
-                  onClick={(e) => {
-                    trade(e.target.value);
-                  }}
-                >
-                  Sell
-                </button>
-              </div>
-            </div>
+            )}
             <div className="details-con">
               <div className="logo-con">
                 <p>{details.ticker}</p>
@@ -289,6 +342,7 @@ const TradeModalStyled = styled.div`
   height: 100vh;
   background: rgba(43, 45, 66, 0.9);
   position: absolute;
+  z-index: 2;
   #error {
     position: absolute;
     left: 25%;
