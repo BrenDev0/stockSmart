@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useGlobalContext } from "../context/GlobalContext";
+
+import { useTradeContext } from "../context/TradeContext";
 
 const History = () => {
-  const { history, tradeHistory } = useGlobalContext();
+  const { history, tradeHistory } = useTradeContext();
 
   useEffect(() => {
     tradeHistory();

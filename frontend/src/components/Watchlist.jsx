@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useGlobalContext } from "../context/GlobalContext";
+import { useWatchlistContext } from "../context/WatchlistContext";
 styled;
 
 const Watchlist = () => {
-  const { watchlist } = useGlobalContext();
+  const { watchlist } = useWatchlistContext();
   const [selectedWl, setSelectedWl] = useState("Watchlists");
   const [dropdown, setDropdown] = useState(false);
   return (

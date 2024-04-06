@@ -8,23 +8,13 @@ import PositionRow from "./PositionRow";
 import Balances from "./Balances";
 import Watchlist from "./Watchlist";
 import News from "./News";
+import { useTradeContext } from "../context/TradeContext";
+import { useWatchlistContext } from "../context/WatchlistContext";
 
 const Dashboard = () => {
-  const {
-    positions,
-    watchlist,
-    getPositions,
-    updatePosition,
-    deleteTrade,
-    getWatchlists,
-    addToWatchlist,
-    editWatchlist,
-    setEditWatchlist,
-    deleteFromWatchlist,
-    selectedWl,
-    setSelectedWl,
-    editTrade,
-  } = useGlobalContext();
+  const { positions, updatePosition, getPositions } = useTradeContext();
+
+  const { getWatchlists, selectedWl, setSelectedWl } = useWatchlistContext();
 
   //state
   const [listDisplay, setListDisplay] = useState(false);
@@ -45,7 +35,9 @@ const Dashboard = () => {
         )
           .then((res) => res.json())
           .then((data) => {
-            updatePosition(positions[i]._id, { mark: data.c });
+            updatePosition(positions[i]._id, {
+              mark: data.c,
+            });
           })
           .catch((error) => console.log(error));
       }

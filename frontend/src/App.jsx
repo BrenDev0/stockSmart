@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import Login from "./pages/login";
 import axios from "axios";
 import Balances from "./components/Balances";
+import { TradeProvider } from "./context/TradeContext";
+import { WatchlistProvider } from "./context/WatchlistContext";
 
 axios.defaults.withCredentials = true;
 

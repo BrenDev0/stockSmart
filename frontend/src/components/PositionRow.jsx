@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+
+import { useTradeContext } from "../context/TradeContext";
 import { useGlobalContext } from "../context/GlobalContext";
-styled;
 
 const PositionRow = ({
   icon,
@@ -14,7 +15,8 @@ const PositionRow = ({
   style,
   _id,
 }) => {
-  const { deleteTrade, editTrade } = useGlobalContext();
+  const { deleteTrade } = useTradeContext();
+  const { editTrade } = useGlobalContext();
 
   return (
     <RowStyled>

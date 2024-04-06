@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   const [actions, setActions] = useState(false);
+  const [newsDropdown, setNewsDropdown] = useState(false);
   const { setTradeModal, getUser } = useGlobalContext();
   const navigate = useNavigate();
 
@@ -26,7 +27,7 @@ const NavBar = () => {
         <li>
           <a href="/">Home</a>
         </li>
-        <li id="dropdown">
+        <li>
           <span
             onMouseEnter={(e) => setActions(true)}
             onMouseLeave={(e) => setActions(false)}
@@ -35,6 +36,7 @@ const NavBar = () => {
           </span>
           {actions && (
             <ul
+              className="drop-down"
               id="actions-list"
               onMouseLeave={(e) => setActions(false)}
               onMouseEnter={(e) => setActions(true)}
@@ -54,7 +56,51 @@ const NavBar = () => {
           <a href="/history">History</a>
         </li>
         <li>
-          <a href="/news">News</a>
+          <span
+            onMouseEnter={(e) => setNewsDropdown(true)}
+            onMouseLeave={(e) => setNewsDropdown(false)}
+          >
+            News
+          </span>
+          {newsDropdown && (
+            <ul className="drop-down">
+              <li
+                onMouseEnter={(e) => setNewsDropdown(true)}
+                onMouseLeave={(e) => setNewsDropdown(false)}
+                className="list-data"
+              >
+                <a>TopNews</a>
+              </li>
+              <li
+                onMouseEnter={(e) => setNewsDropdown(true)}
+                onMouseLeave={(e) => setNewsDropdown(false)}
+                className="list-data"
+              >
+                <a>Business</a>
+              </li>
+              <li
+                onMouseEnter={(e) => setNewsDropdown(true)}
+                onMouseLeave={(e) => setNewsDropdown(false)}
+                className="list-data"
+              >
+                <a>Technology</a>
+              </li>
+              <li
+                onMouseEnter={(e) => setNewsDropdown(true)}
+                onMouseLeave={(e) => setNewsDropdown(false)}
+                className="list-data"
+              >
+                <a>Mergers</a>
+              </li>
+              <li
+                onMouseEnter={(e) => setNewsDropdown(true)}
+                onMouseLeave={(e) => setNewsDropdown(false)}
+                className="list-data"
+              >
+                <a>General</a>
+              </li>
+            </ul>
+          )}
         </li>
         <li>
           <a href="/watchlists">Watchlists</a>
@@ -96,7 +142,7 @@ const NavBarStyled = styled.nav`
     margin-left: 7px;
   }
 
-  #actions-list {
+  .drop-down {
     display: block;
     background: var(--white);
     position: absolute;
@@ -109,6 +155,9 @@ const NavBarStyled = styled.nav`
     text-align: left;
     padding: 7px;
     width: 100%;
+    color: var(--dark);
+  }
+  .list-data a {
     color: var(--dark);
   }
 

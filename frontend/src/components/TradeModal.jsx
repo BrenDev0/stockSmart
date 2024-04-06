@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useEffect } from "react";
 import { money } from "../utils/money.format";
+import { useTradeContext } from "../context/TradeContext";
 
 const TradeModal = () => {
   //button values
@@ -11,9 +12,7 @@ const TradeModal = () => {
   //states
   const {
     setTradeModal,
-    newPosition,
     setFullDisplay,
-    updatePosition,
     form,
     details,
     icon,
@@ -25,17 +24,20 @@ const TradeModal = () => {
     companySearch,
     setError,
     error,
-    positions,
   } = useGlobalContext();
+  const { newPosition, updatePosition, positions } = useTradeContext();
 
   //functions
 
   //open a new trade
   const trade = (direction) => {
+    console.log("entered trade function");
     const { shares, open, cost } = form;
-    const currentPosition = positions.find(
-      (pos) => pos.ticker === details.ticker
-    );
+    const currentPosition = positions.find((pos) => {
+      return pos.ticker === details.ticker;
+    });
+    console.log(positions);
+    console.log(details.ticker + " details.ticker");
 
     const position =
       direction === "LONG"

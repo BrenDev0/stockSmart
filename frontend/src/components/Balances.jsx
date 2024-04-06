@@ -1,19 +1,29 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useGlobalContext } from "../context/GlobalContext";
+
 import { money } from "../utils/money.format";
+import { useTradeContext } from "../context/TradeContext";
 
 const Balances = ({ cash }) => {
-  const { positions } = useGlobalContext();
+  const { positions } = useTradeContext();
   const [account, setAccount] = useState();
+  const [pl, setPl] = useState();
 
   useEffect(() => {
     let total = 0;
+    let profit = 0;
     for (let pos of positions) {
-      console.log(pos);
       total += pos.profit + pos.cost;
+      pos.orientation === "LONG"
+        ? money.format(
+            (profit += pos.profit + (pos.mark - pos.open) * pos.shares)
+          )
+        : money.format(
+            (profit += pos.profit + (pos.open - pos.mark) * pos.shares * -1)
+          );
     }
     setAccount(money.format(total));
+    setPl(money.format(profit));
   }, [positions]);
   return (
     <BalancesStyled>
@@ -22,6 +32,14 @@ const Balances = ({ cash }) => {
 
         {account ? (
           <span>{account}</span>
+        ) : (
+          <i className="fa-solid fa-dollar-sign"></i>
+        )}
+        <span>P/L</span>
+        {pl ? (
+          <span style={pl > 0 ? { color: "green" } : { color: "red" }}>
+            {pl}
+          </span>
         ) : (
           <i className="fa-solid fa-dollar-sign"></i>
         )}
