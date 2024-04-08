@@ -45,8 +45,7 @@ const PositionRow = ({
           <div id="options">
             <i
               className="fa-solid fa-money-bill-trend-up"
-              onMouseEnter={(e) => setPositionDropDown(true)}
-              onMouseLeave={(e) => setPositionDropDown(false)}
+              onClick={() => setPositionDropDown(true)}
             ></i>
             {positionDropDown && (
               <ul className="drop-down">
@@ -118,6 +117,7 @@ const RowStyled = styled.div`
     display: block;
     background: var(--white);
     position: absolute;
+    right: 5%;
     z-index: 1;
     border-radius: 10px;
   }
@@ -127,6 +127,7 @@ const RowStyled = styled.div`
     text-align: left;
     padding: 7px;
     width: 100%;
+
     color: var(--dark);
   }
   .list-data a {

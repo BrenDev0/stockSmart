@@ -7,7 +7,7 @@ import PositionsHead from "./PositionsHead";
 import PositionRow from "./PositionRow";
 import Balances from "./Balances";
 import Watchlist from "./Watchlist";
-import News from "./News";
+import NewsArticle from "./NewsArticle";
 import { useTradeContext } from "../context/TradeContext";
 import { useWatchlistContext } from "../context/WatchlistContext";
 
@@ -55,7 +55,7 @@ const Dashboard = () => {
           <Balances />
         </div>
         <div className="news">
-          <News />
+          <NewsArticle />
         </div>
       </div>
       <div className="positions">
