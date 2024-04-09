@@ -7,14 +7,12 @@ import { WatchlistProvider } from "./context/WatchlistContext.jsx";
 import GlobalStyle from "./styles/globalStyle.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <GlobalProvider>
-      <TradeProvider>
-        <WatchlistProvider>
-          <GlobalStyle />
-          <App />
-        </WatchlistProvider>
-      </TradeProvider>
-    </GlobalProvider>
-  </React.StrictMode>
+  <GlobalProvider>
+    <TradeProvider>
+      <WatchlistProvider>
+        <GlobalStyle />
+        <App />
+      </WatchlistProvider>
+    </TradeProvider>
+  </GlobalProvider>
 );

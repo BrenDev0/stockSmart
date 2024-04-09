@@ -4,9 +4,7 @@ import TradeModal from "./components/TradeModal";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import axios from "axios";
-import Balances from "./components/Balances";
-import { TradeProvider } from "./context/TradeContext";
-import { WatchlistProvider } from "./context/WatchlistContext";
+import News from "./pages/News";
 
 axios.defaults.withCredentials = true;
 
@@ -17,8 +15,9 @@ function App() {
     <BrowserRouter>
       {tradeModal && <TradeModal />}
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/news" element={<News />} />
       </Routes>
     </BrowserRouter>
   );
