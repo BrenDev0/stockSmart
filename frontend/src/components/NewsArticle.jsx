@@ -6,7 +6,7 @@ import { useGlobalContext } from "../context/GlobalContext";
 const NewsArticle = () => {
   const [news, setNews] = useState();
   const [error, setError] = useState();
-  const { isLoading, setIsLoading } = useGlobalContext();
+
   useEffect(() => {
     try {
       fetch("https://finnhub.io/api/v1/news?category=general&token=" + quoteKey)

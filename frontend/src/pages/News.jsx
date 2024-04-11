@@ -11,13 +11,8 @@ const News = () => {
 
   const todayDate = new Date().toISOString().slice(0, 10);
   const date = new Date();
-  const chartYear =
-    date.getFullYear() -
-    1 +
-    "-" +
-    date.getMonth().toString().padStart(2, "0") +
-    "-" +
-    date.getDate().toString().padStart(2, "0");
+  const chartYear = `${date.getFullYear()}-01-01`;
+
   const getChartData = () => {
     try {
       Promise.all([
@@ -42,13 +37,10 @@ const News = () => {
           let iwmArr = [];
           let qqqArr = [];
           let diaArr = [];
+          let color = "";
 
-          for (
-            let i = data[0].results.length - 1;
-            i > data[0].results.length - 30;
-            i--
-          ) {
-            spyArr.unshift({
+          for (let i = 0; i < data[0].results.length; i++) {
+            spyArr.push({
               date: new Date(data[0].results[i].t).toLocaleDateString("en-US"),
               open: data[0].results[i].o,
               high: data[0].results[i].h,
@@ -57,14 +49,18 @@ const News = () => {
             });
           }
 
-          setSpy(spyArr);
+          spyArr[0].close > spyArr[spyArr.length - 1].close
+            ? (color = "red")
+            : (color = "green");
+          setSpy({
+            color: color,
+            data: spyArr,
+          });
 
-          for (
-            let i = data[1].results.length - 1;
-            i > data[1].results.length - 30;
-            i--
-          ) {
-            iwmArr.unshift({
+          color = "";
+
+          for (let i = 0; i < data[1].results.length; i++) {
+            iwmArr.push({
               date: new Date(data[1].results[i].t).toLocaleDateString("en-US"),
               open: data[1].results[i].o,
               high: data[1].results[i].h,
@@ -73,14 +69,18 @@ const News = () => {
             });
           }
 
-          setIwm(iwmArr);
+          iwmArr[0].close > iwmArr[iwmArr.length - 1].close
+            ? (color = "red")
+            : (color = "green");
+          setIwm({
+            color: color,
+            data: iwmArr,
+          });
 
-          for (
-            let i = data[2].results.length - 1;
-            i > data[2].results.length - 30;
-            i--
-          ) {
-            qqqArr.unshift({
+          color = "";
+
+          for (let i = 0; i < data[2].results.length; i++) {
+            qqqArr.push({
               date: new Date(data[2].results[i].t).toLocaleDateString("en-US"),
               open: data[2].results[i].o,
               high: data[2].results[i].h,
@@ -89,14 +89,18 @@ const News = () => {
             });
           }
 
-          setQqq(qqqArr);
+          qqqArr[0].close > qqqArr[qqqArr.length - 1].close
+            ? (color = "red")
+            : (color = "green");
+          setQqq({
+            color: color,
+            data: qqqArr,
+          });
 
-          for (
-            let i = data[3].results.length - 1;
-            i > data[3].results.length - 30;
-            i--
-          ) {
-            diaArr.unshift({
+          color = "";
+
+          for (let i = 0; i < data[3].results.length; i++) {
+            diaArr.push({
               date: new Date(data[3].results[i].t).toLocaleDateString("en-US"),
               open: data[3].results[i].o,
               high: data[3].results[i].h,
@@ -105,9 +109,15 @@ const News = () => {
             });
           }
 
-          setDia(diaArr);
+          diaArr[0].close > diaArr[diaArr.length - 1].close
+            ? (color = "red")
+            : (color = "green");
+          setDia({
+            color: color,
+            data: diaArr,
+          });
 
-          console.log(data);
+          color = "";
         });
     } catch (error) {
       console.log(error);
@@ -137,6 +147,7 @@ const News = () => {
           <Chart data={iwm} />
         </div>
       </div>
+      <div className="news"></div>
     </NewsStyled>
   );
 };
@@ -144,17 +155,24 @@ const News = () => {
 const NewsStyled = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: left;
 
   .charts {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: 25%;
     padding: 20px;
   }
-  span {
-    color: black;
+
+  .news {
+    width: 100%;
+    height: 75%;
+    border: 1px solid red;
   }
 
   tspan {
@@ -164,6 +182,11 @@ const NewsStyled = styled.div`
     width: 25%;
     height: 25%;
     padding: 20px;
+  }
+
+  .chart-con span,
+  p {
+    color: black;
   }
 `;
 

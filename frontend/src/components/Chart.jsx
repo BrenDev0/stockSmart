@@ -13,12 +13,12 @@ import {
 const Chart = ({ data }) => {
   return (
     <ResponsiveContainer width={"100%"} height={"100%"}>
-      <AreaChart data={data}>
+      <AreaChart data={data.data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey={"date"} />
         <YAxis className="y-axis" domain={["dataMin", "dataMax"]} />
         <Tooltip />
-        <Area dataKey="close" stroke={"blue"} fill={"blue"} type={"monotone"} />
+        <Area dataKey="close" stroke={data.color} fill={data.color} />
       </AreaChart>
     </ResponsiveContainer>
   );

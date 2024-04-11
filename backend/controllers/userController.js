@@ -15,19 +15,19 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      res.status(400).json({ message: "All fields required" });
+      return res.status(400).json({ message: "All fields required" });
     }
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      res.status(400).json({ message: "Incorrect email or password" });
+      return res.status(400).json({ message: "Incorrect email or password" });
     }
 
     const verify = await bcrypt.compare(password, user.password);
 
     if (!verify) {
-      res.status(400).json({ messaage: "Incorrect email or password" });
+      return res.status(400).json({ messaage: "Incorrect email or password" });
     }
 
     const token = createToken(user._id);
