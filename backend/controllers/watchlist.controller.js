@@ -21,19 +21,20 @@ const findWatchlist = async (req, res) => {
 
 // create a watchlist
 const newWatchlist = async (req, res) => {
-  const { category, name } = req.body;
+  const { category, name, tickers } = req.body;
   const watchlist = Watchlist({
     category,
     name,
+    tickers,
   });
   try {
     if (!category || !name) {
-      res.status(400).json({ message: "All Fields Required" });
+      return res.status(400).json({ message: "All Fields Required" });
     }
     await watchlist.save();
-    res.status(200).json({ message: "Watchlist Added" });
+    return res.status(200).json({ message: "Watchlist Added" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -51,9 +52,9 @@ const addToWatchlist = async (req, res) => {
         },
       }
     ).sort({ _id: 1 });
-    res.status(200).json({ message: "added" });
+    return res.status(200).json({ message: "added" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 

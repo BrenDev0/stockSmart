@@ -43,7 +43,7 @@ const Balances = ({ cash }) => {
       <div className="cash">
         <span>Cash</span>
 
-        <span></span>
+        <span>$5951.52</span>
       </div>
     </BalancesStyled>
   );
