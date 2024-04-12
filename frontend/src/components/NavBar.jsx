@@ -69,35 +69,29 @@ const NavBar = () => {
                 onMouseLeave={(e) => setNewsDropdown(false)}
                 className="list-data"
               >
-                <a>TopNews</a>
+                <a href="/news/topnews">TopNews</a>
               </li>
               <li
                 onMouseEnter={(e) => setNewsDropdown(true)}
                 onMouseLeave={(e) => setNewsDropdown(false)}
                 className="list-data"
               >
-                <a>Business</a>
+                <a href="/news/crypto">Crypto</a>
+              </li>
+
+              <li
+                onMouseEnter={(e) => setNewsDropdown(true)}
+                onMouseLeave={(e) => setNewsDropdown(false)}
+                className="list-data"
+              >
+                <a href="/news/forex">Forex</a>
               </li>
               <li
                 onMouseEnter={(e) => setNewsDropdown(true)}
                 onMouseLeave={(e) => setNewsDropdown(false)}
                 className="list-data"
               >
-                <a>Technology</a>
-              </li>
-              <li
-                onMouseEnter={(e) => setNewsDropdown(true)}
-                onMouseLeave={(e) => setNewsDropdown(false)}
-                className="list-data"
-              >
-                <a>Mergers</a>
-              </li>
-              <li
-                onMouseEnter={(e) => setNewsDropdown(true)}
-                onMouseLeave={(e) => setNewsDropdown(false)}
-                className="list-data"
-              >
-                <a>General</a>
+                <a href="/news/merger">Mergers</a>
               </li>
             </ul>
           )}

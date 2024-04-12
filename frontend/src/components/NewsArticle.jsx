@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { quoteKey } from "../keys";
-import { useGlobalContext } from "../context/GlobalContext";
 
 const NewsArticle = () => {
   const [news, setNews] = useState();

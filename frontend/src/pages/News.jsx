@@ -1,13 +1,20 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Chart from "../components/Chart";
-import { detailKey } from "../keys";
+import { detailKey, quoteKey } from "../keys";
+import NewsArticle from "../components/NewsArticle";
+import NavBar from "../components/NavBar";
+import { useParams } from "react-router-dom";
 
 const News = () => {
   const [spy, setSpy] = useState({});
   const [dia, setDia] = useState({});
   const [iwm, setIwm] = useState({});
   const [qqq, setQqq] = useState({});
+  const [news, setNews] = useState();
+  const [error, setError] = useState(null);
+
+  const { param } = useParams();
 
   const todayDate = new Date().toISOString().slice(0, 10);
   const date = new Date();
@@ -127,8 +134,27 @@ const News = () => {
     getChartData();
   }, []);
 
+  useEffect(() => {
+    try {
+      fetch(
+        `https://finnhub.io/api/v1/news?category=${param}&token=${quoteKey}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          const newsData = [];
+          for (let i = 0; i < data.length; i++) {
+            newsData.push(data[i]);
+          }
+          setNews(newsData);
+        });
+    } catch (error) {
+      setError(error);
+    }
+  }, []);
+
   return (
     <NewsStyled>
+      <NavBar />
       <div className="charts">
         <div className="chart-con">
           <span>SPY</span>
@@ -147,7 +173,27 @@ const News = () => {
           <Chart data={iwm} />
         </div>
       </div>
-      <div className="news"></div>
+      <div className="news">
+        {news ? (
+          news.map((n) => {
+            return (
+              <div key={n.url} className="news-item">
+                <div className="title">
+                  <h3>
+                    <a href={n.url} target="_blank">
+                      {n.headline}
+                    </a>
+                  </h3>
+                  <p>{n.summary}</p>
+                </div>
+                <img src={n.image} alt="" />
+              </div>
+            );
+          })
+        ) : (
+          <p>Loading</p>
+        )}
+      </div>
     </NewsStyled>
   );
 };
@@ -162,7 +208,7 @@ const NewsStyled = styled.div`
 
   .charts {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     height: 25%;
@@ -172,21 +218,43 @@ const NewsStyled = styled.div`
   .news {
     width: 100%;
     height: 75%;
-    border: 1px solid red;
+    overflow: scroll;
+    padding: 15px;
   }
 
-  tspan {
-    font-size: 10px;
+  .news::-webkit-scrollbar {
+    display: none;
   }
+
+  .news-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--dark);
+    margin: 7px 0 7px 0;
+    border-radius: 10px;
+    padding: 15px;
+    width: 100%;
+    box-shadow: 2px 3px 5px var(--light);
+  }
+
+  img {
+    width: 15%;
+  }
+
   .chart-con {
-    width: 25%;
-    height: 25%;
+    width: 100%;
+    height: 100%;
     padding: 20px;
   }
 
   .chart-con span,
   p {
-    color: black;
+    color: var(--light);
+  }
+
+  .chart-con tspan {
+    font-size: 10px;
   }
 `;
 
