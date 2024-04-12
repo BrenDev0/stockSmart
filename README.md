@@ -14,6 +14,7 @@ A web application for viewing and managing stock holidings, searching for compan
 - View company financials 
 - Add, modify, remove positions from portfolio
 - Create watchlists
+- Semi-live price updates
 
 
 
