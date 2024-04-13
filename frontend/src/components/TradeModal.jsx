@@ -54,13 +54,10 @@ const TradeModal = () => {
 
   //open a new trade
   const trade = (direction) => {
-    console.log("entered trade function");
     const { shares, open, cost } = form;
     const currentPosition = positions.find((pos) => {
       return pos.ticker === details.ticker;
     });
-    console.log(positions);
-    console.log(details.ticker + " details.ticker");
 
     const position =
       direction === "LONG"

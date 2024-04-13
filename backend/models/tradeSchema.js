@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const tradeSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  },
   ticker: {
     type: String,
     required: true,

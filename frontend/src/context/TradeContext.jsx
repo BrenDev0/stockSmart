@@ -6,7 +6,7 @@ const TradeContext = createContext();
 
 export const TradeProvider = ({ children }) => {
   const TRADE_URL = "http://localhost:5000/api/trade/";
-  const { setError } = useGlobalContext();
+  const { setError, user } = useGlobalContext();
 
   ///state ---------------------
   const [positions, setPositions] = useState([]);

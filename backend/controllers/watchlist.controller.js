@@ -2,26 +2,20 @@ const Watchlist = require("../models/watchlistSchema");
 
 //get all watchlists
 const getWatchlists = async (req, res) => {
-  const watchlists = await Watchlist.aggregate([
-    {
-      $match: {
-        category: "watchlist",
-      },
-    },
-  ]).sort({ name: 1 });
-  res.status(200).json(watchlists);
+  const watchlists = await Watchlist.find().sort({ name: 1 });
+  return res.status(200).json(watchlists);
 };
 
 //get a single watchlist
 const findWatchlist = async (req, res) => {
   const { id } = req.params;
   const watchlist = await Watchlist.findById(id);
-  res.status(200).json(watchlist);
+  return res.status(200).json(watchlist);
 };
 
 // create a watchlist
 const newWatchlist = async (req, res) => {
-  const { category, name, tickers } = req.body;
+  const { name, tickers, category } = req.body;
   const watchlist = Watchlist({
     category,
     name,

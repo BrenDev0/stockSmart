@@ -12,13 +12,15 @@ const itemSchema = new mongoose.Schema({
 });
 
 const watchlistSchema = new mongoose.Schema({
-  category: {
-    type: String,
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   tickers: [itemSchema],
 });

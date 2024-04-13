@@ -12,6 +12,7 @@ const verifyUser = require("../middleware/authMiddleware");
 //middleware
 
 router
+  .use(verifyUser)
   .get("/get-positions", positions)
   .get("/get-trades", allTrades)
   .get("/get-trade/:id", getTrade)

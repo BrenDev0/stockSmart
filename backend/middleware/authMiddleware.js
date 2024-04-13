@@ -4,28 +4,19 @@ const jwt = require("jsonwebtoken");
 //allow access
 
 const verifyUser = async (req, res, next) => {
-  try {
-    const token = req.cookies.token;
+  const authHeader = req.headers.authorization || req.headers.Authorization;
 
-    if (!token) {
-      res.json({ status: false, message: "Unauthorized" });
-    }
-
-    jwt.verify(token, process.env.SECRET, async (err, data) => {
-      if (err) {
-        return res.json({ status: false, message: "Unauthorized" });
-      } else {
-        const user = await User.findById(data._id);
-        if (user) {
-          return res.json({ status: true, user: user._id }), next();
-        } else {
-          return res.json({ status: false, message: "Unauthorized" });
-        }
-      }
-    });
-  } catch (error) {
-    res.json(false);
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
+  const token = authHeader.split(" ")[1];
+
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    if (err) return res.status(403).json({ message: err });
+    req.user = decoded._id;
+
+    next();
+  });
 };
 
 module.exports = verifyUser;

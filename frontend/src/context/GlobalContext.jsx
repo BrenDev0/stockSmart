@@ -12,7 +12,7 @@ export const GlobalProvider = ({ children }) => {
     status: false,
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [error, setError] = useState("");
 
@@ -38,10 +38,14 @@ export const GlobalProvider = ({ children }) => {
   const [logo, setLogo] = useState("");
 
   //---------------functions---------
+
+  axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+
   const getUser = async () => {
     try {
       setIsLoading(true);
       const user = await axios.get(USER_URL);
+
       setUser(user.data);
       setIsLoading(false);
     } catch (error) {

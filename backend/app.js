@@ -9,6 +9,7 @@ const tradeRouter = require("./routes/trades");
 const balanceRouter = require("./routes/balances");
 const watchlistRouter = require("./routes/watchlists");
 const userRouter = require("./routes/user");
+const pricingRouter = require("./routes/priceModels");
 const cookieParser = require("cookie-parser");
 
 //middleware
@@ -26,6 +27,7 @@ app.use("/api/trade", tradeRouter);
 app.use("/api/balances", balanceRouter);
 app.use("/api/watchlists", watchlistRouter);
 app.use("/api/user", userRouter);
+app.use("/api/price-models", pricingRouter);
 
 const server = () => {
   db();

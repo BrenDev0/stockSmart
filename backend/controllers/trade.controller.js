@@ -1,15 +1,13 @@
 const tradeSchema = require("../models/tradeSchema");
+const User = require("../models/userSchema");
 
 //get positions
 const positions = async (req, res) => {
   const positions = await tradeSchema
-    .aggregate([
-      {
-        $match: {
-          status: "open",
-        },
-      },
-    ])
+    .find({
+      user: req.user,
+      status: "open",
+    })
     .sort({ ticker: 1 });
 
   res.status(200).json(positions);
@@ -17,7 +15,11 @@ const positions = async (req, res) => {
 
 //get all trades
 const allTrades = async (req, res) => {
-  const trades = await tradeSchema.find().sort({ createdAt: -1 });
+  const trades = await tradeSchema
+    .find({
+      user: req.user,
+    })
+    .sort({ createdAt: -1 });
   res.status(200).json(trades);
 };
 
@@ -33,7 +35,10 @@ const newTrade = async (req, res) => {
   const { ticker, shares, open, orientation, cost, mark, icon, logo } =
     req.body;
 
+  const user = await User.findById(req.user);
+
   const trade = tradeSchema({
+    user,
     ticker,
     shares,
     open,
@@ -44,13 +49,13 @@ const newTrade = async (req, res) => {
     logo,
   });
   try {
-    if (!ticker || !shares || !open || !orientation) {
-      res.status(400).json({ message: "ALL FIELDS REQUIRED" });
+    if (!user || !ticker || !shares || !open || !orientation) {
+      return res.status(400).json({ message: "ALL FIELDS REQUIRED" });
     }
     await trade.save();
-    res.status(200).json({ message: "Trade added" });
+    return res.status(200).json({ message: "Trade added" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
