@@ -11,6 +11,7 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     list-style: none;
     
+    
    
 
 }
@@ -40,10 +41,17 @@ body, html {
 input {
     color: rgb(43, 45, 66);
     border-radius: 10px;
-    height: 30px;
+    height: 35;
     text-align: center;
+    border: none;
     
   }
+
+  input:focus{
+    outline: none;
+  }
+
+  
   
 
   

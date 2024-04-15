@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const NavBar = () => {
   const [actions, setActions] = useState(false);
   const [newsDropdown, setNewsDropdown] = useState(false);
+  const [modelsDropdown, setModelsDropdown] = useState(false);
   const { setTradeModal, getUser } = useGlobalContext();
   const navigate = useNavigate();
 
@@ -29,8 +30,8 @@ const NavBar = () => {
         </li>
         <li>
           <span
-            onMouseEnter={(e) => setActions(true)}
-            onMouseLeave={(e) => setActions(false)}
+            onMouseEnter={() => setActions(true)}
+            onMouseLeave={() => setActions(false)}
           >
             Actions
           </span>
@@ -38,10 +39,10 @@ const NavBar = () => {
             <ul
               className="drop-down"
               id="actions-list"
-              onMouseLeave={(e) => setActions(false)}
-              onMouseEnter={(e) => setActions(true)}
+              onMouseLeave={() => setActions(false)}
+              onMouseEnter={() => setActions(true)}
             >
-              <li className="list-data" onClick={(e) => setTradeModal(true)}>
+              <li className="list-data" onClick={() => setTradeModal(true)}>
                 Trade
               </li>
               <li className="list-data">Deposit</li>
@@ -57,38 +58,64 @@ const NavBar = () => {
         </li>
         <li>
           <span
-            onMouseEnter={(e) => setNewsDropdown(true)}
-            onMouseLeave={(e) => setNewsDropdown(false)}
+            onMouseEnter={() => setModelsDropdown(true)}
+            onMouseLeave={() => setModelsDropdown(false)}
+          >
+            Models
+          </span>
+          {modelsDropdown && (
+            <ul className="drop-down">
+              <li
+                className="list-data"
+                onMouseEnter={() => setModelsDropdown(true)}
+                onMouseLeave={() => setModelsDropdown(false)}
+              >
+                <a href="/pricing">Pricing Models</a>
+              </li>
+              <li
+                className="list-data"
+                onMouseEnter={() => setModelsDropdown(true)}
+                onMouseLeave={() => setModelsDropdown(false)}
+              >
+                <a href="">Valuation Models</a>
+              </li>
+            </ul>
+          )}
+        </li>
+        <li>
+          <span
+            onMouseEnter={() => setNewsDropdown(true)}
+            onMouseLeave={() => setNewsDropdown(false)}
           >
             News
           </span>
           {newsDropdown && (
             <ul className="drop-down">
               <li
-                onMouseEnter={(e) => setNewsDropdown(true)}
-                onMouseLeave={(e) => setNewsDropdown(false)}
+                onMouseEnter={() => setNewsDropdown(true)}
+                onMouseLeave={() => setNewsDropdown(false)}
                 className="list-data"
               >
                 <a href="/news/topnews">TopNews</a>
               </li>
               <li
-                onMouseEnter={(e) => setNewsDropdown(true)}
-                onMouseLeave={(e) => setNewsDropdown(false)}
+                onMouseEnter={() => setNewsDropdown(true)}
+                onMouseLeave={() => setNewsDropdown(false)}
                 className="list-data"
               >
                 <a href="/news/crypto">Crypto</a>
               </li>
 
               <li
-                onMouseEnter={(e) => setNewsDropdown(true)}
-                onMouseLeave={(e) => setNewsDropdown(false)}
+                onMouseEnter={() => setNewsDropdown(true)}
+                onMouseLeave={() => setNewsDropdown(false)}
                 className="list-data"
               >
                 <a href="/news/forex">Forex</a>
               </li>
               <li
-                onMouseEnter={(e) => setNewsDropdown(true)}
-                onMouseLeave={(e) => setNewsDropdown(false)}
+                onMouseEnter={() => setNewsDropdown(true)}
+                onMouseLeave={() => setNewsDropdown(false)}
                 className="list-data"
               >
                 <a href="/news/merger">Mergers</a>
@@ -159,6 +186,13 @@ const NavBarStyled = styled.nav`
     background: var(--red);
     color: var(--white);
     cursor: pointer;
+  }
+
+  .drop-down li:last-child {
+    border-radius: 0 0 10px 10px;
+  }
+  .drop-down li:first-child {
+    border-radius: 10px 10px 0 0;
   }
 `;
 

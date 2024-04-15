@@ -122,6 +122,13 @@ const RowStyled = styled.div`
     border-radius: 10px;
   }
 
+  .drop-down li:last-child {
+    border-radius: 0 0 10px 10px;
+  }
+  .drop-down li:first-child {
+    border-radius: 10px 10px 0 0;
+  }
+
   .list-data {
     display: block;
     text-align: left;
