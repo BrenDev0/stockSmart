@@ -5,19 +5,16 @@ const Data = new mongoose.Schema({
     type: String,
     required: true,
   },
-  shares: {
+
+  rev: {
     type: Number,
     required: true,
   },
-  revenue: {
+  ni: {
     type: Number,
     required: true,
   },
-  income: {
-    type: Number,
-    required: true,
-  },
-  tanBook: {
+  tbv: {
     type: Number,
     required: true,
   },

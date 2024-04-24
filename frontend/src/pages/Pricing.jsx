@@ -13,12 +13,15 @@ const Pricing = () => {
   const [AveragePs, setAveragePs] = useState();
   const [AveragePtb, setAveragePtb] = useState();
   const [AverageRoe, setAverageRoe] = useState();
-  const [AverageRoic, setAverageRoic] = useState(0);
+  const [AverageRoic, setAverageRoic] = useState();
   const [medianPe, setMedianPe] = useState();
   const [medianPs, setMedianPs] = useState();
   const [medianPtb, setMedianPtb] = useState();
   const [medianRoe, setMedianRoe] = useState();
   const [medianRoic, setmedianRoic] = useState();
+  const [revCor, setRevCor] = useState();
+  const [niCor, setNiCor] = useState();
+  const [tbvCor, setTbvCor] = useState();
 
   const [model, setModel] = useState({
     name: "",
@@ -28,23 +31,31 @@ const Pricing = () => {
   // ------------------ averages useEffect -----------------------------------
   useEffect(() => {
     if (companies.length > 0) {
+      //----------------average pe -----------------------
       let pe = companies.map((com) => com.pe);
       setAveragePe(
         Number((pe.reduce((a, b) => a + b, 0) / pe.length).toFixed(2))
       );
+
+      //----------------------------average ps --------------------------
       let ps = companies.map((com) => com.ps);
       setAveragePs(
         Number((ps.reduce((a, b) => a + b, 0) / ps.length).toFixed(2))
       );
 
+      //------------------average ptb-----------------------
       let ptb = companies.map((com) => com.ptb);
       setAveragePtb(
         Number((ptb.reduce((a, b) => a + b, 0) / ptb.length).toFixed(2))
       );
+
+      //-------------------average roe--------------------
       let roe = companies.map((com) => com.roe);
       setAverageRoe(
         Number((roe.reduce((a, b) => a + b, 0) / roe.length).toFixed(2))
       );
+
+      //---------------average roic ---------------------------
       let roic = companies.map((com) => com.roic);
       setAverageRoic(
         Number((roic.reduce((a, b) => a + b, 0) / roic.length).toFixed(2))
@@ -58,16 +69,132 @@ const Pricing = () => {
 
   useEffect(() => {
     if (companies.length > 0) {
+      //---------------------median pe ------------------
       let pe = companies.map((com) => com.pe).sort((a, b) => a - b);
       if (pe.length % 2 !== 0) {
         let place = (pe.length + 1) / 2;
-        setMedianPe(pe[place - 1]);
+        setMedianPe(Number(pe[place - 1].toFixed(2)));
       } else {
         let place1 = pe.length / 2;
         let place2 = place1 + 1;
 
-        setMedianPe((pe[place1 - 1] + pe[place2 - 1]) / 2);
+        setMedianPe(Number(((pe[place1 - 1] + pe[place2 - 1]) / 2).toFixed(2)));
       }
+
+      //-----------------median ps------------------------
+
+      let ps = companies.map((com) => com.ps).sort((a, b) => a - b);
+      if (ps.length % 2 !== 0) {
+        let place = (ps.length + 1) / 2;
+        setMedianPs(Number(ps[place - 1].toFixed(2)));
+      } else {
+        let place1 = ps.length / 2;
+        let place2 = place1 + 1;
+
+        setMedianPs(Number(((ps[place1 - 1] + ps[place2 - 1]) / 2).toFixed(2)));
+      }
+      //----------------------median ptb----------
+
+      let ptb = companies.map((com) => com.ptb).sort((a, b) => a - b);
+      if (ptb.length % 2 !== 0) {
+        let place = (ptb.length + 1) / 2;
+        setMedianPtb(Number(ptb[place - 1].toFixed(2)));
+      } else {
+        let place1 = ptb.length / 2;
+        let place2 = place1 + 1;
+
+        setMedianPtb(
+          Number(((ptb[place1 - 1] + ptb[place2 - 1]) / 2).toFixed(2))
+        );
+      }
+
+      //----------------median roe ---------------
+
+      let roe = companies.map((com) => com.roe).sort((a, b) => a - b);
+      if (roe.length % 2 !== 0) {
+        let place = (roe.length + 1) / 2;
+
+        setMedianRoe(Number(roe[place - 1].toFixed(2)));
+      } else {
+        let place1 = roe.length / 2;
+        let place2 = place1 + 1;
+
+        setMedianRoe(
+          Number(((roe[place1 - 1] + roe[place2 - 1]) / 2).toFixed(2))
+        );
+      }
+
+      //--------------------- median roic -----------------------
+      let roic = companies.map((com) => com.roic).sort((a, b) => a - b);
+      if (roic.length % 2 !== 0) {
+        let place = (roic.length + 1) / 2;
+
+        setmedianRoic(Number(roic[place - 1].toFixed(2)));
+      } else {
+        let place1 = roic.length / 2;
+        let place2 = place1 + 1;
+
+        setmedianRoic(
+          Number(((roic[place1 - 1] + roic[place2 - 1]) / 2).toFixed(2))
+        );
+      }
+    }
+  }, [companies]);
+
+  // ------------------------correlations useEffect ------------------
+
+  useEffect(() => {
+    if (companies.length > 1) {
+      // -------------------------------revenue correlation to mc--------------------
+      var sumX = companies.map((com) => com.mc).reduce((a, b) => a + b, 0);
+      var sumY = companies.map((com) => com.rev).reduce((a, b) => a + b, 0);
+      var sumXy = companies
+        .map((com) => com.mc * com.rev)
+        .reduce((a, b) => a + b, 0);
+      var sumX2 = companies
+        .map((com) => com.mc ** 2)
+        .reduce((a, b) => a + b, 0);
+      var sumY2 = companies
+        .map((com) => com.rev ** 2)
+        .reduce((a, b) => a + b, 0);
+      var n = companies.length;
+      var top = n * sumXy - sumX * sumY;
+      var bottom = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2));
+      setRevCor(Number((top / bottom).toFixed(3)));
+
+      //----------------------net income correlation ----------------
+      var sumX = companies.map((com) => com.mc).reduce((a, b) => a + b, 0);
+      var sumY = companies.map((com) => com.ni).reduce((a, b) => a + b, 0);
+      var sumXy = companies
+        .map((com) => com.mc * com.ni)
+        .reduce((a, b) => a + b, 0);
+      var sumX2 = companies
+        .map((com) => com.mc ** 2)
+        .reduce((a, b) => a + b, 0);
+      var sumY2 = companies
+        .map((com) => com.ni ** 2)
+        .reduce((a, b) => a + b, 0);
+      var n = companies.length;
+      var top = n * sumXy - sumX * sumY;
+      var bottom = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2));
+      setNiCor(Number((top / bottom).toFixed(3)));
+
+      //-----------------------------tbv correlation-----------------
+      var sumX = companies.map((com) => com.mc).reduce((a, b) => a + b, 0);
+      var sumY = companies.map((com) => com.tbv).reduce((a, b) => a + b, 0);
+      var sumXy = companies
+        .map((com) => com.mc * com.tbv)
+        .reduce((a, b) => a + b, 0);
+      var sumX2 = companies
+        .map((com) => com.mc ** 2)
+        .reduce((a, b) => a + b, 0);
+      var sumY2 = companies
+        .map((com) => com.tbv ** 2)
+        .reduce((a, b) => a + b, 0);
+      var n = companies.length;
+      var top = n * sumXy - sumX * sumY;
+      var bottom = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2));
+      setTbvCor(Number((top / bottom).toFixed(3)));
     }
   }, [companies]);
 
@@ -130,7 +257,7 @@ const Pricing = () => {
                 placeholder="search"
               />
             </div>
-            <button>Add</button>
+            <button>Search</button>
           </form>
         </div>
 
@@ -153,10 +280,30 @@ const Pricing = () => {
         <div className="con">
           <Row data={["MEDIANS"]} tag="chart-titles" />
           <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} tag="chart-headers" />
+          {companies.length > 0 ? (
+            <Row
+              data={[
+                medianPe,
+                medianPs,
+                medianPtb,
+                medianRoe + "%",
+                medianRoic + "%",
+              ]}
+              tag="chart-data"
+            />
+          ) : null}
         </div>
         <div className="con">
           <Row data={["MATRIX"]} tag="chart-titles" />
-          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} tag="chart-headers" />
+          <Row data={["Correlation", "Market Cap"]} tag="chart-headers" />
+          {companies.length > 1 ? (
+            <>
+              <Row data={["Market Cap", 1]} tag="chart-data" />
+              <Row data={["Revenue", revCor]} tag="chart-data" />
+              <Row data={["Net Income", niCor]} tag="chart-data" />
+              <Row data={["Tbv", tbvCor]} tag="chart-data" />
+            </>
+          ) : null}
         </div>
       </div>
 
@@ -197,7 +344,6 @@ const Pricing = () => {
                     <i
                       className="fa-regular fa-trash-can"
                       onClick={(e) => {
-                        console.log(com.ticker);
                         setCompanies(
                           companies.filter((c) => c.ticker !== com.ticker)
                         );
@@ -241,6 +387,13 @@ const PricingStyled = styled.div`
     flex-direction: column;
   }
 
+  .btn-con {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
   button {
     color: var(--dark);
     padding: 5px;
@@ -249,6 +402,8 @@ const PricingStyled = styled.div`
     width: 25%;
     transition: 0.5s;
     border: none;
+    cursor: pointer;
+    box-shadow: 2px 2px 2px var(--dark);
   }
 
   button:active {
