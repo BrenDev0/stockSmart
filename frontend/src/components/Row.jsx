@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-const Row = ({ data }) => {
+const Row = ({ data, tag }) => {
   return (
-    <HeadStyled>
+    <HeadStyled className={tag}>
       {data.map((i) => {
         return (
           <div key={i} className="data">

@@ -9,17 +9,23 @@ import { money } from "../utils/money.format";
 const Pricing = () => {
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
-  const [AveragePe, setAveragePe] = useState(null);
-  const [AveragePs, setAveragePs] = useState(null);
-  const [AveragePtb, setAveragePtb] = useState(null);
-  const [AverageRoe, setAverageRoe] = useState(null);
-  const [AverageRoic, setAverageRoic] = useState(null);
+  const [AveragePe, setAveragePe] = useState();
+  const [AveragePs, setAveragePs] = useState();
+  const [AveragePtb, setAveragePtb] = useState();
+  const [AverageRoe, setAverageRoe] = useState();
+  const [AverageRoic, setAverageRoic] = useState(0);
+  const [medianPe, setMedianPe] = useState();
+  const [medianPs, setMedianPs] = useState();
+  const [medianPtb, setMedianPtb] = useState();
+  const [medianRoe, setMedianRoe] = useState();
+  const [medianRoic, setmedianRoic] = useState();
 
   const [model, setModel] = useState({
     name: "",
     data: companies,
   });
 
+  // ------------------ averages useEffect -----------------------------------
   useEffect(() => {
     if (companies.length > 0) {
       let pe = companies.map((com) => com.pe);
@@ -46,6 +52,23 @@ const Pricing = () => {
     }
 
     setModel({ ...model, data: companies });
+  }, [companies]);
+
+  //------------------------ medians useEffect---------------
+
+  useEffect(() => {
+    if (companies.length > 0) {
+      let pe = companies.map((com) => com.pe).sort((a, b) => a - b);
+      if (pe.length % 2 !== 0) {
+        let place = (pe.length + 1) / 2;
+        setMedianPe(pe[place - 1]);
+      } else {
+        let place1 = pe.length / 2;
+        let place2 = place1 + 1;
+
+        setMedianPe((pe[place1 - 1] + pe[place2 - 1]) / 2);
+      }
+    }
   }, [companies]);
 
   const addToModel = (e) => {
@@ -112,9 +135,9 @@ const Pricing = () => {
         </div>
 
         <div className="con">
-          <Row data={["AVERAGES"]} />
-          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} />
-          {companies.length > 0 && (
+          <Row data={["AVERAGES"]} tag="chart-titles" />
+          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} tag="chart-headers" />
+          {companies.length > 0 ? (
             <Row
               data={[
                 AveragePe,
@@ -123,16 +146,17 @@ const Pricing = () => {
                 AverageRoe + "%",
                 AverageRoic + "%",
               ]}
+              tag="chart-data"
             />
-          )}
+          ) : null}
         </div>
         <div className="con">
-          <Row data={["MEDIANS"]} />
-          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} />
+          <Row data={["MEDIANS"]} tag="chart-titles" />
+          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} tag="chart-headers" />
         </div>
         <div className="con">
-          <Row data={["MATRIX"]} />
-          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} />
+          <Row data={["MATRIX"]} tag="chart-titles" />
+          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} tag="chart-headers" />
         </div>
       </div>
 
@@ -180,6 +204,7 @@ const Pricing = () => {
                       }}
                     ></i>,
                   ]}
+                  tag="model-data"
                 />
               );
             })
@@ -242,6 +267,25 @@ const PricingStyled = styled.div`
   .model {
     width: 100%;
     padding: 10px;
+  }
+  //-------------------row backgrounds---------
+
+  .chart-titles {
+    background: var(--red);
+  }
+  .chart-headers {
+    background: var(--dark);
+  }
+  .chart-data {
+    background: var(--light);
+  }
+
+  .model-data {
+    background: var(--light);
+  }
+
+  .model-data:nth-child(even) {
+    background: var(--dark);
   }
 `;
 
