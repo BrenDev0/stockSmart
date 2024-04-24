@@ -9,18 +9,21 @@ import { money } from "../utils/money.format";
 const Pricing = () => {
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
-  const [AveragePe, setAveragePe] = useState();
-  const [AveragePs, setAveragePs] = useState();
-  const [AveragePtb, setAveragePtb] = useState();
-  const [AverageRoe, setAverageRoe] = useState();
-  const [AverageRoic, setAverageRoic] = useState();
+  const [averagePe, setAveragePe] = useState();
+  const [averagePs, setAveragePs] = useState();
+  const [averagePfcf, setAveragePfcf] = useState();
+  const [averagePtb, setAveragePtb] = useState();
+  const [averageRoe, setAverageRoe] = useState();
+  const [averageRoic, setAverageRoic] = useState();
   const [medianPe, setMedianPe] = useState();
   const [medianPs, setMedianPs] = useState();
+  const [medianPfcf, setMedianPfcf] = useState();
   const [medianPtb, setMedianPtb] = useState();
   const [medianRoe, setMedianRoe] = useState();
   const [medianRoic, setmedianRoic] = useState();
   const [revCor, setRevCor] = useState();
   const [niCor, setNiCor] = useState();
+  const [fcfCor, setFcfCor] = useState();
   const [tbvCor, setTbvCor] = useState();
 
   const [model, setModel] = useState({
@@ -41,6 +44,12 @@ const Pricing = () => {
       let ps = companies.map((com) => com.ps);
       setAveragePs(
         Number((ps.reduce((a, b) => a + b, 0) / ps.length).toFixed(2))
+      );
+
+      //--------------------- average pfcf -----------------
+      let pfcf = companies.map((com) => com.pfcf);
+      setAveragePfcf(
+        Number((pfcf.reduce((a, b) => a + b, 0) / pfcf.length).toFixed(2))
       );
 
       //------------------average ptb-----------------------
@@ -93,6 +102,21 @@ const Pricing = () => {
 
         setMedianPs(Number(((ps[place1 - 1] + ps[place2 - 1]) / 2).toFixed(2)));
       }
+
+      //----------------------median pfcf ---------------
+      let pfcf = companies.map((com) => com.pfcf).sort((a, b) => a - b);
+      if (pfcf.length % 2 !== 0) {
+        let place = (pfcf.length + 1) / 2;
+        setMedianPs(Number(pfcf[place - 1].toFixed(2)));
+      } else {
+        let place1 = pfcf.length / 2;
+        let place2 = place1 + 1;
+
+        setMedianPfcf(
+          Number(((pfcf[place1 - 1] + pfcf[place2 - 1]) / 2).toFixed(2))
+        );
+      }
+
       //----------------------median ptb----------
 
       let ptb = companies.map((com) => com.ptb).sort((a, b) => a - b);
@@ -179,6 +203,23 @@ const Pricing = () => {
       var bottom = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2));
       setNiCor(Number((top / bottom).toFixed(3)));
 
+      //---------------------fcf correlation -------------------
+      var sumX = companies.map((com) => com.mc).reduce((a, b) => a + b, 0);
+      var sumY = companies.map((com) => com.fcf).reduce((a, b) => a + b, 0);
+      var sumXy = companies
+        .map((com) => com.mc * com.fcf)
+        .reduce((a, b) => a + b, 0);
+      var sumX2 = companies
+        .map((com) => com.mc ** 2)
+        .reduce((a, b) => a + b, 0);
+      var sumY2 = companies
+        .map((com) => com.fcf ** 2)
+        .reduce((a, b) => a + b, 0);
+      var n = companies.length;
+      var top = n * sumXy - sumX * sumY;
+      var bottom = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2));
+      setFcfCor(Number((top / bottom).toFixed(3)));
+
       //-----------------------------tbv correlation-----------------
       var sumX = companies.map((com) => com.mc).reduce((a, b) => a + b, 0);
       var sumY = companies.map((com) => com.tbv).reduce((a, b) => a + b, 0);
@@ -212,18 +253,18 @@ const Pricing = () => {
             ...companies,
             {
               ticker: search.toUpperCase(),
-              mc: data[0].marketCapTTM / 1000000000,
-              ev: data[0].enterpriseValueTTM / 1000000000,
-              tbv: (data[0].ptbRatioTTM * data[0].marketCapTTM) / 1000000000,
+              mc: data[0].marketCapTTM / 1000000,
+              tbv: (data[0].ptbRatioTTM * data[0].marketCapTTM) / 1000000,
+              fcf: (data[0].pfcfRatioTTM * data[0].marketCapTTM) / 1000000,
               rev:
-                (data[0].priceToSalesRatioTTM * data[0].marketCapTTM) /
-                1000000000,
-              ni: (data[0].peRatioTTM * data[0].marketCapTTM) / 1000000000,
+                (data[0].priceToSalesRatioTTM * data[0].marketCapTTM) / 1000000,
+              ni: (data[0].peRatioTTM * data[0].marketCapTTM) / 1000000,
               roe: data[0].roeTTM * 100,
               roic: data[0].roicTTM * 100,
               ptb: data[0].ptbRatioTTM,
               ps: data[0].priceToSalesRatioTTM,
               pe: data[0].peRatioTTM,
+              pfcf: data[0].pfcfRatioTTM,
             },
           ]);
 
@@ -255,6 +296,7 @@ const Pricing = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder="search"
+                required
               />
             </div>
             <button>Search</button>
@@ -263,15 +305,19 @@ const Pricing = () => {
 
         <div className="con">
           <Row data={["AVERAGES"]} tag="chart-titles" />
-          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} tag="chart-headers" />
-          {companies.length > 0 ? (
+          <Row
+            data={["PS", "PE", "PFCF", "PTB", "ROE", "ROIC"]}
+            tag="chart-headers"
+          />
+          {companies.length > 1 ? (
             <Row
               data={[
-                AveragePe,
-                AveragePs,
-                AveragePtb,
-                AverageRoe + "%",
-                AverageRoic + "%",
+                averagePs,
+                averagePe,
+                averagePfcf,
+                averagePtb,
+                averageRoe + "%",
+                averageRoic + "%",
               ]}
               tag="chart-data"
             />
@@ -279,12 +325,16 @@ const Pricing = () => {
         </div>
         <div className="con">
           <Row data={["MEDIANS"]} tag="chart-titles" />
-          <Row data={["PE", "PS", "PTB", "ROE", "ROIC"]} tag="chart-headers" />
-          {companies.length > 0 ? (
+          <Row
+            data={["PS", "PE", "PFCF", "PTB", "ROE", "ROIC"]}
+            tag="chart-headers"
+          />
+          {companies.length > 1 ? (
             <Row
               data={[
-                medianPe,
                 medianPs,
+                medianPe,
+                medianPfcf,
                 medianPtb,
                 medianRoe + "%",
                 medianRoic + "%",
@@ -301,7 +351,8 @@ const Pricing = () => {
               <Row data={["Market Cap", 1]} tag="chart-data" />
               <Row data={["Revenue", revCor]} tag="chart-data" />
               <Row data={["Net Income", niCor]} tag="chart-data" />
-              <Row data={["Tbv", tbvCor]} tag="chart-data" />
+              <Row data={["FCF", fcfCor]} tag="chart-data" />
+              <Row data={["TBV", tbvCor]} tag="chart-data" />
             </>
           ) : null}
         </div>
@@ -312,8 +363,8 @@ const Pricing = () => {
           data={[
             "Company",
             "Market Cap",
-            "EV",
             "Tangible Book",
+            "FCF",
             "Revenues",
             "Net Income",
             "ROE",
@@ -321,6 +372,7 @@ const Pricing = () => {
             "PTB",
             "PS",
             "PE",
+            "PFCF",
             "Remove",
           ]}
         />
@@ -332,8 +384,8 @@ const Pricing = () => {
                   data={[
                     com.ticker,
                     money.format(com.mc),
-                    money.format(com.ev),
                     money.format(com.tbv),
+                    money.format(com.fcf),
                     money.format(com.rev),
                     money.format(com.ni),
                     Number(com.roe.toFixed(2)) + "%",
@@ -341,6 +393,7 @@ const Pricing = () => {
                     Number(com.ptb.toFixed(2)),
                     Number(com.ps.toFixed(2)),
                     Number(com.pe.toFixed(2)),
+                    Number(com.pfcf.toFixed(2)),
                     <i
                       className="fa-regular fa-trash-can"
                       onClick={(e) => {
