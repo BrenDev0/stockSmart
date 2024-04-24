@@ -18,16 +18,18 @@ const HeadStyled = styled.div`
   width: 100%;
   height: 5%;
   display: flex;
+  background: var(--red);
   justify-content: space-between;
-  background: var(--dark);
+
   padding: 10px;
   border-radius: 10px;
+  margin-bottom: 2px;
 
   .data {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-left: 2px solid var(--red);
+    border-left: 2px solid var(--dark);
     width: 100%;
 
     span {
