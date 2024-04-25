@@ -33,7 +33,7 @@ const HeadStyled = styled.div`
     width: 100%;
 
     span {
-      font-size: 1vw;
+      font-size: 0.9vw;
     }
   }
   .data:first-child {

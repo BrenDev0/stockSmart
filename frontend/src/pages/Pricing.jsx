@@ -11,7 +11,7 @@ import { useModelsContext } from "../context/ModelsContext";
 
 const Pricing = () => {
   const { user, getUser } = useGlobalContext();
-  const { newPriceModel } = useModelsContext();
+  const { newPriceModel, getPricingModels, pricingModels } = useModelsContext();
   const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
@@ -32,18 +32,23 @@ const Pricing = () => {
   const [fcfCor, setFcfCor] = useState();
   const [tbvCor, setTbvCor] = useState();
   const [error, setError] = useState(null);
+  const [newModel, setNewMOdel] = useState(false);
+  const [savedModel, setSavedModel] = useState(false);
+  const [selectModelDd, setSelectModelDd] = useState(false);
 
   const [model, setModel] = useState({
     name: "",
     data: companies,
   });
 
-  const saveModel = () => {
+  const saveModel = async () => {
     try {
       if (!model.name) {
-        setError("Please add required title to model");
+        return setError("Please add required title to model");
       }
-      newPriceModel(model);
+      await newPriceModel(model);
+      setCompanies([]);
+      setModel({ ...model, name: "" });
     } catch (error) {
       console.log(error);
       setError(error);
@@ -51,7 +56,12 @@ const Pricing = () => {
   };
 
   useEffect(() => {
-    getUser();
+    const getData = async () => {
+      await getUser();
+      getPricingModels();
+    };
+
+    getData();
   }, []);
 
   // ------------------ averages useEffect -----------------------------------
@@ -305,29 +315,76 @@ const Pricing = () => {
       <NavBar />
       <div className="model-features">
         <div className="con">
-          <form onSubmit={addToModel}>
-            {error && <span style={{ color: "red" }}>{error}</span>}
-            <div className="form-inputs">
-              <label htmlFor="">Model title</label>
-              <input
-                value={model.name}
-                onChange={(e) => setModel({ ...model, name: e.target.value })}
-                type="text"
-                placeholder="title"
-              />
+          {!newModel && !savedModel ? (
+            <div className="model-status">
+              <span>Create a new model?</span>
+              <button onClick={() => setNewMOdel(true)}>new</button>
+              <span>Choose an existing model</span>
+              <div className="select">
+                <span>Select a model</span>
+                <i
+                  className="fa-solid fa-chevron-down"
+                  onClick={() =>
+                    selectModelDd
+                      ? setSelectModelDd(false)
+                      : setSelectModelDd(true)
+                  }
+                ></i>
+              </div>
+
+              {selectModelDd && (
+                <ul className="drop-down">
+                  {pricingModels ? (
+                    pricingModels.map((mod) => {
+                      return (
+                        <li className="list-data" key={mod._id}>
+                          {mod.name.toUpperCase()}
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <span>Create a new Model</span>
+                  )}
+                </ul>
+              )}
             </div>
-            <div className="form-inputs">
-              <label htmlFor="">Add a company to the model</label>
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                type="text"
-                placeholder="search"
-                required
-              />
-            </div>
-            <button>Search</button>
-          </form>
+          ) : newModel ? (
+            <form onSubmit={addToModel}>
+              {error && (
+                <span style={{ color: "red", fontWeight: "bold" }}>
+                  {error}
+                </span>
+              )}
+              <div className="form-inputs">
+                <label htmlFor="">Model title:</label>
+                <input
+                  value={model.name}
+                  onChange={(e) =>
+                    setModel({ ...model, name: e.target.value }, setError(null))
+                  }
+                  type="text"
+                  placeholder="title"
+                />
+              </div>
+              <div className="form-inputs">
+                <label htmlFor="">Search:</label>
+                <div className="search-bar">
+                  <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    type="text"
+                    placeholder="search"
+                    required
+                  />
+                </div>
+              </div>
+              <button>Search</button>
+            </form>
+          ) : savedModel ? (
+            <select name="" id="">
+              select
+            </select>
+          ) : null}
         </div>
 
         <div className="con">
@@ -423,7 +480,7 @@ const Pricing = () => {
                     Number(com.pfcf.toFixed(2)),
                     <i
                       className="fa-regular fa-trash-can"
-                      onClick={(e) => {
+                      onClick={() => {
                         setCompanies(
                           companies.filter((c) => c.ticker !== com.ticker)
                         );
@@ -465,16 +522,24 @@ const PricingStyled = styled.div`
     border-radius: 10px;
   }
 
+  .drop-down {
+    background: var(--white);
+  }
+
+  .model-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    background: var(--light);
+    border-radius: 10px;
+  }
+
   .form-inputs {
     display: flex;
     flex-direction: column;
-  }
-
-  .btn-con {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
   }
 
   button {
@@ -485,12 +550,17 @@ const PricingStyled = styled.div`
     width: 25%;
     transition: 0.5s;
     border: none;
-    cursor: pointer;
+
     box-shadow: 2px 2px 2px var(--dark);
   }
 
-  button:active {
+  button:hover {
     transform: scale(1.2);
+    cursor: pointer;
+  }
+
+  button:active {
+    transform: translateX(-10px);
   }
 
   .model-features {
@@ -535,6 +605,62 @@ const PricingStyled = styled.div`
     color: var(--white);
     width: 7%;
     margin-right: 10px;
+  }
+
+  .select {
+    width: 75%;
+
+    display: flex;
+    background: var(--white);
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  .select span {
+    color: var(--dark);
+  }
+
+  .select i {
+    color: var(--dark);
+  }
+
+  .drop-down {
+    display: block;
+    background: var(--white);
+    position: absolute;
+    z-index: 1;
+    top: 32%;
+    left: 6.5%;
+    border-radius: 10px;
+    border: 2px solid var(--dark);
+    width: 15%;
+  }
+
+  .list-data {
+    display: block;
+    text-align: left;
+    padding: 7px;
+    width: 100%;
+    color: var(--dark);
+  }
+
+  .list-data:hover {
+    background: var(--red);
+    color: var(--white);
+    cursor: pointer;
+  }
+
+  .drop-down li:last-child {
+    border-radius: 0 0 10px 10px;
+  }
+  .drop-down li:first-child {
+    border-radius: 10px 10px 0 0;
+  }
+
+  .fa-chevron-down:hover {
+    cursor: pointer;
   }
 `;
 

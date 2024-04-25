@@ -8,6 +8,7 @@ import Loading from "../components/Loading";
 
 const Home = () => {
   const { user, getUser, isLoading, setIsLoading } = useGlobalContext();
+
   const navigate = useNavigate();
   useEffect(() => {
     getUser();

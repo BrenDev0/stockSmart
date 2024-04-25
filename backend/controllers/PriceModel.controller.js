@@ -1,5 +1,16 @@
 const PriceModel = require("../models/priceModelsSchema");
 const User = require("../models/userSchema");
+
+//get all pricing models
+
+const getPricingModels = async (req, res) => {
+  const models = await PriceModel.find({
+    user: req.user,
+  }).sort({ createdAt: -1 });
+
+  res.status(200).json(models);
+};
+
 // create a pricing model
 
 const newModel = async (req, res) => {
@@ -35,4 +46,4 @@ const findModel = async (req, res) => {
   }
 };
 
-module.exports = { newModel, findModel };
+module.exports = { newModel, findModel, getPricingModels };
