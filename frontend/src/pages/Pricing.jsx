@@ -7,9 +7,11 @@ import axios from "axios";
 import { money } from "../utils/money.format";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
+import { useModelsContext } from "../context/ModelsContext";
 
 const Pricing = () => {
   const { user } = useGlobalContext();
+  const { newPriceModel } = useModelsContext();
   const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
@@ -29,11 +31,24 @@ const Pricing = () => {
   const [niCor, setNiCor] = useState();
   const [fcfCor, setFcfCor] = useState();
   const [tbvCor, setTbvCor] = useState();
+  const [error, setError] = useState(null);
 
   const [model, setModel] = useState({
     name: "",
     data: companies,
   });
+
+  const saveModel = () => {
+    try {
+      if (!model.name) {
+        setError("Please add required title to model");
+      }
+      newPriceModel(model);
+    } catch (error) {
+      console.log(error);
+      setError(error);
+    }
+  };
 
   // ------------------ averages useEffect -----------------------------------
   useEffect(() => {
@@ -84,7 +99,7 @@ const Pricing = () => {
     if (companies.length > 0) {
       //---------------------median pe ------------------
       let pe = companies.map((com) => com.pe).sort((a, b) => a - b);
-      console.log(pe);
+
       if (pe.length % 2 !== 0) {
         let place = (pe.length + 1) / 2;
         setMedianPe(Number(pe[place - 1].toFixed(2)));
@@ -255,7 +270,6 @@ const Pricing = () => {
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setCompanies([
             ...companies,
             {
@@ -294,6 +308,7 @@ const Pricing = () => {
                 value={model.name}
                 onChange={(e) => setModel({ ...model, name: e.target.value })}
                 type="text"
+                placeholder="title"
               />
             </div>
             <div className="form-inputs">
@@ -415,6 +430,9 @@ const Pricing = () => {
               );
             })
           : null}
+        {companies.length > 0 && (
+          <button onClick={() => saveModel()}>Save</button>
+        )}
       </div>
     </PricingStyled>
   );
@@ -482,6 +500,8 @@ const PricingStyled = styled.div`
   .model {
     width: 100%;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
   }
   //-------------------row backgrounds---------
 
@@ -501,6 +521,15 @@ const PricingStyled = styled.div`
 
   .model-data:nth-child(even) {
     background: var(--dark);
+  }
+
+  .model button {
+    align-self: end;
+    margin-top: 10px;
+    background: var(--red);
+    color: var(--white);
+    width: 7%;
+    margin-right: 10px;
   }
 `;
 

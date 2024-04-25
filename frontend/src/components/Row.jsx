@@ -5,7 +5,7 @@ const Row = ({ data, tag }) => {
     <HeadStyled className={tag}>
       {data.map((i) => {
         return (
-          <div key={i} className="data">
+          <div key={i + tag} className="data">
             <span>{i}</span>
           </div>
         );
