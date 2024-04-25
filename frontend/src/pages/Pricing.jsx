@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useModelsContext } from "../context/ModelsContext";
 
 const Pricing = () => {
-  const { user } = useGlobalContext();
+  const { user, getUser } = useGlobalContext();
   const { newPriceModel } = useModelsContext();
   const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
@@ -49,6 +49,10 @@ const Pricing = () => {
       setError(error);
     }
   };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   // ------------------ averages useEffect -----------------------------------
   useEffect(() => {
@@ -302,6 +306,7 @@ const Pricing = () => {
       <div className="model-features">
         <div className="con">
           <form onSubmit={addToModel}>
+            {error && <span style={{ color: "red" }}>{error}</span>}
             <div className="form-inputs">
               <label htmlFor="">Model title</label>
               <input
