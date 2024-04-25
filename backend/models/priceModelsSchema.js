@@ -6,6 +6,21 @@ const Data = new mongoose.Schema({
     required: true,
   },
 
+  mc: {
+    type: Number,
+    required: true,
+  },
+
+  tbv: {
+    type: Number,
+    required: true,
+  },
+
+  fcf: {
+    type: Number,
+    required: true,
+  },
+
   rev: {
     type: Number,
     required: true,
@@ -14,10 +29,7 @@ const Data = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  tbv: {
-    type: Number,
-    required: true,
-  },
+
   roe: {
     type: Number,
     required: true,
@@ -26,8 +38,21 @@ const Data = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  dividend: {
+  ptb: {
     type: Number,
+    required: true,
+  },
+  ps: {
+    type: Number,
+    required: true,
+  },
+  pe: {
+    type: Number,
+    required: true,
+  },
+  pfcf: {
+    type: Number,
+    required: true,
   },
 });
 

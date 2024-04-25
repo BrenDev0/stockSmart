@@ -9,10 +9,12 @@ export const ModelsProvider = ({ children }) => {
   const { setError } = useGlobalContext();
   const [pricingModels, setPricingModels] = useState([]);
   const { getUser } = useGlobalContext();
+  const [selectedPriceModel, setSelectedPriceModel] = useState(null);
   //-------new model-----------------
   const newPriceModel = async (model) => {
     try {
       await axios.post(`${MODELS_URL}new-price-model`, model);
+      getPricingModels();
     } catch (error) {
       console.error(error);
       setError(error);
@@ -25,10 +27,24 @@ export const ModelsProvider = ({ children }) => {
     try {
       await getUser();
       const res = await axios.get(`${MODELS_URL}get-pricing-models`);
+
       setPricingModels(res.data);
     } catch (error) {
       setError(error);
       console.log(error);
+    }
+  };
+
+  //---------------------------find a model -----------
+
+  const findModel = async (id) => {
+    try {
+      const res = await axios.get(`${MODELS_URL}find-model/${id}`);
+
+      setSelectedPriceModel(res.data.message.model);
+    } catch (error) {
+      setError(error);
+      console.error(error);
     }
   };
 
@@ -37,7 +53,9 @@ export const ModelsProvider = ({ children }) => {
       value={{
         newPriceModel,
         getPricingModels,
+        findModel,
         pricingModels,
+        selectedPriceModel,
       }}
     >
       {children}

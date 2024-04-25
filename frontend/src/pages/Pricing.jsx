@@ -11,7 +11,13 @@ import { useModelsContext } from "../context/ModelsContext";
 
 const Pricing = () => {
   const { user, getUser } = useGlobalContext();
-  const { newPriceModel, getPricingModels, pricingModels } = useModelsContext();
+  const {
+    newPriceModel,
+    getPricingModels,
+    pricingModels,
+    selectedPriceModel,
+    findModel,
+  } = useModelsContext();
   const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
@@ -32,7 +38,7 @@ const Pricing = () => {
   const [fcfCor, setFcfCor] = useState();
   const [tbvCor, setTbvCor] = useState();
   const [error, setError] = useState(null);
-  const [newModel, setNewMOdel] = useState(false);
+  const [newModel, setNewModel] = useState(false);
   const [savedModel, setSavedModel] = useState(false);
   const [selectModelDd, setSelectModelDd] = useState(false);
 
@@ -40,20 +46,6 @@ const Pricing = () => {
     name: "",
     data: companies,
   });
-
-  const saveModel = async () => {
-    try {
-      if (!model.name) {
-        return setError("Please add required title to model");
-      }
-      await newPriceModel(model);
-      setCompanies([]);
-      setModel({ ...model, name: "" });
-    } catch (error) {
-      console.log(error);
-      setError(error);
-    }
-  };
 
   useEffect(() => {
     const getData = async () => {
@@ -275,6 +267,30 @@ const Pricing = () => {
     }
   }, [companies]);
 
+  useEffect(() => {
+    selectedPriceModel && setCompanies(selectedPriceModel.data);
+  }, [selectedPriceModel]);
+
+  const loadModel = async (id) => {
+    await findModel(id);
+    setSelectModelDd(false);
+  };
+
+  const saveModel = async () => {
+    try {
+      if (!model.name) {
+        return setError("Please add required title to model");
+      }
+      await newPriceModel(model);
+      setCompanies([]);
+      setAveragePe(null);
+      setModel({ ...model, name: "" });
+    } catch (error) {
+      console.log(error);
+      setError(error);
+    }
+  };
+
   const addToModel = (e) => {
     try {
       e.preventDefault();
@@ -318,7 +334,7 @@ const Pricing = () => {
           {!newModel && !savedModel ? (
             <div className="model-status">
               <span>Create a new model?</span>
-              <button onClick={() => setNewMOdel(true)}>new</button>
+              <button onClick={() => setNewModel(true)}>new</button>
               <span>Choose an existing model</span>
               <div className="select">
                 <span>Select a model</span>
@@ -334,16 +350,25 @@ const Pricing = () => {
 
               {selectModelDd && (
                 <ul className="drop-down">
-                  {pricingModels ? (
+                  {pricingModels.length > 0 ? (
                     pricingModels.map((mod) => {
                       return (
-                        <li className="list-data" key={mod._id}>
-                          {mod.name.toUpperCase()}
+                        <li
+                          onClick={() => loadModel(mod._id)}
+                          className="list-data"
+                          key={mod._id}
+                        >
+                          <div>
+                            <span>{mod.name}</span>
+                            <i className="fa-regular fa-trash-can"></i>
+                          </div>
                         </li>
                       );
                     })
                   ) : (
-                    <span>Create a new Model</span>
+                    <li className="list-data" onClick={() => setNewModel(true)}>
+                      Create a new Model
+                    </li>
                   )}
                 </ul>
               )}
@@ -393,7 +418,7 @@ const Pricing = () => {
             data={["PS", "PE", "PFCF", "PTB", "ROE", "ROIC"]}
             tag="chart-headers"
           />
-          {companies.length > 1 ? (
+          {averagePe ? (
             <Row
               data={[
                 averagePs,
@@ -413,7 +438,7 @@ const Pricing = () => {
             data={["PS", "PE", "PFCF", "PTB", "ROE", "ROIC"]}
             tag="chart-headers"
           />
-          {companies.length > 1 ? (
+          {averagePe ? (
             <Row
               data={[
                 medianPs,
@@ -643,6 +668,19 @@ const PricingStyled = styled.div`
     text-align: left;
     padding: 7px;
     width: 100%;
+    color: var(--dark);
+  }
+
+  .list-data span {
+    color: var(--dark);
+  }
+  .list-data div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .list-data i {
     color: var(--dark);
   }
 
