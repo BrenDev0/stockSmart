@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import styled from "styled-components";
 import Chart from "../components/Chart";
 import { detailKey, quoteKey } from "../keys";
 import NewsArticle from "../components/NewsArticle";
 import NavBar from "../components/NavBar";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../context/GlobalContext";
 
 const News = () => {
+  const { user } = useGlobalContext();
+  const navigate = useNavigate();
   const [spy, setSpy] = useState({});
   const [dia, setDia] = useState({});
   const [iwm, setIwm] = useState({});
@@ -133,6 +136,10 @@ const News = () => {
   useEffect(() => {
     getChartData();
   }, []);
+
+  useLayoutEffect(() => {
+    user.status ? null : navigate("/login");
+  }, [user]);
 
   useEffect(() => {
     try {

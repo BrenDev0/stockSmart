@@ -16,6 +16,7 @@ const Login = () => {
   useLayoutEffect(() => {
     user.status ? navigate("/") : null;
   }, [user]);
+
   return isLoading ? (
     <Loading />
   ) : (

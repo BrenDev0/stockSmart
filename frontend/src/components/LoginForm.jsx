@@ -26,6 +26,7 @@ const Form = () => {
   };
   return (
     <FormStyled onSubmit={handleSubmit}>
+      <h1>StockSmart</h1>
       <div className="form-inputs">
         <label htmlFor="">Email:</label>
         <input
@@ -45,6 +46,9 @@ const Form = () => {
         />
       </div>
       <button type="submit">Login</button>
+      <span>
+        Dont have an account? <a href="">Sign up</a>
+      </span>
       {error && <span style={{ color: "red" }}>{error}</span>}
     </FormStyled>
   );
@@ -57,18 +61,39 @@ const FormStyled = styled.form`
   align-items: center;
 
   border-radius: 15px;
-  height: 35%;
+  height: 50%;
   width: 30%;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(239, 35, 60, 0.8);
+  background: var(--white);
   padding: 15px;
+
+  h1 {
+    font-family: "Dancing Script", cursive;
+    font-size: 2.2vw;
+    color: var(--red);
+  }
+
+  label {
+    color: var(--dark);
+  }
 
   .form-inputs {
     display: flex;
     flex-direction: column;
+  }
+
+  button {
+    color: var(--dark);
+  }
+
+  span {
+    color: var(--dark);
+  }
+  a {
+    color: var(--red);
   }
 `;
 

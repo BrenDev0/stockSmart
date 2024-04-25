@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../components/NavBar";
 import Row from "../components/Row";
 import { modelKey } from "../keys";
 import axios from "axios";
 import { money } from "../utils/money.format";
+import { useGlobalContext } from "../context/GlobalContext";
+import { useNavigate } from "react-router-dom";
 
 const Pricing = () => {
+  const { user } = useGlobalContext();
+  const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
   const [averagePe, setAveragePe] = useState();
@@ -80,6 +84,7 @@ const Pricing = () => {
     if (companies.length > 0) {
       //---------------------median pe ------------------
       let pe = companies.map((com) => com.pe).sort((a, b) => a - b);
+      console.log(pe);
       if (pe.length % 2 !== 0) {
         let place = (pe.length + 1) / 2;
         setMedianPe(Number(pe[place - 1].toFixed(2)));
@@ -93,8 +98,10 @@ const Pricing = () => {
       //-----------------median ps------------------------
 
       let ps = companies.map((com) => com.ps).sort((a, b) => a - b);
+
       if (ps.length % 2 !== 0) {
         let place = (ps.length + 1) / 2;
+
         setMedianPs(Number(ps[place - 1].toFixed(2)));
       } else {
         let place1 = ps.length / 2;
@@ -107,7 +114,7 @@ const Pricing = () => {
       let pfcf = companies.map((com) => com.pfcf).sort((a, b) => a - b);
       if (pfcf.length % 2 !== 0) {
         let place = (pfcf.length + 1) / 2;
-        setMedianPs(Number(pfcf[place - 1].toFixed(2)));
+        setMedianPfcf(Number(pfcf[place - 1].toFixed(2)));
       } else {
         let place1 = pfcf.length / 2;
         let place2 = place1 + 1;
