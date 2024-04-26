@@ -269,10 +269,18 @@ const Pricing = () => {
   }, [companies]);
 
   useEffect(() => {
-    selectedPriceModel &&
-      setCompanies(
-        selectedPriceModel.data.sort((a, b) => a.ticker.localeCompare(b.ticker))
-      );
+    const update = async () => {
+      if (selectedPriceModel) {
+        const newArr = selectedPriceModel.data.sort((a, b) =>
+          a.ticker.localeCompare(b.ticker)
+        );
+        for (let i = 0; i < newArr.length; i++) {
+          await addToModel(newArr[i].ticker);
+        }
+      }
+    };
+
+    update();
   }, [selectedPriceModel]);
 
   const loadModel = async (id) => {
@@ -295,40 +303,31 @@ const Pricing = () => {
     }
   };
 
-  const addToModel = (e) => {
-    try {
-      e.preventDefault();
+  const addToModel = async (i) => {
+    const res = await fetch(
+      `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${i.toUpperCase()}?apikey=${modelKey}`
+    );
 
-      fetch(
-        `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${search.toUpperCase()}?apikey=${modelKey}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setCompanies([
-            ...companies,
-            {
-              ticker: search.toUpperCase(),
-              mc: data[0].marketCapTTM / 1000000,
-              tbv: data[0].marketCapTTM / data[0].ptbRatioTTM / 1000000,
-              fcf: data[0].marketCapTTM / data[0].pfcfRatioTTM / 1000000,
-              rev:
-                data[0].marketCapTTM / data[0].priceToSalesRatioTTM / 1000000,
-              ni: data[0].marketCapTTM / data[0].peRatioTTM / 1000000,
-              roe: data[0].roeTTM * 100,
-              roic: data[0].roicTTM * 100,
-              ptb: data[0].ptbRatioTTM,
-              ps: data[0].priceToSalesRatioTTM,
-              pe: data[0].peRatioTTM,
-              pfcf: data[0].pfcfRatioTTM,
-            },
-          ]);
+    const data = await res.json();
 
-          setSearch("");
-        });
-    } catch (error) {
-      console.error(error);
-    }
+    setCompanies([
+      ...companies,
+      {
+        ticker: i.toUpperCase(),
+        mc: data[0].marketCapTTM / 1000000,
+        tbv: data[0].marketCapTTM / data[0].ptbRatioTTM / 1000000,
+        fcf: data[0].marketCapTTM / data[0].pfcfRatioTTM / 1000000,
+        rev: data[0].marketCapTTM / data[0].priceToSalesRatioTTM / 1000000,
+        ni: data[0].marketCapTTM / data[0].peRatioTTM / 1000000,
+        roe: data[0].roeTTM * 100,
+        roic: data[0].roicTTM * 100,
+        ptb: data[0].ptbRatioTTM,
+        ps: data[0].priceToSalesRatioTTM,
+        pe: data[0].peRatioTTM,
+        pfcf: data[0].pfcfRatioTTM,
+      },
+    ]);
+    setSearch("");
   };
 
   return (
@@ -385,7 +384,12 @@ const Pricing = () => {
               )}
             </div>
           ) : newModel ? (
-            <form onSubmit={addToModel}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                addToModel(search);
+              }}
+            >
               {error && (
                 <span style={{ color: "red", fontWeight: "bold" }}>
                   {error}

@@ -14,9 +14,10 @@ const Home = () => {
     getUser();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     user.status ? null : navigate("/login");
   }, [user]);
+
   return isLoading ? (
     <Loading />
   ) : (
