@@ -300,16 +300,17 @@ const Pricing = () => {
       )
         .then((res) => res.json())
         .then((data) => {
+          console.log(data);
           setCompanies([
             ...companies,
             {
               ticker: search.toUpperCase(),
               mc: data[0].marketCapTTM / 1000000,
-              tbv: (data[0].ptbRatioTTM * data[0].marketCapTTM) / 1000000,
-              fcf: (data[0].pfcfRatioTTM * data[0].marketCapTTM) / 1000000,
+              tbv: data[0].marketCapTTM / data[0].ptbRatioTTM / 1000000,
+              fcf: data[0].marketCapTTM / data[0].pfcfRatioTTM / 1000000,
               rev:
-                (data[0].priceToSalesRatioTTM * data[0].marketCapTTM) / 1000000,
-              ni: (data[0].peRatioTTM * data[0].marketCapTTM) / 1000000,
+                data[0].marketCapTTM / data[0].priceToSalesRatioTTM / 1000000,
+              ni: data[0].marketCapTTM / data[0].peRatioTTM / 1000000,
               roe: data[0].roeTTM * 100,
               roic: data[0].roicTTM * 100,
               ptb: data[0].ptbRatioTTM,
@@ -349,13 +350,13 @@ const Pricing = () => {
               </div>
 
               {selectModelDd && (
-                <ul className="drop-down">
+                <ul className="models-drop-down">
                   {pricingModels.length > 0 ? (
                     pricingModels.map((mod) => {
                       return (
                         <li
                           onClick={() => loadModel(mod._id)}
-                          className="list-data"
+                          className="models-list-data"
                           key={mod._id}
                         >
                           <div>
@@ -366,7 +367,10 @@ const Pricing = () => {
                       );
                     })
                   ) : (
-                    <li className="list-data" onClick={() => setNewModel(true)}>
+                    <li
+                      className="models-list-data"
+                      onClick={() => setNewModel(true)}
+                    >
                       Create a new Model
                     </li>
                   )}
@@ -651,7 +655,7 @@ const PricingStyled = styled.div`
     color: var(--dark);
   }
 
-  .drop-down {
+  .models-drop-down {
     display: block;
     background: var(--white);
     position: absolute;
@@ -663,7 +667,7 @@ const PricingStyled = styled.div`
     width: 15%;
   }
 
-  .list-data {
+  .models-list-data {
     display: block;
     text-align: left;
     padding: 7px;
@@ -671,29 +675,29 @@ const PricingStyled = styled.div`
     color: var(--dark);
   }
 
-  .list-data span {
+  .models-list-data span {
     color: var(--dark);
   }
-  .list-data div {
+  .models-list-data div {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .list-data i {
+  .models-list-data i {
     color: var(--dark);
   }
 
-  .list-data:hover {
+  .models-list-data:hover {
     background: var(--red);
     color: var(--white);
     cursor: pointer;
   }
 
-  .drop-down li:last-child {
+  .models-drop-down li:last-child {
     border-radius: 0 0 10px 10px;
   }
-  .drop-down li:first-child {
+  .models-drop-down li:first-child {
     border-radius: 10px 10px 0 0;
   }
 
