@@ -48,12 +48,19 @@ export const ModelsProvider = ({ children }) => {
     }
   };
 
+  //---------------delete a model-----------
+  const deletePriceModel = async (id) => {
+    await axios.delete(`${MODELS_URL}delete-model/${id}`);
+    getPricingModels();
+  };
+
   return (
     <ModelsContext.Provider
       value={{
         newPriceModel,
         getPricingModels,
         findModel,
+        deletePriceModel,
         pricingModels,
         selectedPriceModel,
       }}

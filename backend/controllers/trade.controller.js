@@ -70,7 +70,7 @@ const updateTrade = async (req, res) => {
     const updatedTrade = await tradeSchema.findById(id);
     res.status(200).json(updatedTrade);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -81,7 +81,7 @@ const deleteTrade = async (req, res) => {
     await tradeSchema.findByIdAndDelete(id);
     res.status(200).json({ message: "Trade Deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 

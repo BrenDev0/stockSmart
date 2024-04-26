@@ -17,6 +17,7 @@ const Pricing = () => {
     pricingModels,
     selectedPriceModel,
     findModel,
+    deletePriceModel,
   } = useModelsContext();
   const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
@@ -268,7 +269,10 @@ const Pricing = () => {
   }, [companies]);
 
   useEffect(() => {
-    selectedPriceModel && setCompanies(selectedPriceModel.data);
+    selectedPriceModel &&
+      setCompanies(
+        selectedPriceModel.data.sort((a, b) => a.ticker.localeCompare(b.ticker))
+      );
   }, [selectedPriceModel]);
 
   const loadModel = async (id) => {
@@ -361,7 +365,10 @@ const Pricing = () => {
                         >
                           <div>
                             <span>{mod.name}</span>
-                            <i className="fa-regular fa-trash-can"></i>
+                            <i
+                              className="fa-regular fa-trash-can"
+                              onClick={() => deletePriceModel(mod._id)}
+                            ></i>
                           </div>
                         </li>
                       );

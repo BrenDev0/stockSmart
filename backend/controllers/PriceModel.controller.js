@@ -46,4 +46,19 @@ const findModel = async (req, res) => {
   }
 };
 
-module.exports = { newModel, findModel, getPricingModels };
+// delete a model
+
+const deleteModel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await PriceModel.findOneAndDelete({
+      _id: id,
+      user: req.user,
+    });
+    res.status(200).json({ message: "Model Deleted" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { newModel, findModel, getPricingModels, deleteModel };
