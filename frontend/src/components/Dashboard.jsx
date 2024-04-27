@@ -54,11 +54,11 @@ const Dashboard = () => {
         <div className="balances">
           <Balances />
         </div>
-        <div className="news">
+        <div className="news ">
           <NewsArticle />
         </div>
       </div>
-      <div className="positions">
+      <div className="positions ">
         <PositionsHead />
         {positions.map((pos) => {
           return (

@@ -8,6 +8,7 @@ import { money } from "../utils/money.format";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { useModelsContext } from "../context/ModelsContext";
+import Skeleton from "../components/Skeletons/Skeleton";
 
 const Pricing = () => {
   const { user, getUser } = useGlobalContext();
@@ -15,11 +16,12 @@ const Pricing = () => {
     newPriceModel,
     getPricingModels,
     pricingModels,
-    selectedPriceModel,
     findModel,
+    updateModel,
     deletePriceModel,
   } = useModelsContext();
   const navigate = useNavigate();
+  const [loadingModel, setLoadingModel] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
   const [averagePe, setAveragePe] = useState();
@@ -268,24 +270,40 @@ const Pricing = () => {
     }
   }, [companies]);
 
-  useEffect(() => {
-    const update = async () => {
-      if (selectedPriceModel) {
-        const newArr = selectedPriceModel.data.sort((a, b) =>
-          a.ticker.localeCompare(b.ticker)
-        );
-        for (let i = 0; i < newArr.length; i++) {
-          await addToModel(newArr[i].ticker);
-        }
-      }
-    };
-
-    update();
-  }, [selectedPriceModel]);
-
   const loadModel = async (id) => {
-    await findModel(id);
+    setLoadingModel(true);
+    const model = await findModel(id);
     setSelectModelDd(false);
+    const updatedData = [];
+    for (let i = 0; i < model.data.length; i++) {
+      const res = await fetch(
+        `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${model.data[
+          i
+        ].ticker.toUpperCase()}?apikey=${modelKey}`
+      );
+
+      const data = await res.json();
+      updatedData.push({
+        ticker: model.data[i].ticker.toUpperCase(),
+        mc: data[0].marketCapTTM / 1000000,
+        tbv: data[0].marketCapTTM / data[0].ptbRatioTTM / 1000000,
+        fcf: data[0].marketCapTTM / data[0].pfcfRatioTTM / 1000000,
+        rev: data[0].marketCapTTM / data[0].priceToSalesRatioTTM / 1000000,
+        ni: data[0].marketCapTTM / data[0].peRatioTTM / 1000000,
+        roe: data[0].roeTTM * 100,
+        roic: data[0].roicTTM * 100,
+        ptb: data[0].ptbRatioTTM,
+        ps: data[0].priceToSalesRatioTTM,
+        pe: data[0].peRatioTTM,
+        pfcf: data[0].pfcfRatioTTM,
+      });
+    }
+
+    const newModel = await updateModel(id, { data: updatedData });
+    setCompanies(
+      newModel.data.sort((a, b) => a.ticker.localeCompare(b.ticker))
+    );
+    setLoadingModel(false);
   };
 
   const saveModel = async () => {
@@ -500,6 +518,7 @@ const Pricing = () => {
             "Remove",
           ]}
         />
+        {loadingModel && <Skeleton width={"50%"} height={"50%"} br={"10px"} />}
         {companies
           ? companies.map((com) => {
               return (

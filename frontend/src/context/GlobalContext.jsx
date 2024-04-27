@@ -6,6 +6,9 @@ import { quoteKey, detailKey } from "../keys";
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
+  useEffect(() => {
+    getUser();
+  }, []);
   const USER_URL = "http://localhost:5000/api/user";
   const [user, setUser] = useState({
     user: "logged off",
@@ -43,11 +46,9 @@ export const GlobalProvider = ({ children }) => {
 
   const getUser = async () => {
     try {
-      setIsLoading(true);
       const user = await axios.get(USER_URL);
 
       setUser(user.data);
-      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }

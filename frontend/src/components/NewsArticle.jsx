@@ -26,7 +26,7 @@ const NewsArticle = () => {
       {news ? (
         news.map((n) => {
           return (
-            <div key={n.url} className="news-item">
+            <div key={n.url} className="news-item ">
               <h3>
                 <a href={n.url} target="_blank">
                   {n.headline}

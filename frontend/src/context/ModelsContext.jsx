@@ -9,7 +9,7 @@ export const ModelsProvider = ({ children }) => {
   const { setError } = useGlobalContext();
   const [pricingModels, setPricingModels] = useState([]);
   const { getUser } = useGlobalContext();
-  const [selectedPriceModel, setSelectedPriceModel] = useState(null);
+
   //-------new model-----------------
   const newPriceModel = async (model) => {
     try {
@@ -41,7 +41,7 @@ export const ModelsProvider = ({ children }) => {
     try {
       const res = await axios.get(`${MODELS_URL}find-model/${id}`);
 
-      setSelectedPriceModel(res.data.message.model);
+      return res.data.message.model;
     } catch (error) {
       setError(error);
       console.error(error);
@@ -54,6 +54,18 @@ export const ModelsProvider = ({ children }) => {
     getPricingModels();
   };
 
+  //update a prcing model
+
+  const updateModel = async (id, data) => {
+    try {
+      const newModel = await axios.put(`${MODELS_URL}update-model/${id}`, data);
+      getPricingModels();
+      return newModel.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ModelsContext.Provider
       value={{
@@ -61,8 +73,8 @@ export const ModelsProvider = ({ children }) => {
         getPricingModels,
         findModel,
         deletePriceModel,
+        updateModel,
         pricingModels,
-        selectedPriceModel,
       }}
     >
       {children}

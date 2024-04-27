@@ -1,26 +1,22 @@
 import { useGlobalContext } from "../context/GlobalContext";
 import styled from "styled-components";
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useEffect } from "react";
 import Dashboard from "../components/Dashboard";
 import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
 const Home = () => {
-  const { user, getUser, isLoading, setIsLoading } = useGlobalContext();
+  const { user, isLoading, setIsLoading } = useGlobalContext();
 
   const navigate = useNavigate();
   useEffect(() => {
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    user.status ? null : navigate("/login");
+    setTimeout(() => {
+      user.status ? setIsLoading(false) : navigate("/login");
+    }, 2000);
   }, [user]);
 
-  return isLoading ? (
-    <Loading />
-  ) : (
+  return (
     <MainStyled>
       <NavBar />
       <Dashboard />

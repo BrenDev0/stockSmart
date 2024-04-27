@@ -39,8 +39,28 @@ const newModel = async (req, res) => {
 const findModel = async (req, res) => {
   try {
     const { id } = req.params;
-    const model = await PriceModel.findById(id);
+    const model = await PriceModel.findOne({
+      _id: id,
+      user: req.user,
+    });
     return res.status(200).json({ message: { model } });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+//update a model
+const updateModel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const model = await PriceModel.findOneAndUpdate(
+      {
+        _id: id,
+        user: req.user,
+      },
+      req.body
+    );
+    return res.status(200).json(model);
   } catch (error) {
     console.error(error);
   }
@@ -61,4 +81,10 @@ const deleteModel = async (req, res) => {
   }
 };
 
-module.exports = { newModel, findModel, getPricingModels, deleteModel };
+module.exports = {
+  newModel,
+  findModel,
+  getPricingModels,
+  deleteModel,
+  updateModel,
+};

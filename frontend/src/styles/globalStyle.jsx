@@ -36,6 +36,20 @@ body, html {
   --white:  #F4F3EE;
 }
 
+.skeleton {
+  opacity: .7;
+  animation: skeleton-loading 1.5s linear infinite alternate
+}
+@keyframes skeleton-loading {
+  0% {
+    background: hsl(200, 20%, 75%);
+  }
+  100% {
+    background: hsl(200, 20%, 95%);
+  }
+  
+}
+
 
 
 input {

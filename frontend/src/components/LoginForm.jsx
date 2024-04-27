@@ -2,24 +2,23 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../context/GlobalContext";
 
 const Form = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { getUser } = useGlobalContext();
 
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       const form = { email, password };
-      const success = await axios.post(
-        "http://localhost:5000/api/user/login",
-        form
-      );
-      if (success) {
-        navigate("/");
-      }
+      await axios.post("http://localhost:5000/api/user/login", form);
+      await getUser();
+
+      navigate("/");
     } catch (error) {
       setError(error.response.data.message);
     }
