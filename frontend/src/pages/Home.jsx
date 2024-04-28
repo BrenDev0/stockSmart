@@ -11,9 +11,7 @@ const Home = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    setTimeout(() => {
-      user.status ? setIsLoading(false) : navigate("/login");
-    }, 2000);
+    user.status ? setIsLoading(false) : navigate("/login");
   }, [user]);
 
   return (

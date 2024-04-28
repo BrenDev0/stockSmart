@@ -8,7 +8,6 @@ import { money } from "../utils/money.format";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { useModelsContext } from "../context/ModelsContext";
-import Skeleton from "../components/Skeletons/Skeleton";
 
 const Pricing = () => {
   const { user, getUser } = useGlobalContext();
@@ -518,39 +517,60 @@ const Pricing = () => {
             "Remove",
           ]}
         />
-        {loadingModel && <Skeleton width={"50%"} height={"50%"} br={"10px"} />}
-        {companies
-          ? companies.map((com) => {
-              return (
-                <Row
-                  key={com.ticker}
-                  data={[
-                    com.ticker,
-                    money.format(com.mc),
-                    money.format(com.tbv),
-                    money.format(com.fcf),
-                    money.format(com.rev),
-                    money.format(com.ni),
-                    Number(com.roe.toFixed(2)) + "%",
-                    Number(com.roic.toFixed(2)) + "%",
-                    Number(com.ptb.toFixed(2)),
-                    Number(com.ps.toFixed(2)),
-                    Number(com.pe.toFixed(2)),
-                    Number(com.pfcf.toFixed(2)),
-                    <i
-                      className="fa-regular fa-trash-can"
-                      onClick={() => {
-                        setCompanies(
-                          companies.filter((c) => c.ticker !== com.ticker)
-                        );
-                      }}
-                    ></i>,
-                  ]}
-                  tag="model-data"
-                />
-              );
-            })
-          : null}
+        {loadingModel && (
+          <div
+            className="skeleton"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "50vh",
+              borderRadius: "10px",
+              marginTop: "20px",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: '"Dancing Script", cursive',
+                color: "var(--red)",
+                fontSize: "2rem",
+              }}
+            >
+              StockSMart
+            </span>
+          </div>
+        )}
+        {companies &&
+          companies.map((com) => {
+            return (
+              <Row
+                key={com.ticker}
+                data={[
+                  com.ticker,
+                  money.format(com.mc),
+                  money.format(com.tbv),
+                  money.format(com.fcf),
+                  money.format(com.rev),
+                  money.format(com.ni),
+                  Number(com.roe.toFixed(2)) + "%",
+                  Number(com.roic.toFixed(2)) + "%",
+                  Number(com.ptb.toFixed(2)),
+                  Number(com.ps.toFixed(2)),
+                  Number(com.pe.toFixed(2)),
+                  Number(com.pfcf.toFixed(2)),
+                  <i
+                    className="fa-regular fa-trash-can"
+                    onClick={() => {
+                      setCompanies(
+                        companies.filter((c) => c.ticker !== com.ticker)
+                      );
+                    }}
+                  ></i>,
+                ]}
+                tag="model-data"
+              />
+            );
+          })}
         {companies.length > 0 && (
           <button onClick={() => saveModel()}>Save</button>
         )}
