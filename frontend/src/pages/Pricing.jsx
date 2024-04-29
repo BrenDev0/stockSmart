@@ -43,7 +43,7 @@ const Pricing = () => {
   });
 
   useEffect(() => {
-    getUser();
+    getUser().then(getPricingModels());
     setTimeout(() => {
       if (user === null) {
         return null;
@@ -353,7 +353,7 @@ const Pricing = () => {
 
         <div className="con">
           <div className="model-status">
-            <span>Choose an existing model</span>
+            <span>Pricing Models</span>
             <div className="select">
               <span>Select a model</span>
               <i
@@ -475,6 +475,7 @@ const Pricing = () => {
           </div>
         )}
         {companies &&
+          !loadingModel &&
           companies.map((com) => {
             return (
               <Row
