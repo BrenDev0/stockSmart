@@ -9,15 +9,15 @@ const Form = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { getUser } = useGlobalContext();
+  const { getUser, setIsLoading } = useGlobalContext();
 
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       const form = { email, password };
       await axios.post("http://localhost:5000/api/user/login", form);
+      setIsLoading(true);
       await getUser();
-
       navigate("/");
     } catch (error) {
       setError(error.response.data.message);

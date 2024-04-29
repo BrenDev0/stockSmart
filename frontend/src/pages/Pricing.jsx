@@ -8,9 +8,10 @@ import { money } from "../utils/money.format";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { useModelsContext } from "../context/ModelsContext";
+import LoadingPage from "../components/Skeletons/LoadingPage";
 
 const Pricing = () => {
-  const { user, getUser } = useGlobalContext();
+  const { user, getUser, isLoading, setIsLoading } = useGlobalContext();
   const {
     newPriceModel,
     getPricingModels,
@@ -23,12 +24,6 @@ const Pricing = () => {
   const [loadingModel, setLoadingModel] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
-  const [averagePe, setAveragePe] = useState();
-  const [averagePs, setAveragePs] = useState();
-  const [averagePfcf, setAveragePfcf] = useState();
-  const [averagePtb, setAveragePtb] = useState();
-  const [averageRoe, setAverageRoe] = useState();
-  const [averageRoic, setAverageRoic] = useState();
   const [medianPe, setMedianPe] = useState();
   const [medianPs, setMedianPs] = useState();
   const [medianPfcf, setMedianPfcf] = useState();
@@ -40,8 +35,6 @@ const Pricing = () => {
   const [fcfCor, setFcfCor] = useState();
   const [tbvCor, setTbvCor] = useState();
   const [error, setError] = useState(null);
-  const [newModel, setNewModel] = useState(false);
-  const [savedModel, setSavedModel] = useState(false);
   const [selectModelDd, setSelectModelDd] = useState(false);
 
   const [model, setModel] = useState({
@@ -50,54 +43,12 @@ const Pricing = () => {
   });
 
   useEffect(() => {
-    const getData = async () => {
-      await getUser();
-      getPricingModels();
-    };
+    setTimeout(() => {
+      user.status ? getPricingModels().then(setIsLoading(false)) : null;
+    }, 1500);
+  }, [user]);
 
-    getData();
-  }, []);
-
-  // ------------------ averages useEffect -----------------------------------
   useEffect(() => {
-    if (companies.length > 0) {
-      //----------------average pe -----------------------
-      let pe = companies.map((com) => com.pe);
-      setAveragePe(
-        Number((pe.reduce((a, b) => a + b, 0) / pe.length).toFixed(2))
-      );
-
-      //----------------------------average ps --------------------------
-      let ps = companies.map((com) => com.ps);
-      setAveragePs(
-        Number((ps.reduce((a, b) => a + b, 0) / ps.length).toFixed(2))
-      );
-
-      //--------------------- average pfcf -----------------
-      let pfcf = companies.map((com) => com.pfcf);
-      setAveragePfcf(
-        Number((pfcf.reduce((a, b) => a + b, 0) / pfcf.length).toFixed(2))
-      );
-
-      //------------------average ptb-----------------------
-      let ptb = companies.map((com) => com.ptb);
-      setAveragePtb(
-        Number((ptb.reduce((a, b) => a + b, 0) / ptb.length).toFixed(2))
-      );
-
-      //-------------------average roe--------------------
-      let roe = companies.map((com) => com.roe);
-      setAverageRoe(
-        Number((roe.reduce((a, b) => a + b, 0) / roe.length).toFixed(2))
-      );
-
-      //---------------average roic ---------------------------
-      let roic = companies.map((com) => com.roic);
-      setAverageRoic(
-        Number((roic.reduce((a, b) => a + b, 0) / roic.length).toFixed(2))
-      );
-    }
-
     setModel({ ...model, data: companies });
   }, [companies]);
 
@@ -302,6 +253,7 @@ const Pricing = () => {
     setCompanies(
       newModel.data.sort((a, b) => a.ticker.localeCompare(b.ticker))
     );
+    setModel({ ...model, name: newModel.name });
     setLoadingModel(false);
   };
 
@@ -347,122 +299,95 @@ const Pricing = () => {
     setSearch("");
   };
 
-  return (
+  return isLoading ? (
+    <LoadingPage />
+  ) : (
     <PricingStyled>
       <NavBar />
       <div className="model-features">
         <div className="con">
-          {!newModel && !savedModel ? (
-            <div className="model-status">
-              <span>Create a new model?</span>
-              <button onClick={() => setNewModel(true)}>new</button>
-              <span>Choose an existing model</span>
-              <div className="select">
-                <span>Select a model</span>
-                <i
-                  className="fa-solid fa-chevron-down"
-                  onClick={() =>
-                    selectModelDd
-                      ? setSelectModelDd(false)
-                      : setSelectModelDd(true)
-                  }
-                ></i>
-              </div>
-
-              {selectModelDd && (
-                <ul className="models-drop-down">
-                  {pricingModels.length > 0 ? (
-                    pricingModels.map((mod) => {
-                      return (
-                        <li
-                          onClick={() => loadModel(mod._id)}
-                          className="models-list-data"
-                          key={mod._id}
-                        >
-                          <div>
-                            <span>{mod.name}</span>
-                            <i
-                              className="fa-regular fa-trash-can"
-                              onClick={() => deletePriceModel(mod._id)}
-                            ></i>
-                          </div>
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <li
-                      className="models-list-data"
-                      onClick={() => setNewModel(true)}
-                    >
-                      Create a new Model
-                    </li>
-                  )}
-                </ul>
-              )}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              addToModel(search);
+            }}
+          >
+            {error && (
+              <span style={{ color: "red", fontWeight: "bold" }}>{error}</span>
+            )}
+            <div className="form-inputs">
+              <label htmlFor="">Model title:</label>
+              <input
+                value={model.name}
+                onChange={(e) =>
+                  setModel({ ...model, name: e.target.value }, setError(null))
+                }
+                type="text"
+                placeholder="title"
+              />
             </div>
-          ) : newModel ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                addToModel(search);
-              }}
-            >
-              {error && (
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  {error}
-                </span>
-              )}
-              <div className="form-inputs">
-                <label htmlFor="">Model title:</label>
+            <div className="form-inputs">
+              <label htmlFor="">Search:</label>
+              <div className="search-bar">
                 <input
-                  value={model.name}
-                  onChange={(e) =>
-                    setModel({ ...model, name: e.target.value }, setError(null))
-                  }
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   type="text"
-                  placeholder="title"
+                  placeholder="search"
+                  required
                 />
               </div>
-              <div className="form-inputs">
-                <label htmlFor="">Search:</label>
-                <div className="search-bar">
-                  <input
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    type="text"
-                    placeholder="search"
-                    required
-                  />
-                </div>
-              </div>
-              <button>Search</button>
-            </form>
-          ) : savedModel ? (
-            <select name="" id="">
-              select
-            </select>
-          ) : null}
+            </div>
+            <button>Search</button>
+          </form>
         </div>
 
         <div className="con">
-          <Row data={["AVERAGES"]} tag="chart-titles" />
-          <Row
-            data={["PS", "PE", "PFCF", "PTB", "ROE", "ROIC"]}
-            tag="chart-headers"
-          />
-          {averagePe ? (
-            <Row
-              data={[
-                averagePs,
-                averagePe,
-                averagePfcf,
-                averagePtb,
-                averageRoe + "%",
-                averageRoic + "%",
-              ]}
-              tag="chart-data"
-            />
-          ) : null}
+          <div className="model-status">
+            <span>Choose an existing model</span>
+            <div className="select">
+              <span>Select a model</span>
+              <i
+                className="fa-solid fa-chevron-down"
+                onClick={() =>
+                  selectModelDd
+                    ? setSelectModelDd(false)
+                    : setSelectModelDd(true)
+                }
+              ></i>
+            </div>
+            {selectModelDd && (
+              <ul className="models-drop-down">
+                {pricingModels.length > 0 ? (
+                  pricingModels.map((mod) => {
+                    return (
+                      <li
+                        onClick={() => loadModel(mod._id)}
+                        className="models-list-data"
+                        key={mod._id}
+                      >
+                        <div>
+                          <span>{mod.name}</span>
+                          <i
+                            className="fa-regular fa-trash-can"
+                            onClick={() => deletePriceModel(mod._id)}
+                          ></i>
+                        </div>
+                      </li>
+                    );
+                  })
+                ) : (
+                  <li
+                    className="models-list-data"
+                    onClick={() => setNewModel(true)}
+                  >
+                    Create a new Model
+                  </li>
+                )}
+              </ul>
+            )}
+          </div>
+          )
         </div>
         <div className="con">
           <Row data={["MEDIANS"]} tag="chart-titles" />
@@ -470,7 +395,7 @@ const Pricing = () => {
             data={["PS", "PE", "PFCF", "PTB", "ROE", "ROIC"]}
             tag="chart-headers"
           />
-          {averagePe ? (
+          {medianPe ? (
             <Row
               data={[
                 medianPs,
@@ -536,7 +461,7 @@ const Pricing = () => {
                 fontSize: "2rem",
               }}
             >
-              StockSMart
+              StockSmart
             </span>
           </div>
         )}
@@ -710,8 +635,8 @@ const PricingStyled = styled.div`
     background: var(--white);
     position: absolute;
     z-index: 1;
-    top: 32%;
-    left: 6.5%;
+    top: 29%;
+    left: 30%;
     border-radius: 10px;
     border: 2px solid var(--dark);
     width: 15%;

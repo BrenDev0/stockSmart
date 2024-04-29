@@ -282,7 +282,7 @@ const TradeModal = () => {
             <div className="details-con">
               <div className="logo-con">
                 <p>{details.ticker}</p>
-                <img src={icon} alt="icon/logo" />
+                <img className="skeleton" src={icon} alt="icon/logo" />
               </div>
               <div className="info-con">
                 <p>{details.name}</p>

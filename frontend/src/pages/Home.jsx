@@ -4,17 +4,21 @@ import React, { useEffect } from "react";
 import Dashboard from "../components/Dashboard";
 import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
-import Loading from "../components/Loading";
+import LoadingPage from "../components/Skeletons/LoadingPage";
 
 const Home = () => {
   const { user, isLoading, setIsLoading } = useGlobalContext();
 
   const navigate = useNavigate();
   useEffect(() => {
-    user.status ? setIsLoading(false) : navigate("/login");
+    setTimeout(() => {
+      user.status ? setIsLoading(false) : navigate("/login");
+    }, 2000);
   }, [user]);
 
-  return (
+  return isLoading ? (
+    <LoadingPage />
+  ) : (
     <MainStyled>
       <NavBar />
       <Dashboard />
