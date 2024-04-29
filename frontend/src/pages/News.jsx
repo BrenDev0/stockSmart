@@ -6,9 +6,10 @@ import NewsArticle from "../components/NewsArticle";
 import NavBar from "../components/NavBar";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../context/GlobalContext";
+import LoadingPage from "../components/Skeletons/LoadingPage";
 
 const News = () => {
-  const { user } = useGlobalContext();
+  const { getUser, user, isLoading, setIsLoading } = useGlobalContext();
   const navigate = useNavigate();
   const [spy, setSpy] = useState({});
   const [dia, setDia] = useState({});
@@ -22,6 +23,21 @@ const News = () => {
   const todayDate = new Date().toISOString().slice(0, 10);
   const date = new Date();
   const chartYear = `${date.getFullYear()}-01-01`;
+
+  useEffect(() => {
+    getUser().then(getChartData());
+    setTimeout(() => {
+      if (user === null) {
+        return null;
+      }
+      if (user) {
+        return setIsLoading(false);
+      }
+      if (!user) {
+        return navigate("/login");
+      }
+    }, 2000);
+  }, [user]);
 
   const getChartData = () => {
     try {
@@ -133,13 +149,6 @@ const News = () => {
       console.log(error);
     }
   };
-  useEffect(() => {
-    getChartData();
-  }, []);
-
-  useLayoutEffect(() => {
-    user.status ? null : navigate("/login");
-  }, [user]);
 
   useEffect(() => {
     try {
@@ -159,7 +168,9 @@ const News = () => {
     }
   }, []);
 
-  return (
+  return isLoading ? (
+    <LoadingPage />
+  ) : (
     <NewsStyled>
       <NavBar />
       <div className="charts">

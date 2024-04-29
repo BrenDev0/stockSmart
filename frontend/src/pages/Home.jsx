@@ -7,12 +7,21 @@ import { useNavigate } from "react-router-dom";
 import LoadingPage from "../components/Skeletons/LoadingPage";
 
 const Home = () => {
-  const { user, isLoading, setIsLoading } = useGlobalContext();
+  const { getUser, user, isLoading, setIsLoading } = useGlobalContext();
 
   const navigate = useNavigate();
   useEffect(() => {
+    getUser();
     setTimeout(() => {
-      user.status ? setIsLoading(false) : navigate("/login");
+      if (user === null) {
+        return null;
+      }
+      if (user) {
+        return setIsLoading(false);
+      }
+      if (!user) {
+        return navigate("/login");
+      }
     }, 2000);
   }, [user]);
 

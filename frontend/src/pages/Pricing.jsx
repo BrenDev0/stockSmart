@@ -43,9 +43,18 @@ const Pricing = () => {
   });
 
   useEffect(() => {
+    getUser();
     setTimeout(() => {
-      user.status ? getPricingModels().then(setIsLoading(false)) : null;
-    }, 1500);
+      if (user === null) {
+        return null;
+      }
+      if (user) {
+        return setIsLoading(false);
+      }
+      if (!user) {
+        return navigate("/login");
+      }
+    }, 2000);
   }, [user]);
 
   useEffect(() => {

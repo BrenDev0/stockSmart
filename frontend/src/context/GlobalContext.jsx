@@ -10,10 +10,8 @@ export const GlobalProvider = ({ children }) => {
     getUser();
   }, []);
   const USER_URL = "http://localhost:5000/api/user";
-  const [user, setUser] = useState({
-    user: "logged off",
-    status: false,
-  });
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,13 +40,14 @@ export const GlobalProvider = ({ children }) => {
 
   //---------------functions---------
 
-  axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   const getUser = async () => {
     try {
       const user = await axios.get(USER_URL);
 
-      setUser(user.data);
+      setUser(user.data.status);
+      user.data.token ? setToken(user.data.token) : null;
     } catch (error) {
       console.error(error);
     }

@@ -10,8 +10,16 @@ const Login = () => {
   const { user, isLoading, setIsLoading } = useGlobalContext();
   const navigate = useNavigate();
   useEffect(() => {
-    user.status ? navigate("/") : setIsLoading(false);
-  }, []);
+    if (user === null) {
+      return null;
+    }
+    if (user) {
+      return navigate("/");
+    }
+    if (!user) {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   return isLoading ? (
     <LoadingPage />

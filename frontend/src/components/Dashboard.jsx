@@ -12,6 +12,7 @@ import { useTradeContext } from "../context/TradeContext";
 import { useWatchlistContext } from "../context/WatchlistContext";
 
 const Dashboard = () => {
+  const { user } = useGlobalContext();
   const { positions, updatePosition, getPositions } = useTradeContext();
 
   const { getWatchlists, selectedWl, setSelectedWl } = useWatchlistContext();
@@ -25,7 +26,7 @@ const Dashboard = () => {
   useEffect(() => {
     getPositions();
     getWatchlists();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const interval = setInterval(() => {
