@@ -2,7 +2,7 @@ import { useGlobalContext } from "../context/GlobalContext";
 import styled from "styled-components";
 import React, { useEffect } from "react";
 import Dashboard from "../components/Dashboard";
-import NavBar from "../components/NavBar";
+import Layout from "../styles/Layout";
 import { useNavigate } from "react-router-dom";
 import LoadingPage from "../components/Skeletons/LoadingPage";
 
@@ -28,10 +28,11 @@ const Home = () => {
   return isLoading ? (
     <LoadingPage />
   ) : (
-    <MainStyled>
-      <NavBar />
-      <Dashboard />
-    </MainStyled>
+    <Layout>
+      <MainStyled>
+        <Dashboard />
+      </MainStyled>
+    </Layout>
   );
 };
 

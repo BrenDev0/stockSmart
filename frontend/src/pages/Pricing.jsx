@@ -273,7 +273,7 @@ const Pricing = () => {
       }
       await newPriceModel(model);
       setCompanies([]);
-      setAveragePe(null);
+      setMedianPe(null);
       setModel({ ...model, name: "" });
     } catch (error) {
       console.log(error);
@@ -648,7 +648,7 @@ const PricingStyled = styled.div`
     top: 29%;
     left: 30%;
     border-radius: 10px;
-    border: 2px solid var(--dark);
+    border: 2px solid var(--light);
     width: 15%;
   }
 

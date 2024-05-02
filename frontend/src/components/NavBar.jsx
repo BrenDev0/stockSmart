@@ -169,6 +169,7 @@ const NavBarStyled = styled.nav`
     position: absolute;
     z-index: 1;
     border-radius: 10px;
+    border: 1px solid var(--light);
   }
 
   .list-data {

@@ -6,11 +6,12 @@ import Login from "./pages/Login";
 import axios from "axios";
 import News from "./pages/News";
 import Pricing from "./pages/Pricing";
+import History from "./pages/History";
 
 axios.defaults.withCredentials = true;
 
 function App() {
-  const { tradeModal, user } = useGlobalContext();
+  const { tradeModal } = useGlobalContext();
 
   return (
     <BrowserRouter>
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/news/:param" element={<News />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/history" element={<History />} />
       </Routes>
     </BrowserRouter>
   );
