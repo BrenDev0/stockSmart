@@ -6,7 +6,7 @@ import NewsArticle from "../components/NewsArticle";
 import Layout from "../styles/Layout";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../context/GlobalContext";
-import LoadingPage from "../components/Skeletons/LoadingPage";
+import NewsPageSkeleton from "../components/Skeletons/NewsPageSkeleton";
 import EtfCharts from "../components/EtfCharts";
 
 const News = () => {
@@ -52,7 +52,7 @@ const News = () => {
   }, []);
 
   return isLoading ? (
-    <LoadingPage />
+    <NewsPageSkeleton />
   ) : (
     <Layout>
       <NewsStyled>
@@ -94,7 +94,7 @@ const NewsStyled = styled.div`
   .news {
     width: 100%;
     height: 75%;
-    overflow: scroll;
+
     padding: 15px;
   }
 

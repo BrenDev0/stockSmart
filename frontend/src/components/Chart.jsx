@@ -14,6 +14,7 @@ import styled from "styled-components";
 
 const Chart = ({ ticker, timeframe, today }) => {
   const [chartData, setChartData] = useState({});
+
   useLayoutEffect(() => {
     console.log("entered ule");
     const formatData = async (ticker, timeframe, today) => {
@@ -73,7 +74,7 @@ const ChartStyled = styled.div`
 
   span,
   p {
-    color: var(--light);
+    color: var(--dark);
   }
 
   tspan {

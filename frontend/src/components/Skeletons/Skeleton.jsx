@@ -1,6 +1,6 @@
 import React from "react";
 
-const Skeleton = (width, height, br, data) => {
+const Skeleton = ({ width, height, br, data, dataStyle }) => {
   const skeletonStyle = {
     width: width,
     height: height,
@@ -8,7 +8,7 @@ const Skeleton = (width, height, br, data) => {
   };
   return (
     <div className="skeleton" style={skeletonStyle}>
-      <span>{data}</span>
+      {data && <span style={dataStyle}>{data}</span>}
     </div>
   );
 };
