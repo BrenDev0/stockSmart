@@ -15,7 +15,7 @@ const Dashboard = () => {
   const { user } = useGlobalContext();
   const { positions, updatePosition, getPositions } = useTradeContext();
 
-  const { getWatchlists, selectedWl, setSelectedWl } = useWatchlistContext();
+  const { getWatchlists } = useWatchlistContext();
 
   //state
   const [listDisplay, setListDisplay] = useState(false);
@@ -25,7 +25,6 @@ const Dashboard = () => {
   //effects
   useEffect(() => {
     getPositions();
-    getWatchlists();
   }, [user]);
 
   useEffect(() => {
@@ -56,7 +55,11 @@ const Dashboard = () => {
           <Balances />
         </div>
         <div className="news ">
-          <NewsArticle />
+          <NewsArticle
+            category={"general"}
+            background={"var(--red)"}
+            fullLayout={false}
+          />
         </div>
       </div>
       <div className="positions ">

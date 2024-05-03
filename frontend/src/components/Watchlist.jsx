@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useWatchlistContext } from "../context/WatchlistContext";
 styled;
 
 const Watchlist = () => {
-  const { watchlist } = useWatchlistContext();
+  const { watchlist, getWatchlists } = useWatchlistContext();
   const [selectedWl, setSelectedWl] = useState("Watchlists");
   const [dropdown, setDropdown] = useState(false);
+
+  useEffect(() => {
+    getWatchlists();
+  }, []);
   return (
     <WlStyled>
       <HeadStyled>
