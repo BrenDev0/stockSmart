@@ -9,6 +9,7 @@ import { useGlobalContext } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { useModelsContext } from "../context/ModelsContext";
 import LoadingPage from "../components/Skeletons/LoadingPage";
+import Layout from "../styles/Layout"
 
 const Pricing = () => {
   const { user, getUser, isLoading, setIsLoading } = useGlobalContext();
@@ -311,8 +312,8 @@ const Pricing = () => {
   return isLoading ? (
     <LoadingPage />
   ) : (
-    <PricingStyled>
-      <NavBar />
+    <Layout>
+      <PricingStyled>
       <div className="model-features">
         <div className="con">
           <form
@@ -511,12 +512,15 @@ const Pricing = () => {
         )}
       </div>
     </PricingStyled>
+    </Layout>
   );
 };
 
 const PricingStyled = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 
   .con {
     width: 25%;
@@ -587,6 +591,7 @@ const PricingStyled = styled.div`
   }
 
   .model {
+    margin-top: 10px;
     width: 100%;
     padding: 10px;
     display: flex;
