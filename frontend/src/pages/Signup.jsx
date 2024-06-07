@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import LoginForm from "../components/LoginForm";
+import SignupForm from "../components/SignupForm";
 import img from "../images/stockmarket.jpeg";
 import { useGlobalContext } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (user === null) {
-      null;
+       null;
     }
     if (user) {
       return navigate("/");
@@ -25,7 +25,7 @@ const Login = () => {
     <LoadingPage />
   ) : (
     <LoginStyled>
-      <LoginForm />
+      <SignupForm />
     </LoginStyled>
   );
 };

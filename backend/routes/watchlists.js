@@ -11,6 +11,7 @@ const {
 //middleware
 
 router
+  .use(verifyUser)
   .get("/get-watchlists", getWatchlists)
   .get("/find-watchlist/:id", findWatchlist)
   .post("/add-watchlist", newWatchlist)

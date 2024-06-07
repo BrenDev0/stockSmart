@@ -7,6 +7,7 @@ import { useGlobalContext } from "../context/GlobalContext";
 const Form = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("")
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { getUser, setIsLoading } = useGlobalContext();
@@ -14,11 +15,15 @@ const Form = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      const form = { email, password };
-      await axios.post("http://localhost:5000/api/user/login", form);
+      if (confirm === password){
+        const form = { email, password };
+      await axios.post("http://localhost:5000/api/user/signup", form);
       setIsLoading(true);
       await getUser();
       navigate("/");
+      } else{
+        setError("Passwords don't match")
+      }
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -43,10 +48,17 @@ const Form = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <label htmlFor="">Confirm Password:</label>
+        <input
+          type="Password"
+          placeholder="confirm password"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+        />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">Signup</button>
       <span>
-        Dont have an account? <a href="/signup">Sign up</a>
+        Already have an account? <a href="/login">Login</a>
       </span>
       {error && <span style={{ color: "red" }}>{error}</span>}
     </FormStyled>
@@ -58,9 +70,8 @@ const FormStyled = styled.form`
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-
   border-radius: 15px;
-  height: 50%;
+  height: 60%;
   width: 30%;
   position: absolute;
   top: 50%;
@@ -77,6 +88,7 @@ const FormStyled = styled.form`
 
   label {
     color: var(--dark);
+    margin: 10px 0 10px 0;
   }
 
   .form-inputs {

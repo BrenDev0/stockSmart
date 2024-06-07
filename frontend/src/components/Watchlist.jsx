@@ -4,9 +4,9 @@ import { useWatchlistContext } from "../context/WatchlistContext";
 styled;
 
 const Watchlist = () => {
-  const { watchlist, getWatchlists } = useWatchlistContext();
-  const [selectedWl, setSelectedWl] = useState("Watchlists");
+  const { watchlist, getWatchlists, deleteFromWatchlist,selectedWl, setSelectedWl } = useWatchlistContext();
   const [dropdown, setDropdown] = useState(false);
+  const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
     getWatchlists();
@@ -23,7 +23,7 @@ const Watchlist = () => {
             onClick={() => (dropdown ? setDropdown(false) : setDropdown(true))}
           ></i>
           {selectedWl.tickers ? (
-            <i className="fa-solid fa-pen-to-square"></i>
+            <i className="fa-solid fa-pen-to-square" onClick={() => editMode ? setEditMode(false) : setEditMode(true)}></i>
           ) : null}
         </div>
         <div>
@@ -35,7 +35,6 @@ const Watchlist = () => {
                     key={wl._id}
                     className="list-data"
                     onClick={() => {
-                      console.log(wl);
                       setSelectedWl(wl);
                       setDropdown(false);
                     }}
@@ -53,11 +52,17 @@ const Watchlist = () => {
             .sort((a, b) => a.ticker.localeCompare(b.ticker))
             .map((wli) => {
               return (
-                <WliStyled>
+                <WliStyled key={wli._id}>
                   <span>{wli.ticker.toUpperCase()}</span>
-                  <span>
+                  {
+                    editMode ?
+                    <i className="fa-solid fa-trash-can" onClick={() => deleteFromWatchlist(selectedWl._id, wli._id) }></i>
+                    : 
+                    <span>
                     <i className="fa-solid fa-dollar-sign"></i> {wli.mark}
                   </span>
+                  }
+
                 </WliStyled>
               );
             })

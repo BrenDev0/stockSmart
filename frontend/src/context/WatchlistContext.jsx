@@ -45,12 +45,12 @@ export const WatchlistProvider = ({ children }) => {
 
   //delete an item from watchlist
 
-  const deleteFromWatchlist = async (id, data) => {
+  const deleteFromWatchlist = async (wlid, id) => {
     try {
-      await axios.put(`${WATCHLIST_URL}remove-from-watchlist/${id}`, data);
-      const select = await axios.get(`${WATCHLIST_URL}find-watchlist/${id}`);
-
-      setSelectedWl(select.data);
+      await axios.put(`${WATCHLIST_URL}remove-from-watchlist/${wlid}`, {_id: id});
+      await getWatchlists()
+      const select = await axios.get(`${WATCHLIST_URL}find-watchlist/${wlid}`)
+      setSelectedWl(select.data)
     } catch (error) {
       console.log(error);
       setError(error.response.data.message);

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TradeModal from "./components/TradeModal";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup"
 import axios from "axios";
 import News from "./pages/News";
 import Pricing from "./pages/Pricing";
@@ -18,6 +19,7 @@ function App() {
       {tradeModal && <TradeModal />}
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Home />} />
         <Route path="/news/:param" element={<News />} />
         <Route path="/pricing" element={<Pricing />} />
