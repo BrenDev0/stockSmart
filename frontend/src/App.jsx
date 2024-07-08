@@ -9,6 +9,7 @@ import News from "./pages/News";
 import Pricing from "./pages/Pricing";
 import History from "./pages/History";
 import WatchlistsPage from "./pages/WatchlistsPage";
+import Valuation from "./pages/Valuation";
 
 axios.defaults.withCredentials = true;
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Home />} />
         <Route path="/news/:param" element={<News />} />
+        <Route path="/valuation" element={<Valuation />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/history" element={<History />} />
         <Route path="/watchlists" element={<WatchlistsPage />} />

@@ -77,7 +77,7 @@ const NavBar = () => {
                 onMouseEnter={() => setModelsDropdown(true)}
                 onMouseLeave={() => setModelsDropdown(false)}
               >
-                <a href="">Valuation Models</a>
+                <a href="/valuation">Valuation Models</a>
               </li>
             </ul>
           )}
