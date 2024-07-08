@@ -4,6 +4,7 @@ import Layout from '../styles/Layout'
 import { useGlobalContext } from '../context/GlobalContext'
 import { useNavigate } from 'react-router-dom'
 import LoadingPage from '../components/Skeletons/LoadingPage'
+import ValuationToolBar from '../components/ValuationToolBar'
 
 
 const Valuation = () => {
@@ -19,7 +20,7 @@ const Valuation = () => {
                 setIsLoading(false)
             }
             if (!user){
-                return navigate('login')
+                return navigate('/login')
             }
         }, 2000)
     }, [user])
@@ -29,7 +30,7 @@ const Valuation = () => {
   ) : (
     <Layout>
         <ValuationStyled>
-
+            <ValuationToolBar />
         </ValuationStyled>
     </Layout>
   )
@@ -37,7 +38,7 @@ const Valuation = () => {
 
 const ValuationStyled = styled.div`
     width: 100%;
-    height: 100%;
+    height: 90%;
 `
 
 export default Valuation
