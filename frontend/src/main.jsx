@@ -6,6 +6,7 @@ import { TradeProvider } from "./context/TradeContext.jsx";
 import { WatchlistProvider } from "./context/WatchlistContext.jsx";
 import GlobalStyle from "./styles/globalStyle.jsx";
 import { ModelsProvider } from "./context/ModelsContext.jsx";
+import { ValuationProvider } from './context/ValuationContext.jsx'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <GlobalProvider>
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <WatchlistProvider>
         <GlobalStyle />
         <ModelsProvider>
+          <ValuationProvider>
           <App />
+          </ValuationProvider>
         </ModelsProvider>
       </WatchlistProvider>
     </TradeProvider>
