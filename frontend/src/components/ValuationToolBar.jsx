@@ -3,14 +3,13 @@ import styled from 'styled-components'
 import { useValuationContext } from '../context/ValuationContext'
 
 const ValuationToolBar = () => {
-    const { search, setSearch } = useValuationContext()
+    const { search, setSearch, getData } = useValuationContext()
+    
   return (
     <ToolbarStyled>
-        <div id="serach">
+        <div id="search">
             <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} />
-            <button>
-                <i className="fa-solid fa-magnifying-glass"></i>
-            </button>
+            <i className="fa-solid fa-magnifying-glass" onClick={getData}></i>
         </div>
     </ToolbarStyled>
   )
@@ -21,7 +20,26 @@ const ToolbarStyled = styled.div`
     height: 10%;
     display: flex;
     align-items: center;
-    border: 1px solid black
+    border: 1px solid black;
+
+    #search {
+        flex-basis: 25%;
+        display: flex;
+        align-items: center;
+    }
+
+    input {
+        border: 1px solid var(--red);
+    }
+
+    .fa-magnifying-glass {
+        color: var(--red);
+        margin-left: 10px;
+    }
+
+    .fa-magnifying-glass:hover {
+        cursor: pointer;
+    }
 
 `
 

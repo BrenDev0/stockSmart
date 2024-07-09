@@ -5,10 +5,13 @@ import { useGlobalContext } from '../context/GlobalContext'
 import { useNavigate } from 'react-router-dom'
 import LoadingPage from '../components/Skeletons/LoadingPage'
 import ValuationToolBar from '../components/ValuationToolBar'
+import Table from '../components/Table'
+import { useValuationContext } from '../context/ValuationContext'
 
 
 const Valuation = () => {
     const { getUser, user, isLoading, setIsLoading } = useGlobalContext()
+    const { incomeStatement } = useValuationContext()
     const navigate = useNavigate()
     useEffect(() => {
         getUser();
@@ -31,6 +34,10 @@ const Valuation = () => {
     <Layout>
         <ValuationStyled>
             <ValuationToolBar />
+            {
+                incomeStatement.length > 0 && <Table />
+            }
+            
         </ValuationStyled>
     </Layout>
   )
@@ -39,6 +46,8 @@ const Valuation = () => {
 const ValuationStyled = styled.div`
     width: 100%;
     height: 90%;
+    display: flex;
+    flex-direction: column;
 `
 
 export default Valuation
