@@ -6,7 +6,10 @@ const ValuationContext = createContext()
 
 export const ValuationProvider = ({children}) => {
     const [search, setSearch] = useState('')
-    const [incomeStatement, setIncomeStatement] = useState({})
+    const [incomeStatement, setIncomeStatement] = useState({
+        years: '',
+        kv: []
+    })
 
     const getData = () => {
         fetch(`https://financialmodelingprep.com/api/v3/income-statement/${search}?period=annual&apikey=${modelKey}`)
@@ -29,7 +32,22 @@ export const ValuationProvider = ({children}) => {
                 }
                })
                
+               const array = []
 
+               keys.forEach((key) => {
+                const set = {
+                    key: key,
+                    values: []
+                }
+                for (let i = 0; i < data.length; i++){
+                    set.values.push(data[i][key])
+                }
+                array.push(set) 
+            })
+            setIncomeStatement({
+                years: years,
+                kv: array
+            })
         })
     }
 

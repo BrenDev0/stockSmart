@@ -35,7 +35,7 @@ const Valuation = () => {
         <ValuationStyled>
             <ValuationToolBar />
             {
-                incomeStatement.length > 0 && <Table />
+                incomeStatement.kv.length > 0 && <Table />
             }
             
         </ValuationStyled>
