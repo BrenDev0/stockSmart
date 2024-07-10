@@ -18,15 +18,13 @@ export const ValuationProvider = ({children}) => {
                })
 
                const keys = []
+               
 
             //get the keys
                data.map((year) => {
                 for (const [key, value] of Object.entries(year)) {
                     if (typeof value === 'number' && keys.includes(key) === false) {
-                        let values = []
-                        for (let i = 0; i < data.length; i++){
-                            console.log(i[key])
-                        }
+                        keys.push(key)
                     }
                 }
                })
