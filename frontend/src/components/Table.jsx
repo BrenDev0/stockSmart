@@ -22,9 +22,7 @@ const Table = () => {
         <tbody>
             {
                 incomeStatement.map((year) => {
-                    for (const [key, value] of Object.entries(year.data)) {
-                       console.log(key, value)
-                    }
+                    
                 })
             }
         </tbody>
