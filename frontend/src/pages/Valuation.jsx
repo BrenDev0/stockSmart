@@ -10,8 +10,8 @@ import { useValuationContext } from '../context/ValuationContext'
 
 
 const Valuation = () => {
-    const { getUser, user, isLoading, setIsLoading } = useGlobalContext()
-    const { incomeStatement } = useValuationContext()
+    const { getUser, user, isLoading, setIsLoading, error } = useGlobalContext()
+    const { financialData } = useValuationContext()
     const navigate = useNavigate()
     useEffect(() => {
         getUser();
@@ -35,7 +35,7 @@ const Valuation = () => {
         <ValuationStyled>
             <ValuationToolBar />
             {
-                incomeStatement.kv.length > 0 && <Table />
+                financialData.data.length > 0 &&  <Table />
             }
             
         </ValuationStyled>

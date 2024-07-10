@@ -5,16 +5,16 @@ import {money} from '../utils/money.format'
 
 
 const Table = () => {
-    const { incomeStatement } = useValuationContext()
+    const { financialData } = useValuationContext()
   return (
     <TableStyled>
         <thead>
             <tr>
                 <th></th>
                 {
-                    incomeStatement.years.map((year) => {
+                    financialData.years.map((year) => {
                         return(
-                            <th>{year}</th>
+                            <th key={year}>{year}</th>
                         )
                     })
                 }
@@ -22,14 +22,14 @@ const Table = () => {
         </thead>
         <tbody>
             {
-                incomeStatement.kv.map((kv) => {
+                financialData.data.map((kv) => {
                     return (
                         <tr>
                             <td>{kv.key}</td>
                             {
                                 kv.values.map((value) => {
                                     return (
-                                        <td>{money.format(value)}</td>
+                                        <td key={Math.random()}>{money.format(value)}</td>
                                     )
                                 })
                             }

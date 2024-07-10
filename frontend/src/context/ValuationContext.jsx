@@ -1,18 +1,22 @@
 import { createContext, useContext, useState } from "react";
 import { modelKey } from "../keys";
+import { useGlobalContext } from "./GlobalContext";
 
 
 const ValuationContext = createContext()
 
 export const ValuationProvider = ({children}) => {
+    const { setError } = useGlobalContext()
     const [search, setSearch] = useState('')
-    const [incomeStatement, setIncomeStatement] = useState({
+    const [statement, setStatement] = useState('income-statement')
+    const [financialData, setFinancialData] = useState({
         years: '',
-        kv: []
+        data: []
     })
 
     const getData = () => {
-        fetch(`https://financialmodelingprep.com/api/v3/income-statement/${search}?period=annual&apikey=${modelKey}`)
+        try {
+            fetch(`https://financialmodelingprep.com/api/v3/${statement}/${search}?period=annual&apikey=${modelKey}`)
         .then((res) => res.json())
         .then((data) => {
             //get the years for table head
@@ -44,11 +48,14 @@ export const ValuationProvider = ({children}) => {
                 }
                 array.push(set) 
             })
-            setIncomeStatement({
+            setFinancialData({
                 years: years,
-                kv: array
+                data: array
             })
         })
+        } catch (error) {
+            setError(error)
+        }
     }
 
     return (
@@ -57,7 +64,9 @@ export const ValuationProvider = ({children}) => {
                 search,
                 setSearch,
                 getData,
-                incomeStatement,
+                financialData,
+                statement, 
+                setStatement
             }}
         >
             {children}
