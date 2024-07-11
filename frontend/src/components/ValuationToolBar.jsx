@@ -8,7 +8,7 @@ const ValuationToolBar = () => {
   return (
     <ToolbarStyled>
         <div id="search">
-            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <input type="text" placeholder='ticker...' value={search} onChange={(e) => setSearch(e.target.value)} />
             <i className="fa-solid fa-magnifying-glass" onClick={getData}></i>
         </div>
         <select name="fstatement" id="statement" value={statement} onChange={(e) => {
