@@ -10,7 +10,7 @@ const Table = () => {
     <TableStyled>
         <thead>
             <tr>
-                <th></th>
+                <th>{financialData.currency} in millions </th>
                 {
                     financialData.years.map((year) => {
                         return(
@@ -27,11 +27,35 @@ const Table = () => {
                         <tr>
                             <td>{kv.key}</td>
                             {
-                                kv.values.map((value) => {
-                                    return (
-                                        <td key={Math.random()}>{money.format(value)}</td>
-                                    )
-                                })
+                                kv.key.includes('Ratio') ?
+
+                                    kv.values.map((value) => {
+                                        return (
+                                            <td>{Math.round(value * 100)}%</td>
+                                        )
+                                    }) :
+
+                                    kv.key.includes('eps') ?
+
+                                        kv.values.map((value) => {
+                                            return (
+                                                <td>{money.format(value)}</td>
+                                            )
+                                        }) :
+
+                                    kv.key.includes('ShsOut') ? 
+                                    
+                                        kv.values.map((value) => {
+                                            return (
+                                                <td>{new Intl.NumberFormat().format(value/1000000)}</td>
+                                            )
+                                        }) :
+                                    
+                                        kv.values.map((value) => {
+                                            return (
+                                                <td key={Math.random()}>{money.format(value/1000000)}</td>
+                                            )
+                                        })
                             }
                         </tr>
                     )
