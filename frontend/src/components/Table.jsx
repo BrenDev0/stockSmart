@@ -10,7 +10,7 @@ const Table = () => {
     <TableStyled>
         <thead>
             <tr>
-                <th>{financialData.currency} in millions </th>
+                <th>{financialData.ticker} -- {financialData.currency} in millions </th>
                 {
                     financialData.years.map((year) => {
                         return(
