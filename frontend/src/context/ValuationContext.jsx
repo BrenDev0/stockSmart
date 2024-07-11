@@ -10,6 +10,7 @@ export const ValuationProvider = ({children}) => {
     const [search, setSearch] = useState('')
     const [statement, setStatement] = useState('income-statement')
     const [financialData, setFinancialData] = useState({
+        currency: '',
         years: '',
         data: []
     })
@@ -49,6 +50,7 @@ export const ValuationProvider = ({children}) => {
                 array.push(set) 
             })
             setFinancialData({
+                currency: data[0].reportedCurrency,
                 years: years,
                 data: array
             })
