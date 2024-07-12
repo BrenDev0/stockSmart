@@ -8,7 +8,7 @@ const CompanyValuation = () => {
 
     const [incomeStatement, setIncomeStatement] = useState({})
     const [balanceSheet, setBalanceSheet] = useState({})
-    const [cashflowStatement, setCashflowStatement] = useState({})
+    const [cashflowStatement, setCashflowStatement] = useState({}) 
 
     useEffect(() => {
         Promise.all(
