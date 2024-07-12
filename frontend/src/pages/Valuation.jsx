@@ -7,6 +7,7 @@ import LoadingPage from '../components/Skeletons/LoadingPage'
 import ValuationToolBar from '../components/ValuationToolBar'
 import Table from '../components/Table'
 import { useValuationContext } from '../context/ValuationContext'
+import CompanyValuation from '../components/CompanyValuation'
 
 
 const Valuation = () => {
@@ -35,7 +36,11 @@ const Valuation = () => {
         <ValuationStyled>
             <ValuationToolBar />
             {
-                financialData.data.length > 0 &&  <Table />
+                financialData.data.length > 0 &&  
+                <div className='valuation-tools'>
+                    <Table />
+                    <CompanyValuation />
+                </div>
             }
             
         </ValuationStyled>
@@ -48,6 +53,12 @@ const ValuationStyled = styled.div`
     height: 90%;
     display: flex;
     flex-direction: column;
+
+    .valuation-tools {
+        display: flex;
+        flex-direction: column;
+        
+    }
 `
 
 export default Valuation
