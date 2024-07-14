@@ -5,51 +5,84 @@ import { modelKey } from '../keys'
 
 const CompanyValuation = () => {
     const { search, incomeStatement, balanceSheet, cashflowStatement } = useValuationContext()
-
+    const [metric, setMetric] = useState('')
+    const [terminalValue, setTerminalValue] = useState('')
   return (
     <ValueStyled>
-        <span>Valuation</span>
-        <div className="options">
-            <div className="pairs">
-                <label htmlFor="growth-rate">Growth Rate</label>
-                <input type="percent" />
-            </div>
-            <div className="pairs">
-                <select name="" id="">
-                    <option value="Exit-Multiple">Exit Multiple</option>
-                    <option value="Terminal-Value">Terminal Value</option>
-                </select>
-                <input type="number" />
-            </div>
-        </div>
+        <caption>Valuation</caption>
+        <thead>
+            <tr>
+                <th>
+                    <select name="metric" id="metric-select" value={metric} onChange={(e) => setMetric(e.target.value)}>
+                        <option value="">Select Metric</option>
+                        <option value="net-income">Net Income</option>
+                        <option value="free-cashflow">Free Cashflow</option>
+                    </select>
+                </th>
+                <th>Growth Rate</th>
+                <th>
+                    <select name="terminal-value" id="tv-select" value={terminalValue} onChange={(e) => setTerminalValue(e.target.value)}>
+                        <option value="">Select Terminal Value</option>
+                        <option value="exit-multiple">Exit Multiple</option>
+                        <option value="perpetuity-growth">Perpetuity Growth</option>
+                    </select>
+                </th>
+                <th>Discount Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input type="number" />
+                </td>
+                <td>
+                    <input type="number" />
+                </td>
+                <td>
+                    <input type="number" />
+                </td>
+                <td>
+                    <input type="number" />
+                </td>
+            </tr>
+        </tbody>
     </ValueStyled>
   )
 }
 
-const ValueStyled = styled.div`
-    background: var(--red);
+const ValueStyled = styled.table`
+    margin-top: 15px;
+    background-color: var(--red);
+    padding: 25px;
+    
+    th {
+        text-align: left;
+    }
 
-.options {
-    height: 75px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    td{
+        text-align: left;
+    }
 
-}
+    select {
+        color: var(--dark)
+    }
 
-.pairs {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+    option {
+        color: var(--dark)
+    }
 
-select {
-    color: var(--dark);
-}
-
-option {
-    color: var(--dark);
-}
+    input {
+        width: 25%;
+        height: 25px;
+        border-radius: 5px
+    }
+    caption{
+        color: var(--dark);
+        font-size: 2rem;
+        
+    }
 `
+    
+
 
 export default CompanyValuation
