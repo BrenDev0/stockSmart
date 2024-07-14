@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useValuationContext } from '../context/ValuationContext'
 
 const ValuationToolBar = () => {
-    const { search, setSearch, getData, statement, setStatement } = useValuationContext()
+    const { search, setSearch, getData, incomeStatement, balanceSheet, cashflowStatement, statement, setStatement } = useValuationContext()
     
   return (
     <ToolbarStyled>
@@ -11,12 +11,10 @@ const ValuationToolBar = () => {
             <input type="text" placeholder='ticker...' value={search} onChange={(e) => setSearch(e.target.value)} />
             <i className="fa-solid fa-magnifying-glass" onClick={getData}></i>
         </div>
-        <select name="fstatement" id="statement" value={statement} onChange={(e) => {
-            setStatement(e.target.value);
-        }}>
-            <option value="income-statement" onClick={getData} >Income Statement</option>
-            <option value="balance-sheet-statement" onClick={getData}>Balance Sheet</option>
-            <option value="cash-flow-statement"n onClick={getData}>Cashflow Statement</option>
+        <select name="fstatement" id="statement">
+            <option value="Income Statement" onClick={() => setStatement(incomeStatement)} >Income Statement</option>
+            <option value='Balance Sheet' onClick={() => setStatement(balanceSheet)} >Balance Sheet</option>
+            <option value='Cashflow Statement' onClick={() => setStatement(cashflowStatement)}>Cashflow Statement</option>
         </select>
         y
     </ToolbarStyled>

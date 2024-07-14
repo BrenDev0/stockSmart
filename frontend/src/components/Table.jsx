@@ -5,14 +5,14 @@ import {money} from '../utils/money.format'
 
 
 const Table = () => {
-    const { financialData } = useValuationContext()
+    const { statement, setStatement } = useValuationContext()
   return (
     <TableStyled>
         <thead>
             <tr>
-                <th>{financialData.ticker} -- {financialData.currency} in millions </th>
+                <th>{statement.ticker} -- {statement.currency} in millions </th>
                 {
-                    financialData.years.map((year) => {
+                    statement.years.map((year) => {
                         return(
                             <th key={year}>{year}</th>
                         )
@@ -22,7 +22,7 @@ const Table = () => {
         </thead>
         <tbody>
             {
-                financialData.data.map((kv) => {
+                statement.data.map((kv) => {
                     return (
                         <tr>
                             <td>{kv.key}</td>

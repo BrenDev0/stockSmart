@@ -12,7 +12,7 @@ import CompanyValuation from '../components/CompanyValuation'
 
 const Valuation = () => {
     const { getUser, user, isLoading, setIsLoading, error } = useGlobalContext()
-    const { financialData } = useValuationContext()
+    const { statement } = useValuationContext()
     const navigate = useNavigate()
     useEffect(() => {
         getUser();
@@ -36,7 +36,7 @@ const Valuation = () => {
         <ValuationStyled>
             <ValuationToolBar />
             {
-                financialData.data.length > 0 &&  
+                statement.data.length > 0 &&  
                 <div className='valuation-tools'>
                     <Table />
                     <CompanyValuation />

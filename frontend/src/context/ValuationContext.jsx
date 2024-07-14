@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { modelKey } from "../keys";
 import { useGlobalContext } from "./GlobalContext";
+import { FinancialDataSort } from "../utils/FinancialDataSort";
 
 
 const ValuationContext = createContext()
@@ -8,8 +9,25 @@ const ValuationContext = createContext()
 export const ValuationProvider = ({children}) => {
     const { setError } = useGlobalContext()
     const [search, setSearch] = useState('')
-    const [statement, setStatement] = useState('income-statement')
-    const [financialData, setFinancialData] = useState({
+    const [incomeStatement, setIncomeStatement] = useState({
+        ticker:'',
+        currency: '',
+        years: '',
+        data: []
+    })
+    const [balanceSheet, setBalanceSheet] = useState({
+        ticker:'',
+        currency: '',
+        years: '',
+        data: []
+    })
+    const [cashflowStatement, setCashflowStatement] = useState({
+        ticker:'',
+        currency: '',
+        years: '',
+        data: []
+    })
+    const [statement, setStatement] = useState({
         ticker:'',
         currency: '',
         years: '',
@@ -18,45 +36,25 @@ export const ValuationProvider = ({children}) => {
 
     const getData = () => {
         try {
-            fetch(`https://financialmodelingprep.com/api/v3/${statement}/${search}?period=annual&apikey=${modelKey}`)
-        .then((res) => res.json())
-        .then((data) => {
-            //get the years for table head
-               const years = data.map((year) => {
-               return year.calendarYear
-               })
-
-               const keys = []
-               
-
-            //get the keys
-               data.map((year) => {
-                for (const [key, value] of Object.entries(year)) {
-                    if (typeof value === 'number' && keys.includes(key) === false) {
-                        keys.push(key)
-                    }
-                }
-               })
-               
-               const array = []
-
-               keys.forEach((key) => {
-                const set = {
-                    key: key,
-                    values: []
-                }
-                for (let i = 0; i < data.length; i++){
-                    set.values.push(data[i][key])
-                }
-                array.push(set) 
+            Promise.all([
+                fetch(`https://financialmodelingprep.com/api/v3/income-statement/${search}?period=annual&apikey=${modelKey}`),
+                fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${search}?period=annual&apikey=${modelKey}`),
+                fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement/${search}?period=annual&apikey=${modelKey}`),
+            ])
+            .then((responses) => {
+                return Promise.all(responses.map((res) => res.json()))
             })
-            setFinancialData({
-                ticker: data[0].symbol,
-                currency: data[0].reportedCurrency,
-                years: years,
-                data: array
-            })
+            .then((data) => {
+                setIncomeStatement(FinancialDataSort(data[0]))
+                setBalanceSheet(FinancialDataSort(data[1]))
+                setCashflowStatement(FinancialDataSort(data[2]))
+                setStatement(FinancialDataSort(data[0]))
+                
         })
+        
+
+    
+        
         } catch (error) {
             setError(error)
         }
@@ -68,9 +66,11 @@ export const ValuationProvider = ({children}) => {
                 search,
                 setSearch,
                 getData,
-                financialData,
                 statement, 
-                setStatement
+                setStatement,
+                incomeStatement,
+                balanceSheet,
+                cashflowStatement
             }}
         >
             {children}
