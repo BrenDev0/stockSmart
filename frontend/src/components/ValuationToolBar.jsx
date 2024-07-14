@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useValuationContext } from '../context/ValuationContext'
 
 const ValuationToolBar = () => {
-    const { search, setSearch, getData, incomeStatement, balanceSheet, cashflowStatement, statement, setStatement } = useValuationContext()
+    const { search, setSearch, getData, incomeStatement, balanceSheet, cashflowStatement, setStatement } = useValuationContext()
     
   return (
     <ToolbarStyled>
@@ -16,7 +16,6 @@ const ValuationToolBar = () => {
             <option value='Balance Sheet' onClick={() => setStatement(balanceSheet)} >Balance Sheet</option>
             <option value='Cashflow Statement' onClick={() => setStatement(cashflowStatement)}>Cashflow Statement</option>
         </select>
-        y
     </ToolbarStyled>
   )
 }
