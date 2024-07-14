@@ -24,14 +24,14 @@ const Table = () => {
             {
                 statement.data.map((kv) => {
                     return (
-                        <tr>
-                            <td>{kv.key}</td>
+                        <tr key={Math.random()}>
+                            <td key={Math.random()}>{kv.key}</td>
                             {
                                 kv.key.includes('Ratio') ?
 
                                     kv.values.map((value) => {
                                         return (
-                                            <td>{Math.round(value * 100)}%</td>
+                                            <td key={Math.random()}>{Math.round(value * 100)}%</td>
                                         )
                                     }) :
 
@@ -39,7 +39,7 @@ const Table = () => {
 
                                         kv.values.map((value) => {
                                             return (
-                                                <td>{money.format(value)}</td>
+                                                <td key={Math.random()}>{money.format(value)}</td>
                                             )
                                         }) :
 
@@ -47,7 +47,7 @@ const Table = () => {
                                     
                                         kv.values.map((value) => {
                                             return (
-                                                <td>{new Intl.NumberFormat().format(value/1000000)}</td>
+                                                <td key={Math.random()}>{new Intl.NumberFormat().format(value/1000000)}</td>
                                             )
                                         }) :
                                     
