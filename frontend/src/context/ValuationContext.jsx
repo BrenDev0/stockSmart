@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { modelKey } from "../keys";
+import { modelKey, detailKey } from "../keys";
 import { useGlobalContext } from "./GlobalContext";
 import { FinancialDataSort } from "../utils/FinancialDataSort";
 
@@ -9,6 +9,7 @@ const ValuationContext = createContext()
 export const ValuationProvider = ({children}) => {
     const { setError } = useGlobalContext()
     const [search, setSearch] = useState('')
+    const [details, setDetails] = useState({})
     const [incomeStatement, setIncomeStatement] = useState({
         ticker:'',
         currency: '',
@@ -40,6 +41,7 @@ export const ValuationProvider = ({children}) => {
                 fetch(`https://financialmodelingprep.com/api/v3/income-statement/${search}?period=annual&apikey=${modelKey}`),
                 fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${search}?period=annual&apikey=${modelKey}`),
                 fetch(`https://financialmodelingprep.com/api/v3/cash-flow-statement/${search}?period=annual&apikey=${modelKey}`),
+                fetch(`https://api.polygon.io/v3/reference/tickers/${search.toUpperCase()}?apiKey=${detailKey}`)
             ])
             .then((responses) => {
                 return Promise.all(responses.map((res) => res.json()))
@@ -48,6 +50,7 @@ export const ValuationProvider = ({children}) => {
                 setIncomeStatement(FinancialDataSort(data[0]))
                 setBalanceSheet(FinancialDataSort(data[1]))
                 setCashflowStatement(FinancialDataSort(data[2]))
+                setDetails(data[3])
                 setStatement(FinancialDataSort(data[0]))
                 
         })
@@ -70,7 +73,8 @@ export const ValuationProvider = ({children}) => {
                 setStatement,
                 incomeStatement,
                 balanceSheet,
-                cashflowStatement
+                cashflowStatement,
+                details
             }}
         >
             {children}
