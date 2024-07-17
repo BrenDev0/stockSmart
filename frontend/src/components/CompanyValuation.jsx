@@ -3,18 +3,28 @@ import styled from 'styled-components'
 import { useValuationContext } from '../context/ValuationContext'
 import { modelKey } from '../keys'
 import { money } from '../utils/money.format'
+import { cashflowValuator, netIncomeValuator } from '../utils/Valuators'
 
 const CompanyValuation = () => {
-    const { search, incomeStatement, balanceSheet, cashflowStatement } = useValuationContext()
+    const { search, incomeStatement, balanceSheet, cashflowStatement, details } = useValuationContext()
     const [metric, setMetric] = useState('net-income')
     const [terminalValue, setTerminalValue] = useState('exit-multiple')
     const [cash, setCash] = useState(balanceSheet.data.find((kv) => kv.key === "cashAndShortTermInvestments"))
     const [debt, setDebt] = useState(balanceSheet.data.find((kv) => kv.key === 'totalDebt'))
-    const [shares, setShares] = useState(incomeStatement.data.find((kv) => kv.key === 'weightedAverageShsOut'))
     const [revenue, setRevenue] = useState(incomeStatement.data.find((kv) => kv.key === 'revenue'))
-    const [netIncome, setNetIncome] = useState(incomeStatement.data.find((kv) => kv.key === 'netIncome'))
-    const [netMargin, setNetMargin] = useState(incomeStatement.data.find((kv) => kv.key === 'netIncomeRatio'))
+    const [netMargin, setNetMargin] = useState(Math.round(incomeStatement.data.find((kv) => kv.key === 'netIncomeRatio').values[0] * 100))
     const [freeCashflow, setFreeCashflow] = useState(cashflowStatement.data.find((kv) => kv.key === 'freeCashFlow'))
+    const [growthRate, setGrowthRate] = useState('')
+    const [discountRate, setDiscountRate] = useState('')
+    const [tv, setTv] = useState('')
+
+    useEffect(() => {
+      setCash(balanceSheet.data.find((kv) => kv.key === "cashAndShortTermInvestments"))
+      setDebt(balanceSheet.data.find((kv) => kv.key === 'totalDebt'))
+      setRevenue(incomeStatement.data.find((kv) => kv.key === 'revenue'))
+      setFreeCashflow(cashflowStatement.data.find((kv) => kv.key === 'freeCashFlow'))
+      setNetMargin(Math.round(incomeStatement.data.find((kv) => kv.key === 'netIncomeRatio').values[0] * 100))
+    }, [incomeStatement, balanceSheet, cashflowStatement])
   return (
     <ValueStyled>
        <div className="model-title"><span>Valuation</span></div>
@@ -30,13 +40,18 @@ const CompanyValuation = () => {
             <tbody>
               <tr>
                 <td>
-                  <select name="metric" id="metric-select" onChange={(e) => setMetric(e.target.value)}>
+                  <select name="metric" id="metric-select" onChange={(e) => {
+                    setMetric(e.target.value)
+                  }}>
                     <option value="net-income">Net Income</option>
                     <option value="free-cashflow">Free Cashflow</option>
                   </select>
                 </td>
                 <td>
-                  <select name="terminal-value" id="terminal-value-select"  onChange={(e) => setTerminalValue(e.target.value)}>
+                  <select name="terminal-value" id="terminal-value-select"  onChange={(e) => {
+                    setTv('')
+                    setTerminalValue(e.target.value)
+                  }}>
                     <option value="exit-multiple">Exit Multiple</option>
                     <option value="perpetuity-growth">Perpetuity Growth</option>
                   </select>
@@ -54,23 +69,32 @@ const CompanyValuation = () => {
             </thead>
             <tbody>
               <tr>
-                <td>Growth</td>
+                <td>Growth %</td>
                 <td>
-                  <input type="number" />
+                  <input type="number" value={growthRate} onChange={(e) => setGrowthRate(e.target.value)} />
                 </td>
               </tr>
               <tr>
-                <td>Terminal Value</td>
+                <td>Terminal Value {terminalValue === 'perpetuity-growth' && '%'}</td>
                 <td>
-                  <input type="number" />
+                  <input type="number" value={tv} onChange={(e) => setTv(e.target.value)} />
                 </td>
               </tr>
               <tr>
-                <td>Discount Rate</td>
+                <td>Discount Rate %</td>
                 <td>
-                  <input type="number" /> 
+                  <input type="number" value={discountRate} onChange={(e) => setDiscountRate(e.target.value)} /> 
                 </td>
               </tr>
+              {
+                metric === 'net-income' &&
+                <tr>
+                  <td>Net Margin %</td>
+                  <td>
+                    <input type="number" value={netMargin} onChange={(e) => setNetMargin(e.target.value)} />
+                  </td>
+                </tr>
+              }
             </tbody>
           </table>
           <table className='model-table' id='model-data'>
@@ -79,8 +103,8 @@ const CompanyValuation = () => {
               <tr>
                 <th>Cash</th>
                 <th>Debt</th>
-                <th>Shares Outstanding</th>
-                <th>Current Share Price</th>
+                <th>Shares</th>
+                <th>Current Price</th>
                 <th>Value</th>
               </tr>
             </thead>
@@ -88,7 +112,18 @@ const CompanyValuation = () => {
               <tr>
                 <td>{money.format(cash.values[0] / 1000000)}</td>
                 <td>{money.format(debt.values[0] / 1000000)}</td>
-                <td style={{textAlign: 'center'}}>{new Intl.NumberFormat().format(shares.values[0] / 1000000)}</td>
+                <td>{new Intl.NumberFormat().format(details.results.weighted_shares_outstanding / 1000000)}</td>
+                <td>{money.format((details.results.market_cap / details.results.weighted_shares_outstanding))}</td>
+                {
+                  growthRate && discountRate && tv && 
+                  <td>
+                  {
+                    metric === 'free-cashflow' ?
+                    money.format(cashflowValuator(freeCashflow.values[0], growthRate, discountRate, terminalValue, tv, cash.values[0], debt.values[0]) / details.results.weighted_shares_outstanding)
+                    : money.format(netIncomeValuator(revenue.values[0], netMargin, growthRate, discountRate,terminalValue, tv, cash.values[0], debt.values[0])/ details.results.weighted_shares_outstanding)
+                  }
+                </td>
+                }
               </tr>
             </tbody>
           </table>
