@@ -8,6 +8,7 @@ import ValuationToolBar from '../components/ValuationToolBar'
 import Table from '../components/Table'
 import { useValuationContext } from '../context/ValuationContext'
 import CompanyValuation from '../components/CompanyValuation'
+import GrowthCharts from '../components/GrowthCharts'
 
 
 const Valuation = () => {
@@ -39,6 +40,7 @@ const Valuation = () => {
                 statement.data.length > 0 &&  
                 <div className='valuation-tools'>
                     <Table />
+                    <GrowthCharts />
                     <CompanyValuation />
                 </div>
             }
