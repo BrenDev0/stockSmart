@@ -16,7 +16,6 @@ const Chart = ({ ticker, timeframe, today }) => {
   const [chartData, setChartData] = useState({});
 
   useLayoutEffect(() => {
-    console.log("entered ule");
     const formatData = async (ticker, timeframe, today) => {
       let arr = [];
       let color = "";
@@ -34,7 +33,6 @@ const Chart = ({ ticker, timeframe, today }) => {
           close: data.results[i].c,
         });
       }
-      console.log("exit loop");
 
       arr[0].close > arr[arr.length - 1].close
         ? (color = "red")
@@ -43,7 +41,6 @@ const Chart = ({ ticker, timeframe, today }) => {
         color: color,
         data: arr,
       });
-      console.log(chartData);
     };
 
     formatData(ticker, timeframe, today);
