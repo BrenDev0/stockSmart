@@ -47,72 +47,77 @@ const GrowthCharts = () => {
             <table>
                 <caption>Growth Metrics</caption>
                 <thead>
-                    <th>
-                        <select name="" id="">
-                            <option>---Income Statement----</option>
-                                {
-                                    incomeStatement.data.map((kv) => {
-                                        return (
-                                            <option value={kv.key} onClick={() => {
-                                                let data = [...tableData]
-                                                data.push({
+                    <tr>
+                        <th>
+                            <select name="" id="" defaultValue='Add Metric'>
+                                <option value="add-metric">Add Metric</option>
+                                <option>---Income Statement----</option>
+                                    {
+                                        incomeStatement.data.map((kv) => {
+                                            return (
+                                                <option key={kv.key} value={kv.key} onClick={() => {
+                                                    let data = [...tableData]
+                                                    data.push({
+                                                        key: kv.key,
+                                                        tyg: (kv.values[0] / kv.values[2] - 1) / 3,
+                                                        fyg: (kv.values[0] / kv.values[4] - 1) / 5
+                                                    })
+
+                                                    setTableData(data)
+                                                }}>{kv.key}</option>
+                                            )
+                                        })
+                                    }
+                                <option>---Balance Sheet---</option>
+                                    {
+                                        balanceSheet.data.map((kv) => {
+                                            return (
+                                                <option key={kv.key} value={kv.key} onClick={() => {
+                                                    let data = [...tableData]
+                                                    data.push({
                                                     key: kv.key,
                                                     tyg: (kv.values[0] / kv.values[2] - 1) / 3,
-                                                    fyg: (kv.values[0] / kv.values[4] - 1) / 5
-                                                })
+                                                    fyg: (kv.values[0] / kv.values[4] - 1) / 5 
+                                                    })
+
+                                                    setTableData(data)
+                                                }}>{kv.key}</option>
+                                            )
+                                        })
+                                    }
+                                <option>---Cashflow Statement---</option>
+                                    {
+                                        cashflowStatement.data.map((kv) => {
+                                            return (
+                                                <option key={kv.key} value={kv.key} onClick={() => {
+                                                    let data = [...tableData]
+                                                    data.push({
+                                                        key: kv.key,
+                                                        tyg: (kv.values[0] / kv.values[2] - 1) / 3,
+                                                        fyg: (kv.values[0] / kv.values[4] - 1) / 5
+                                                    })
 
                                                 setTableData(data)
                                             }}>{kv.key}</option>
                                         )
                                     })
                                 }
-                            <option>---Balance Sheet---</option>
-                                {
-                                    balanceSheet.data.map((kv) => {
-                                        return (
-                                            <option value={kv.key} onClick={() => {
-                                                let data = [...tableData]
-                                                data.push({
-                                                   key: kv.key,
-                                                   tyg: (kv.values[0] / kv.values[2] - 1) / 3,
-                                                   fyg: (kv.values[0] / kv.values[4] - 1) / 5 
-                                                })
-
-                                                setTableData(data)
-                                            }}>{kv.key}</option>
-                                        )
-                                    })
-                                }
-                            <option>---Cashflow Statement---</option>
-                                {
-                                    cashflowStatement.data.map((kv) => {
-                                        return (
-                                            <option value={kv.key} onClick={() => {
-                                                let data = [...tableData]
-                                                data.push({
-                                                    key: kv.key,
-                                                    tyg: (kv.values[0] / kv.values[2] - 1) / 3,
-                                                    fyg: (kv.values[0] / kv.values[4] - 1) / 5
-                                                })
-
-                                            setTableData(data)
-                                        }}>{kv.key}</option>
-                                    )
-                                })
-                            }
-                        </select>
-                    </th>
-                    <th>5 Year Growth</th>
-                    <th>3 Year Growth</th>
+                            </select>
+                        </th>
+                        <th>5 Year Growth</th>
+                        <th>3 Year Growth</th>
+                        <th>Remove</th>
+                    </tr>    
                 </thead>
                 <tbody>
                     {
                         tableData.map((data) => {
                             return (
-                                <tr>
+                                <tr key={data.key}>
                                     <td>{data.key}</td>
                                     <td>{Math.round(data.fyg * 100)}%</td>
                                     <td>{Math.round(data.tyg * 100)}%</td>
+                                    <td value={data.key} onClick={() => setTableData(tableData.filter((d) => d.key !== data.key))}>{<i className="fas fa-trash-alt"></i>}</td>
                                 </tr>
                             )
                         })
@@ -157,13 +162,23 @@ const ChartsStyled = styled.div`
   }
 
   table{
-    background: var(--light);
+    background: var(--dark);
     padding: 20px;
     margin: 10px 0 10px 0
   }
 
   th, td {
-    padding: 15px
+    padding: 15px;
+    color: var(--white);
+  }
+
+  .fa-trash-alt{
+    color: var(--light);
+    text-align: center;
+  }
+
+  .fa-trash-alt:hover {
+    cursor: pointer;
   }
 
 `
