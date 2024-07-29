@@ -2,7 +2,7 @@ import React, { useEffect, useState, useLayoutEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../components/NavBar";
 import Row from "../components/Row";
-import { modelKey } from "../keys";
+import { modelKey, quoteKey } from "../keys";
 import axios from "axios";
 import { money } from "../utils/money.format";
 import { useGlobalContext } from "../context/GlobalContext";
@@ -236,15 +236,22 @@ const Pricing = () => {
     setSelectModelDd(false);
     const updatedData = [];
     for (let i = 0; i < model.data.length; i++) {
-      const res = await fetch(
-        `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${model.data[
-          i
-        ].ticker.toUpperCase()}?apikey=${modelKey}`
-      );
+      const res = await Promise.all([
+        fetch(
+          `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${model.data[
+            i
+          ].ticker.toUpperCase()}?apikey=${modelKey}`
+        ),
+        fetch(
+          `https://finnhub.io/api/v1/quote?symbol=${model.data[i].ticker.toUpperCase()}&token=${quoteKey}`
+        )
+      ]);
 
-      const data = await res.json();
+      const data = await Promise.all(res.map((r) => r.json()));
+
       updatedData.push({
         ticker: model.data[i].ticker.toUpperCase(),
+        price: data[1].c,
         mc: data[0].marketCapTTM / 1000000,
         tbv: data[0].marketCapTTM / data[0].ptbRatioTTM / 1000000,
         fcf: data[0].marketCapTTM / data[0].pfcfRatioTTM / 1000000,
@@ -283,16 +290,22 @@ const Pricing = () => {
   };
 
   const addToModel = async (i) => {
-    const res = await fetch(
-      `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${i.toUpperCase()}?apikey=${modelKey}`
-    );
+    const res = await Promise.all([
+      fetch(
+        `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${i.toUpperCase()}?apikey=${modelKey}`
+      ),
+      fetch(
+        `https://finnhub.io/api/v1/quote?symbol=${i.toUpperCase()}&token=${quoteKey}`
+      )
+    ]);
 
-    const data = await res.json();
+    const data = await Promise.all(res.map((r) => r.json()));
 
     setCompanies([
       ...companies,
       {
         ticker: i.toUpperCase(),
+        price: data[1].c,
         mc: data[0].marketCapTTM / 1000000,
         tbv: data[0].marketCapTTM / data[0].ptbRatioTTM / 1000000,
         fcf: data[0].marketCapTTM / data[0].pfcfRatioTTM / 1000000,
@@ -389,7 +402,6 @@ const Pricing = () => {
                 ) : (
                   <li
                     className="models-list-data"
-                    onClick={() => setNewModel(true)}
                   >
                     Create a new Model
                   </li>
@@ -397,7 +409,6 @@ const Pricing = () => {
               </ul>
             )}
           </div>
-          )
         </div>
         <div className="con">
           <Row data={["MEDIANS"]} tag="chart-titles" />
