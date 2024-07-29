@@ -302,8 +302,8 @@ const Pricing = () => {
         roic: data[0].roicTTM * 100,
         ptb: data[0].ptbRatioTTM,
         ps: data[0].priceToSalesRatioTTM,
-        pe: data[0].peRatioTTM,
-        pfcf: data[0].pfcfRatioTTM,
+        pe: data[0].peRatioTTM < 0 ? 0 : data[0].peRatioTTM,
+        pfcf: data[0].pfcfRatioTTM < 0 ? 0 : data[0].pfcfRatioTTM,
       },
     ]);
     setSearch("");
