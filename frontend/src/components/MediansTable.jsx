@@ -49,6 +49,11 @@ const MediansTable = () => {
             );
           }
         }
+        else {
+          setMedianPs()
+          setMedianPe()
+          setMedianPfcf()
+        }
       }, [companies]);
   return (
     <MedianTableStyled>

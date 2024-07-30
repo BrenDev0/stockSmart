@@ -57,6 +57,11 @@ const CorrelationsTable = () => {
           var bottom = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2));
           setFcfCor(Number((top / bottom).toFixed(3)));
         }
+        if (companies.length === 0){
+          setRevCor()
+          setNiCor()
+          setFcfCor()
+        }
       }, [companies]);
   return (
     <CorrelationTableStyled>

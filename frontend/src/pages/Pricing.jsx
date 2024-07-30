@@ -20,6 +20,7 @@ const Pricing = () => {
   const {
     newPriceModel,
     getPricingModels,
+    loadingModel,
     pricingModels,
     findModel,
     updateModel,
@@ -42,64 +43,6 @@ const Pricing = () => {
     }, 2000);
   }, [user]);
 
-  const loadModel = async (id) => {
-    setLoadingModel(true);
-    const model = await findModel(id);
-    setSelectModelDd(false);
-    const updatedData = [];
-    for (let i = 0; i < model.data.length; i++) {
-      const res = await Promise.all([
-        fetch(
-          `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${model.data[i].ticker.toUpperCase()}?apikey=${modelKey}`
-        ),
-        fetch(
-          `https://finnhub.io/api/v1/quote?symbol=${model.data[i].ticker.toUpperCase()}&token=${quoteKey}`
-        )
-      ]);
-
-      const data = await Promise.all(res.map((r) => r.json()));
-      
-      updatedData.push({
-        ticker: model.data[i].ticker.toUpperCase(),
-        price: data[1].c,
-        mc: data[0][0].marketCapTTM / 1000000,
-        tbv: data[0][0].marketCapTTM / data[0][0].ptbRatioTTM / 1000000,
-        fcf: data[0][0].marketCapTTM / data[0][0].pfcfRatioTTM / 1000000,
-        rev: data[0][0].marketCapTTM / data[0][0].priceToSalesRatioTTM / 1000000,
-        ni: data[0][0].marketCapTTM / data[0][0].peRatioTTM / 1000000,
-        roe: data[0][0].roeTTM * 100,
-        roic: data[0][0].roicTTM * 100,
-        ptb: data[0][0].ptbRatioTTM,
-        ps: data[0][0].priceToSalesRatioTTM,
-        pe: data[0][0].peRatioTTM < 0 ? 0 : data[0][0].peRatioTTM,
-        pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM,
-      });
-    }
-
-    const newModel = await updateModel(id, { data: updatedData });
-    setCompanies(
-      updatedData.sort((a, b) => a.ticker.localeCompare(b.ticker))
-    );
-    setModel({ ...model, name: newModel.name });
-    setLoadingModel(false);
-  };
-
-  const saveModel = async () => {
-    try {
-      if (!model.name) {
-        return setError("Please add required title to model");
-      }
-      await newPriceModel(model);
-      setCompanies([]);
-      setMedianPe(null);
-      setModel({ ...model, name: "" });
-    } catch (error) {
-      console.log(error);
-      setError(error);
-    }
-  };
-
-  
 
   return isLoading ? (
     <LoadingPage />
@@ -111,9 +54,35 @@ const Pricing = () => {
           <MediansTable />
           <CorrelationsTable />
       </div>
-      <div className="table">
+      {
+        loadingModel ? 
+          <div
+          className="skeleton"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: '100%',
+            height: "80vh",
+            borderRadius: "10px",
+            marginTop: "20px",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: '"Dancing Script", cursive',
+              color: "var(--red)",
+              fontSize: "2rem",
+            }}
+          >
+            StockSmart
+          </span>
+        </div>
+        :
+        <div className="table">
         <PricingTable />
       </div>
+      }
     </PricingStyled>
     </Layout>
   );
@@ -121,7 +90,7 @@ const Pricing = () => {
 
 const PricingStyled = styled.div`
   width: 100%;
-  height: 100%;
+  height: 90%;
   display: flex;
 
 

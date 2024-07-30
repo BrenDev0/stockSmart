@@ -15,6 +15,7 @@ export const ModelsProvider = ({ children }) => {
   const [revCor, setRevCor] = useState();
   const [niCor, setNiCor] = useState();
   const [fcfCor, setFcfCor] = useState();
+  const [loadingModel, setLoadingModel] = useState(false)
   
   
   
@@ -97,7 +98,9 @@ export const ModelsProvider = ({ children }) => {
         niCor,
         setNiCor,
         fcfCor,
-        setFcfCor
+        setFcfCor,
+        loadingModel,
+        setLoadingModel
       }}
     >
       {children}
