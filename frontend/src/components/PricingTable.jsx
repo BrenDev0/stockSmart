@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { money } from '../utils/money.format'
 
 
-const PricingTable = (data, ps, pe, pfcf) => {
+const PricingTable = ({data, ps, pe, pfcf}) => {
+    
   return (
     <PricingTableStyled>
         <thead>
@@ -15,6 +16,7 @@ const PricingTable = (data, ps, pe, pfcf) => {
                 <th>PFCF</th>
                 <th>Average All</th>
                 <th>Average PE/PFCF</th>
+                <th>Average PS/PE</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +28,7 @@ const PricingTable = (data, ps, pe, pfcf) => {
                     let toFcf = (company.fcf * pfcf) / shares
                     let avgAll = (toSales + toEarnings + toFcf) / 3 
                     let avgPePfcf = (toEarnings + toFcf) / 2
+                    let avgPsPe = (toSales + toEarnings) /2
 
                     return (
                         <tr>
@@ -36,6 +39,7 @@ const PricingTable = (data, ps, pe, pfcf) => {
                             <td>{money.format(toFcf)}</td>
                             <td>{money.format(avgAll)}</td>
                             <td>{money.format(avgPePfcf)}</td>
+                            <td>{money.format(avgPsPe)}</td>
                         </tr>
                     )
                 })
@@ -45,6 +49,25 @@ const PricingTable = (data, ps, pe, pfcf) => {
   )
 }
 
-const PricingTableStyled = styled.table``
+const PricingTableStyled = styled.table`
+    background: var(--dark);
+    
+
+    th{
+        text-align: left;
+    }
+
+    th, td {
+        padding: 5px
+    }
+
+    tr:nth-child(odd){
+        background-color: var(--dark) ;
+    }
+    
+    tr:nth-child(even){
+        background-color: var(--light) ;
+    }
+`
 
 export default PricingTable

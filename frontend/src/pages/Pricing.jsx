@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useModelsContext } from "../context/ModelsContext";
 import LoadingPage from "../components/Skeletons/LoadingPage";
 import Layout from "../styles/Layout"
+import PricingTable from "../components/PricingTable";
 
 const Pricing = () => {
   const { user, getUser, isLoading, setIsLoading } = useGlobalContext();
@@ -238,9 +239,7 @@ const Pricing = () => {
     for (let i = 0; i < model.data.length; i++) {
       const res = await Promise.all([
         fetch(
-          `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${model.data[
-            i
-          ].ticker.toUpperCase()}?apikey=${modelKey}`
+          `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${model.data[i].ticker.toUpperCase()}?apikey=${modelKey}`
         ),
         fetch(
           `https://finnhub.io/api/v1/quote?symbol=${model.data[i].ticker.toUpperCase()}&token=${quoteKey}`
@@ -248,27 +247,27 @@ const Pricing = () => {
       ]);
 
       const data = await Promise.all(res.map((r) => r.json()));
-
+      
       updatedData.push({
         ticker: model.data[i].ticker.toUpperCase(),
         price: data[1].c,
-        mc: data[0].marketCapTTM / 1000000,
-        tbv: data[0].marketCapTTM / data[0].ptbRatioTTM / 1000000,
-        fcf: data[0].marketCapTTM / data[0].pfcfRatioTTM / 1000000,
-        rev: data[0].marketCapTTM / data[0].priceToSalesRatioTTM / 1000000,
-        ni: data[0].marketCapTTM / data[0].peRatioTTM / 1000000,
-        roe: data[0].roeTTM * 100,
-        roic: data[0].roicTTM * 100,
-        ptb: data[0].ptbRatioTTM,
-        ps: data[0].priceToSalesRatioTTM,
-        pe: data[0].peRatioTTM < 0 ? 0 : data[0].peRatioTTM,
-        pfcf: data[0].pfcfRatioTTM < 0 ? 0 : data[0].pfcfRatioTTM,
+        mc: data[0][0].marketCapTTM / 1000000,
+        tbv: data[0][0].marketCapTTM / data[0][0].ptbRatioTTM / 1000000,
+        fcf: data[0][0].marketCapTTM / data[0][0].pfcfRatioTTM / 1000000,
+        rev: data[0][0].marketCapTTM / data[0][0].priceToSalesRatioTTM / 1000000,
+        ni: data[0][0].marketCapTTM / data[0][0].peRatioTTM / 1000000,
+        roe: data[0][0].roeTTM * 100,
+        roic: data[0][0].roicTTM * 100,
+        ptb: data[0][0].ptbRatioTTM,
+        ps: data[0][0].priceToSalesRatioTTM,
+        pe: data[0][0].peRatioTTM < 0 ? 0 : data[0][0].peRatioTTM,
+        pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM,
       });
     }
 
     const newModel = await updateModel(id, { data: updatedData });
     setCompanies(
-      newModel.data.sort((a, b) => a.ticker.localeCompare(b.ticker))
+      updatedData.sort((a, b) => a.ticker.localeCompare(b.ticker))
     );
     setModel({ ...model, name: newModel.name });
     setLoadingModel(false);
@@ -300,23 +299,23 @@ const Pricing = () => {
     ]);
 
     const data = await Promise.all(res.map((r) => r.json()));
-
+  
     setCompanies([
       ...companies,
       {
         ticker: i.toUpperCase(),
         price: data[1].c,
-        mc: data[0].marketCapTTM / 1000000,
-        tbv: data[0].marketCapTTM / data[0].ptbRatioTTM / 1000000,
-        fcf: data[0].marketCapTTM / data[0].pfcfRatioTTM / 1000000,
-        rev: data[0].marketCapTTM / data[0].priceToSalesRatioTTM / 1000000,
-        ni: data[0].marketCapTTM / data[0].peRatioTTM / 1000000,
-        roe: data[0].roeTTM * 100,
-        roic: data[0].roicTTM * 100,
-        ptb: data[0].ptbRatioTTM,
-        ps: data[0].priceToSalesRatioTTM,
-        pe: data[0].peRatioTTM < 0 ? 0 : data[0].peRatioTTM,
-        pfcf: data[0].pfcfRatioTTM < 0 ? 0 : data[0].pfcfRatioTTM,
+        mc: data[0][0].marketCapTTM / 1000000,
+        tbv: data[0][0].marketCapTTM / data[0][0].ptbRatioTTM / 1000000,
+        fcf: data[0][0].marketCapTTM / data[0][0].pfcfRatioTTM / 1000000,
+        rev: data[0][0].marketCapTTM / data[0][0].priceToSalesRatioTTM / 1000000,
+        ni: data[0][0].marketCapTTM / data[0][0].peRatioTTM / 1000000,
+        roe: data[0][0].roeTTM * 100,
+        roic: data[0][0].roicTTM * 100,
+        ptb: data[0][0].ptbRatioTTM,
+        ps: data[0][0].priceToSalesRatioTTM,
+        pe: data[0][0].peRatioTTM < 0 ? 0 : data[0][0].peRatioTTM,
+        pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM,
       },
     ]);
     setSearch("");
@@ -522,6 +521,11 @@ const Pricing = () => {
           <button onClick={() => saveModel()}>Save</button>
         )}
       </div>
+      {
+        companies.length > 0 && (
+          <PricingTable data={companies} ps={medianPs} pe={medianPe} pfcf={medianPfcf} />
+        )
+      }
     </PricingStyled>
     </Layout>
   );
