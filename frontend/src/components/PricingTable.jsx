@@ -1,9 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { money } from '../utils/money.format'
+import { useModelsContext } from '../context/ModelsContext'
 
 
-const PricingTable = ({data, ps, pe, pfcf}) => {
+const PricingTable = () => {
+
+    const { companies, medianPs, medianPe, medianPfcf } = useModelsContext()
     
   return (
     <PricingTableStyled>
@@ -21,17 +24,17 @@ const PricingTable = ({data, ps, pe, pfcf}) => {
         </thead>
         <tbody>
             {
-                data.map((company) => {
+                companies.map((company) => {
                     let shares = company.mc / company.price
-                    let toSales = (company.rev * ps) / shares
-                    let toEarnings = (company.ni * pe) / shares
-                    let toFcf = (company.fcf * pfcf) / shares
+                    let toSales = (company.rev * medianPs) / shares
+                    let toEarnings = (company.ni * medianPe) / shares
+                    let toFcf = (company.fcf * medianPfcf) / shares
                     let avgAll = (toSales + toEarnings + toFcf) / 3 
                     let avgPePfcf = (toEarnings + toFcf) / 2
                     let avgPsPe = (toSales + toEarnings) /2
 
                     return (
-                        <tr>
+                        <tr key={company.ticker}>
                             <td>{company.ticker}</td>
                             <td>{money.format(company.price)}</td>
                             <td>{money.format(toSales)}</td>
@@ -51,6 +54,8 @@ const PricingTable = ({data, ps, pe, pfcf}) => {
 
 const PricingTableStyled = styled.table`
     background: var(--dark);
+    max-height: 100%;
+    width: 100%;
     
 
     th{

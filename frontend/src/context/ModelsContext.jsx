@@ -6,9 +6,18 @@ const ModelsContext = createContext();
 
 export const ModelsProvider = ({ children }) => {
   const MODELS_URL = "http://localhost:5000/api/price-models/";
-  const { setError } = useGlobalContext();
+  const { setError, getUser } = useGlobalContext();
   const [pricingModels, setPricingModels] = useState([]);
-  const { getUser } = useGlobalContext();
+  const [companies, setCompanies] = useState([]);
+  const [medianPe, setMedianPe] = useState();
+  const [medianPs, setMedianPs] = useState();
+  const [medianPfcf, setMedianPfcf] = useState();
+  const [revCor, setRevCor] = useState();
+  const [niCor, setNiCor] = useState();
+  const [fcfCor, setFcfCor] = useState();
+  
+  
+  
 
   //-------new model-----------------
   const newPriceModel = async (model) => {
@@ -75,6 +84,20 @@ export const ModelsProvider = ({ children }) => {
         deletePriceModel,
         updateModel,
         pricingModels,
+        companies,
+        setCompanies,
+        medianPe,
+        setMedianPe,
+        medianPs,
+        setMedianPs,
+        medianPfcf,
+        setMedianPfcf,
+        revCor,
+        setRevCor,
+        niCor,
+        setNiCor,
+        fcfCor,
+        setFcfCor
       }}
     >
       {children}
