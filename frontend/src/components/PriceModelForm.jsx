@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useModelsContext } from '../context/ModelsContext';
-import { modelKey, quoteKey } from '../keys';
+import { modelKey, quoteKey, detailKey} from '../keys';
+import { money } from '../utils/money.format';
 
 const PriceModelForm = () => {
-    const { companies, setCompanies, pricingModels, setLoadingModel, findModel, updateModel} = useModelsContext()
+    const { companies, newPriceModel, setCompanies, pricingModels, setLoadingModel, findModel, updateModel} = useModelsContext()
     const [search, setSearch] = useState('')
     const [title, setTitle] = useState('')
     const [error, setError] = useState("")
@@ -36,26 +37,39 @@ const PriceModelForm = () => {
             `https://financialmodelingprep.com/api/v3/key-metrics-ttm/${model.data[i].ticker.toUpperCase()}?apikey=${modelKey}`
           ),
           fetch(
-            `https://finnhub.io/api/v1/quote?symbol=${model.data[i].ticker.toUpperCase()}&token=${quoteKey}`
+            `https://finnhub.io/api/v1/quote?symbol=${model.data[i].ticker.toUpperCase()}&token=${quoteKey}` 
+          ),
+          fetch(
+            `https://finnhub.io/api/v1/stock/profile2?symbol=${model.data[i].ticker.toUpperCase()}&token=${quoteKey}`
           )
         ]);
   
         const data = await Promise.all(res.map((r) => r.json()));
+
+        let marketCap = data[0][0].marketCapTTM
+
+        if (data[2].country !== "US") {
+          const response = await fetch(
+            `https://api.polygon.io/v3/reference/tickers/${model.data[i].ticker.toUpperCase()}?apiKey=${detailKey}`
+          )
+
+          const conversionData = await response.json()
+
+          marketCap = conversionData.results.market_cap
+        }
+        
+        console.log(money.format(marketCap / 1000000))
         
         updatedData.push({
           ticker: model.data[i].ticker.toUpperCase(),
           price: data[1].c,
-          mc: data[0][0].marketCapTTM / 1000000,
-          tbv: data[0][0].marketCapTTM / data[0][0].ptbRatioTTM / 1000000,
-          fcf: data[0][0].marketCapTTM / data[0][0].pfcfRatioTTM / 1000000,
-          rev: data[0][0].marketCapTTM / data[0][0].priceToSalesRatioTTM / 1000000,
-          ni: data[0][0].marketCapTTM / data[0][0].peRatioTTM / 1000000,
-          roe: data[0][0].roeTTM * 100,
-          roic: data[0][0].roicTTM * 100,
-          ptb: data[0][0].ptbRatioTTM,
+          mc: marketCap / 1000000,
+          fcf: marketCap / data[0][0].pfcfRatioTTM / 1000000,
+          rev: marketCap / data[0][0].priceToSalesRatioTTM / 1000000,
+          ni: marketCap / data[0][0].peRatioTTM / 1000000,
           ps: data[0][0].priceToSalesRatioTTM,
           pe: data[0][0].peRatioTTM < 0 ? 0 : data[0][0].peRatioTTM,
-          pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM,
+          pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM
         });
       }
   
@@ -75,27 +89,40 @@ const PriceModelForm = () => {
           ),
           fetch(
             `https://finnhub.io/api/v1/quote?symbol=${i.toUpperCase()}&token=${quoteKey}`
+          ),
+          fetch(
+            `https://finnhub.io/api/v1/stock/profile2?symbol=${i.toUpperCase()}&token=${quoteKey}`
           )
         ]);
     
         const data = await Promise.all(res.map((r) => r.json()));
-      
+
+        let marketCap = data[0][0].marketCapTTM
+
+        if (data[2].country !== "US") {
+          const response = await fetch(
+            `https://api.polygon.io/v3/reference/tickers/${i.toUpperCase()}?apiKey=${detailKey}`
+          )
+
+          const conversionData = await response.json()
+
+          marketCap = conversionData.results.market_cap
+        }
+        
+        console.log(money.format(marketCap / 1000000))
+       
         setCompanies([
           ...companies,
           {
             ticker: i.toUpperCase(),
             price: data[1].c,
-            mc: data[0][0].marketCapTTM / 1000000,
-            tbv: data[0][0].marketCapTTM / data[0][0].ptbRatioTTM / 1000000,
-            fcf: data[0][0].marketCapTTM / data[0][0].pfcfRatioTTM / 1000000,
-            rev: data[0][0].marketCapTTM / data[0][0].priceToSalesRatioTTM / 1000000,
-            ni: data[0][0].marketCapTTM / data[0][0].peRatioTTM / 1000000,
-            roe: data[0][0].roeTTM * 100,
-            roic: data[0][0].roicTTM * 100,
-            ptb: data[0][0].ptbRatioTTM,
+            mc: marketCap / 1000000,
+            fcf: marketCap / data[0][0].pfcfRatioTTM / 1000000,
+            rev: marketCap / data[0][0].priceToSalesRatioTTM / 1000000,
+            ni: marketCap / data[0][0].peRatioTTM / 1000000,
             ps: data[0][0].priceToSalesRatioTTM,
             pe: data[0][0].peRatioTTM < 0 ? 0 : data[0][0].peRatioTTM,
-            pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM,
+            pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM
           },
         ]);
         setSearch("");
