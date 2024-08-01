@@ -6,7 +6,7 @@ import { useModelsContext } from '../context/ModelsContext'
 
 const PricingTable = () => {
 
-    const { companies, medianPs, medianPe, medianPfcf } = useModelsContext()
+    const { companies, setCompanies, medianPs, medianPe, medianPfcf } = useModelsContext()
     
   return (
     <PricingTableStyled>
@@ -20,6 +20,7 @@ const PricingTable = () => {
                 <th>Average All</th>
                 <th>Average PE/PFCF</th>
                 <th>Average PS/PE</th>
+                <th>Remove</th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +44,9 @@ const PricingTable = () => {
                             <td>{money.format(avgAll)}</td>
                             <td>{money.format(avgPePfcf)}</td>
                             <td>{money.format(avgPsPe)}</td>
+                            <td id='trash'>
+                               <i  onClick={() => setCompanies(companies.filter((i) => i.ticker !== company.ticker ))} className="fa-solid fa-trash-can"></i>
+                            </td>
                         </tr>
                     )
                 })
@@ -72,6 +76,15 @@ const PricingTableStyled = styled.table`
     
     tr:nth-child(even){
         background-color: var(--light) ;
+    }
+
+    #trash i {
+        color: var(--red);
+        cursor: pointer;
+    }
+
+    #trash {
+        text-align: center;
     }
 `
 
