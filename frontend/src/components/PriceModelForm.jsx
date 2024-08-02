@@ -15,9 +15,14 @@ const PriceModelForm = () => {
         if (!title) {
           return setError("Please add title to save model");
         }
+
         await newPriceModel({
           name: title,
-          data: companies.map((com) => com.ticker)
+          data: companies.map((com) => {
+            return {
+              ticker: com.ticker
+            }
+          })
         });
         setCompanies([]);
         setError('')
@@ -58,8 +63,6 @@ const PriceModelForm = () => {
           marketCap = conversionData.results.market_cap
         }
         
-        console.log(money.format(marketCap / 1000000))
-        
         updatedData.push({
           ticker: model.data[i].ticker.toUpperCase(),
           price: data[1].c,
@@ -73,8 +76,6 @@ const PriceModelForm = () => {
         });
       }
   
-      await updateModel(id, { data: updatedData });
-
       setCompanies(
         updatedData.sort((a, b) => a.ticker.localeCompare(b.ticker))
       );
@@ -109,8 +110,6 @@ const PriceModelForm = () => {
           marketCap = conversionData.results.market_cap
         }
         
-        console.log(money.format(marketCap / 1000000))
-       
         setCompanies([
           ...companies,
           {
