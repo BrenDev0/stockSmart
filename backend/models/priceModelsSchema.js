@@ -4,8 +4,7 @@ const Data = new mongoose.Schema({
   ticker: {
     type: String,
     required: true,
-  },
-
+  }
 });
 
 const PriceModelSchema = new mongoose.Schema({

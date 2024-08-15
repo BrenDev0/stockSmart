@@ -58,7 +58,6 @@ const PriceModelForm = () => {
           marketCap = conversionData.results.market_cap
         }
         
-        console.log(money.format(marketCap / 1000000))
         
         updatedData.push({
           ticker: model.data[i].ticker.toUpperCase(),
@@ -109,7 +108,6 @@ const PriceModelForm = () => {
           marketCap = conversionData.results.market_cap
         }
         
-        console.log(money.format(marketCap / 1000000))
        
         setCompanies([
           ...companies,
