@@ -15,9 +15,14 @@ const PriceModelForm = () => {
         if (!title) {
           return setError("Please add title to save model");
         }
+
         await newPriceModel({
           name: title,
-          data: companies.map((com) => com.ticker)
+          data: companies.map((com) => {
+            return {
+              ticker: com.ticker
+            }
+          })
         });
         setCompanies([]);
         setError('')
@@ -72,8 +77,6 @@ const PriceModelForm = () => {
         });
       }
   
-      await updateModel(id, { data: updatedData });
-
       setCompanies(
         updatedData.sort((a, b) => a.ticker.localeCompare(b.ticker))
       );
