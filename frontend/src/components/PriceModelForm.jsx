@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useModelsContext } from '../context/ModelsContext';
 import { modelKey, quoteKey, detailKey} from '../keys';
-import { money } from '../utils/money.format';
 
 const PriceModelForm = () => {
     const { companies, newPriceModel, setCompanies, pricingModels, setLoadingModel, findModel, updateModel} = useModelsContext()
@@ -63,7 +62,6 @@ const PriceModelForm = () => {
           marketCap = conversionData.results.market_cap
         }
         
-        
         updatedData.push({
           ticker: model.data[i].ticker.toUpperCase(),
           price: data[1].c,
@@ -73,7 +71,7 @@ const PriceModelForm = () => {
           ni: marketCap / data[0][0].peRatioTTM / 1000000,
           ps: data[0][0].priceToSalesRatioTTM,
           pe: data[0][0].peRatioTTM < 0 ? 0 : data[0][0].peRatioTTM,
-          pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM
+          pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM,
         });
       }
   
@@ -111,7 +109,6 @@ const PriceModelForm = () => {
           marketCap = conversionData.results.market_cap
         }
         
-       
         setCompanies([
           ...companies,
           {
@@ -123,7 +120,7 @@ const PriceModelForm = () => {
             ni: marketCap / data[0][0].peRatioTTM / 1000000,
             ps: data[0][0].priceToSalesRatioTTM,
             pe: data[0][0].peRatioTTM < 0 ? 0 : data[0][0].peRatioTTM,
-            pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM
+            pfcf: data[0][0].pfcfRatioTTM < 0 ? 0 : data[0][0].pfcfRatioTTM,
           },
         ]);
         setSearch("");
