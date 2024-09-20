@@ -10,14 +10,14 @@ const WatchlistsPage = () => {
     useEffect(() => {
         getUser();
         setTimeout(() => {
-          if (user === null) {
-            return null;
-          }
           if (user) {
             return setIsLoading(false);
           }
-          if (!user) {
+          else if (!user) {
             return navigate("/login");
+          }
+          else{
+            return null;
           }
         }, 2000);
       }, [user]);

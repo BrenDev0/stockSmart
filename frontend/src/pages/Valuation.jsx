@@ -18,15 +18,15 @@ const Valuation = () => {
     useEffect(() => {
         getUser();
         setTimeout(() => {
-            if (user === null){
+            if (user) {
+                return setIsLoading(false);
+              }
+              else if (!user) {
+                return navigate("/login");
+              }
+              else{
                 return null;
-            }
-            if (user){
-                setIsLoading(false)
-            }
-            if (!user){
-                return navigate('/login')
-            }
+              }
         }, 2000)
     }, [user])
   
