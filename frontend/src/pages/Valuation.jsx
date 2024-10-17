@@ -21,7 +21,7 @@ const Valuation = () => {
             if (user) {
                 return setIsLoading(false);
               }
-              else if (!user) {
+              else if (user === false) {
                 return navigate("/login");
               }
               else{

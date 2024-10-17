@@ -27,14 +27,16 @@ const Pricing = () => {
     deletePriceModel,
   } = useModelsContext();
   const navigate = useNavigate();
- 
+  getUser();
+
   useEffect(() => {
-    getUser().then(getPricingModels());
+    getPricingModels();
+    console.log(user)
     setTimeout(() => {
       if (user) {
         return setIsLoading(false);
       }
-      else if (!user) {
+      else if (user === false) {
         return navigate("/login");
       }
       else{

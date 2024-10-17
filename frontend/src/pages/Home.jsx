@@ -14,13 +14,13 @@ const Home = () => {
     getUser();
     setTimeout(() => {
       if (user) {
-        return setIsLoading(false);
+        setIsLoading(false);
       }
-      else if (!user) {
-        return navigate("/login");
+      else if (user === false) {
+        navigate("/login");
       }
       else{
-        return null;
+        null;
       }
     }, 2000);
   }, [user]);

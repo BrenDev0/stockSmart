@@ -2,7 +2,7 @@ import { useGlobalContext } from "./context/GlobalContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TradeModal from "./components/TradeModal";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
+import Login from "./pages/login";
 import Signup from "./pages/Signup"
 import axios from "axios";
 import News from "./pages/News";
